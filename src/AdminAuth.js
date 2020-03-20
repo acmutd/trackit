@@ -7,8 +7,11 @@ import FormControl from 'react-bootstrap/FormControl';
 import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCoffee } from '@fortawesome/free-solid-svg-icons'
+import { faFacebook } from "@fortawesome/free-brands-svg-icons"
+import { faGithub } from "@fortawesome/free-brands-svg-icons"
+import { faLinkedin } from "@fortawesome/free-brands-svg-icons"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import NavBar from './NavBar';
 import './AdminAuth.css';
 
 class AdminAuth extends React.Component {
@@ -43,18 +46,13 @@ class AdminAuth extends React.Component {
 
 
     render() {
+        let whiteStyle = {
+            color: "white"
+        };
         return (
             <div>
                 <Container fluid>
-                    <Navbar bg="dark" variant="dark">
-                        <Navbar.Brand>TrackIT</Navbar.Brand>
-                        <Nav className="mr-auto">
-                            <Nav.Link>Home</Nav.Link>
-                            <Nav.Link>Features</Nav.Link>
-                            <Nav.Link>Pricing</Nav.Link>
-                        </Nav>
-                        
-                    </Navbar>
+                    <NavBar />
                     <div className="m-5" >
                         <Row>
                             <Col xs={12} sm={12} md={5}>
