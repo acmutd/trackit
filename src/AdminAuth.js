@@ -5,12 +5,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import FormControl from 'react-bootstrap/FormControl';
 import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
-import { faFacebook } from "@fortawesome/free-brands-svg-icons"
-import { faGithub } from "@fortawesome/free-brands-svg-icons"
-import { faLinkedin } from "@fortawesome/free-brands-svg-icons"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NavBar from './NavBar';
 import './AdminAuth.css';
 
@@ -46,14 +40,12 @@ class AdminAuth extends React.Component {
 
 
     render() {
-        let whiteStyle = {
-            color: "white"
-        };
         return (
             <div>
+                <NavBar />
                 <Container fluid>
-                    <NavBar />
-                    <div className="m-5" >
+                    
+                    <div className="m-5 p-5 floating-icon">
                         <Row>
                             <Col xs={12} sm={12} md={5}>
                                 <InputGroup className="mb-3">
