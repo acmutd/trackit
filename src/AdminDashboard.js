@@ -78,6 +78,8 @@ class AdminDashboard extends React.Component {
             linktwotext: "link"
         }
 
+        //additional hard coded data
+        //this is the main part that needs to constantly be read from the database, everything else is read one time only
         let wfirst = {
             Workshop_ID: "firebase",
             Students: ["anirudh", "harsha", "sivam"],

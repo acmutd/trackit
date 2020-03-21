@@ -1,4 +1,6 @@
 import React from 'react';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import CanvasJSReact from './assets/canvasjs.react';
 import CardTile from './CardTile';
 var CanvasJS = CanvasJSReact.CanvasJS;
@@ -61,11 +63,29 @@ class Workshop extends React.Component {
             linktwotext: "Download Raw Student Data"
         }
 
+        var tag = "";
+        for(var i = 0;i<this.props.properties.Number_Of_Levels;i++) {
+            tag += "Level: " + i + "\nDescription: " + this.props.properties.Level_Descriptions[i] + "\n";
+        }
+
+        let workshopInfo = {
+            title: "Workshop Information",
+            subtitle: this.props.properties.Workshop_ID,
+            description: tag,
+            linkone: "",
+            linkonetext: "Download Workshop Content",
+            linktwo: "",
+            linktwotext: "Access Workshop Resouces"
+        }
+
         return (
 
             <div>
                 <div className="mt-5">
-                    <CardTile data={summaryInfo} />
+                    <Row>
+                        <Col><CardTile data={summaryInfo} /></Col>
+                        <Col><CardTile data={workshopInfo} /></Col>
+                    </Row>
                 </div>
                 <div className="floating-icon m-3 mt-5 p-3">
                     <CanvasJSChart options={options} />
