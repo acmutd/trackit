@@ -64,7 +64,9 @@ class Workshop extends React.Component {
         return (
 
             <div>
-                <CardTile data={summaryInfo} />
+                <div className="mt-5">
+                    <CardTile data={summaryInfo} />
+                </div>
                 <div className="floating-icon m-3 mt-5 p-3">
                     <CanvasJSChart options={options} />
                 </div>

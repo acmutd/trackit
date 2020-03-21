@@ -100,21 +100,27 @@ class AdminDashboard extends React.Component {
             workshops: [first, second, third],
             cards: [cfirst, csecond, cthird],
             studentsAtWorkshop: [wfirst, wsecond, wthird],
-            viewWorkshop: true, //toggle between true or false
-            workshopView: 2 //change this number to 0 1 or 2
+            viewWorkshop: false, //toggle between true or false
+            workshopView: 1 //change this number to 0 1 or 2
 
         }
         this.openWorkshopWindow = this.openWorkshopWindow.bind(this);
     }
 
-    openWorkshopWindow() {
-
+    openWorkshopWindow(Workshop_ID) {
+        var workshopIndex = 0;
+        for (var i = 0; i < this.state.workshops.length; i++) {
+            if (this.state.workshops[i].Workshop_ID === Workshop_ID) {
+                workshopIndex = i;
+            }
+        }
+        this.setState(state => ({ viewWorkshop: !state.viewWorkshop, workshopView: workshopIndex }));
     }
 
     render() {
 
-        let workshopList = this.state.workshops.map(item => <WorkshopBar data={item} />);
-        let tiles = this.state.cards.map(item => <Col><CardTile data={item}/></Col>);
+        let workshopList = this.state.workshops.map(item => <WorkshopBar expandState={false} expandWindow={this.openWorkshopWindow} data={item} />);
+        let tiles = this.state.cards.map(item => <Col><CardTile data={item} /></Col>);
 
         return (
             <div>
@@ -125,9 +131,13 @@ class AdminDashboard extends React.Component {
                             {tiles}
                         </Row>
                     </div>
-                    
+
                     <div className="m-5">
-                        {this.state.viewWorkshop ? <Workshop data={this.state.studentsAtWorkshop[this.state.workshopView]}/> : workshopList}
+                        {this.state.viewWorkshop ?
+                            <div>
+                                <WorkshopBar expandState={true} expandWindow={this.openWorkshopWindow} data={this.state.workshops[this.state.workshopView]} />
+                                <Workshop properties={this.state.workshops[this.state.workshopView]} data={this.state.studentsAtWorkshop[this.state.workshopView]} />
+                            </div> : workshopList}
                     </div>
                 </Container>
             </div>
