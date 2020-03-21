@@ -1,10 +1,10 @@
 import React from 'react';
 import WorkshopBar from './WorkshopBar';
 import NavBar from './NavBar';
+import Workshop from './Workshop';
 import CardTile from './CardTile';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import './AdminDashboard.css';
 
@@ -75,19 +75,46 @@ class AdminDashboard extends React.Component {
             linkone: "#",
             linkonetext: "",
             linktwo: "#",
-            linktwotext: ""
+            linktwotext: "link"
         }
+
+        let wfirst = {
+            Workshop_ID: "firebase",
+            Students: ["anirudh", "harsha", "sivam"],
+            Progress: [3, 5, 4]
+        }
+
+        let wsecond = {
+            Workshop_ID: "azure",
+            Students: ["atharv", "gautam", "aashish"],
+            Progress: [2, 3, 4]
+        }
+
+        let wthird = {
+            Workshop_ID: "aws",
+            Students: ["sanjana", "ifrit", "shivani", "vamika", "sanjeev", "penupala"],
+            Progress: [5, 4, 2, 1, 3, 4]
+        }
+
         this.state = {
             workshops: [first, second, third],
-            cards: [cfirst, csecond, cthird]
+            cards: [cfirst, csecond, cthird],
+            studentsAtWorkshop: [wfirst, wsecond, wthird],
+            viewWorkshop: true, //toggle between true or false
+            workshopView: 2 //change this number to 0 1 or 2
+
         }
+        this.openWorkshopWindow = this.openWorkshopWindow.bind(this);
+    }
+
+    openWorkshopWindow() {
+
     }
 
     render() {
 
-        let workshop = this.state.workshops.map(item => <WorkshopBar data={item} />);
+        let workshopList = this.state.workshops.map(item => <WorkshopBar data={item} />);
         let tiles = this.state.cards.map(item => <Col><CardTile data={item}/></Col>);
-        console.log(tiles);
 
         return (
             <div>
@@ -98,8 +125,9 @@ class AdminDashboard extends React.Component {
                             {tiles}
                         </Row>
                     </div>
+                    
                     <div className="m-5">
-                        {workshop}
+                        {this.state.viewWorkshop ? <Workshop data={this.state.studentsAtWorkshop[this.state.workshopView]}/> : workshopList}
                     </div>
                 </Container>
             </div>
