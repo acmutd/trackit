@@ -4,7 +4,8 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
+    <div>
+      {/* replace this with <User /> when wanting to test out the user side, we can decide at a later point when the admin side should appear and when the user side should apper */}
       <Admin />
     </div>
   );
