@@ -20,3 +20,8 @@
 
   - Harsha Srikara
   - Add names below
+  
+ ### Getting Started
+ 
+  - npm install
+  - npm start
