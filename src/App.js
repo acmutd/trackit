@@ -1,6 +1,5 @@
-import React from 'react';
-import Admin from './Admin';
-import './App.css';
+import React from "react";
+import Admin from "./Components/Admin/Admin";
 
 function App() {
   return (
