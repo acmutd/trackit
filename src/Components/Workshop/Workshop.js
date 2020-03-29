@@ -12,7 +12,7 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  * Contains summary information about the workshop as well as the graphs
  *
  * Author: Harsha Srikara
- * Date: 3/22/20
+ * Date: 3/28/20
  */
 class Workshop extends React.Component {
   constructor(props) {
@@ -25,12 +25,13 @@ class Workshop extends React.Component {
     var yValues = [];
 
     for (var i = 0; i < this.props.properties.Number_Of_Levels; i++) {
-      xValues.push(i);
-      yValues.push(0);
+      let a = i + 1; //make the index start from 0 instead of 1
+      xValues.push(a + ""); //convert to string to represent as a label instead of coordinate
+      yValues.push(0); //initial count for aggregate
     }
 
     for (var i = 0; i < this.props.data.Progress.length; i++) {
-      yValues[this.props.data.Progress[i]] += 1;
+      yValues[this.props.data.Progress[i]-1] += 1;
     }
 
     for (var i = 0; i < xValues.length; i++) {
@@ -59,6 +60,7 @@ class Workshop extends React.Component {
 
   //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph
   //code for parsing and adding dynamic data from here --> http://jsfiddle.net/canvasjs/acf0dx6d/
+  //this function does not actually get called
   parseDataPoints() {
     var dps = [];
     for (var i = dps.length; i < this.props.data.Students.length; i++)
@@ -73,7 +75,7 @@ class Workshop extends React.Component {
   render() {
 
     //mapping student array into <StudentBar />
-    let student_progress = this.props.data.Students.map(item => <StudentBar Student_Name={item} />);
+    let student_progress = this.props.data.Students.map((item, i) => <StudentBar TotalProgress={this.props.properties.Number_Of_Levels} Progress={this.props.data.Progress[i]} Student_Name={item} />);
 
     //options for the CanvasJS graph, configuration basically
     const options = {
