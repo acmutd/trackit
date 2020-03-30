@@ -12,7 +12,7 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  * Contains summary information about the workshop as well as the graphs
  *
  * Author: Harsha Srikara
- * Date: 3/28/20
+ * Date: 3/29/20
  */
 class Workshop extends React.Component {
   constructor(props) {
@@ -84,6 +84,9 @@ class Workshop extends React.Component {
       theme: "light2", //"light1", "dark1", "dark2"
       title: {
         text: this.props.data.Workshop_ID
+      },
+      axisY: {
+        valueFormatString: "#"
       },
       data: [
         {
