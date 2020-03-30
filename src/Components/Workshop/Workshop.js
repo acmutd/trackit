@@ -3,6 +3,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import CanvasJSReact from "../../assets/canvasjs.react";
 import CardTile from "./CardTile";
+import WorkshopLevelBar from "./WorkshopLevelBar";
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -110,6 +111,7 @@ class Workshop extends React.Component {
             </Col>
           </Row>
         </div>
+        <WorkshopLevelBar maxLevel={this.props.properties.Number_Of_Levels}/>
         <div className="floating-icon m-3 mt-5 p-3">
           <CanvasJSChart options={options} />
         </div>

@@ -89,18 +89,21 @@ class AdminDashboard extends React.Component {
     //the represents the StudentsAtWorkshop collection on firebase
     let wfirst = {
       Workshop_ID: "firebase",
+      Level_Enabled: 0,
       Students: ["anirudh", "harsha", "sivam"],
       Progress: [3, 5, 4]
     };
 
     let wsecond = {
       Workshop_ID: "azure",
+      Level_Enabled: 0,
       Students: ["atharv", "gautam", "aashish"],
       Progress: [2, 3, 4]
     };
 
     let wthird = {
       Workshop_ID: "aws",
+      Level_Enabled: 0,
       Students: [
         "sanjana",
         "ifrit",
@@ -120,6 +123,7 @@ class AdminDashboard extends React.Component {
       workshopView: 1 //change this number to 0 1 or 2
     };
     this.openWorkshopWindow = this.openWorkshopWindow.bind(this);
+    this.incrementLevel = this.incrementLevel.bind(this);
   }
 
   /**
@@ -139,6 +143,19 @@ class AdminDashboard extends React.Component {
       viewWorkshop: !state.viewWorkshop,
       workshopView: workshopIndex
     }));
+  }
+
+  incrementLevel(Workshop_ID) {
+    var workshopIndex = 0;
+    // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
+    for (var i = 0; i < this.state.workshops.length; i++) {
+      if (this.state.workshops[i].Workshop_ID === Workshop_ID) {
+        workshopIndex = i;
+      }
+    }
+
+    //write code here to push to db that the workshop level has been incremented
+
   }
 
   render() {
@@ -176,6 +193,7 @@ class AdminDashboard extends React.Component {
                   data={this.state.workshops[this.state.workshopView]}
                 />
                 <Workshop
+                  incrementLevel={this.incrementLevel}
                   properties={this.state.workshops[this.state.workshopView]}
                   data={this.state.studentsAtWorkshop[this.state.workshopView]}
                 />
