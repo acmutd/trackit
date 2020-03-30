@@ -11,7 +11,7 @@ import Container from "react-bootstrap/Container";
  * UI component that manages how the admin dashboard looks like
  *
  * Author: Harsha Srikara
- * Date: 3/28/20
+ * Date: 3/29/20
  */
 class AdminDashboard extends React.Component {
   constructor(props) {
@@ -89,14 +89,14 @@ class AdminDashboard extends React.Component {
     //the represents the StudentsAtWorkshop collection on firebase
     let wfirst = {
       Workshop_ID: "firebase",
-      Students: ["anirudh", "harsha", "sivam"],
-      Progress: [3, 5, 4]
+      Students: ["anirudh", "harsha", "sivam", "patel", "emmadi", "srikara"],
+      Progress: [3, 2, 2, 4, 5, 5]
     };
 
     let wsecond = {
       Workshop_ID: "azure",
-      Students: ["atharv", "gautam", "aashish"],
-      Progress: [2, 3, 4]
+      Students: ["atharv", "gautam", "aashish", "jain", "sapre", "sharma"],
+      Progress: [1, 3, 4, 1, 4, 4]
     };
 
     let wthird = {
