@@ -11,7 +11,7 @@ import Container from "react-bootstrap/Container";
  * UI component that manages how the admin dashboard looks like
  *
  * Author: Harsha Srikara
- * Date: 3/22/20
+ * Date: 3/30/20
  */
 class AdminDashboard extends React.Component {
   constructor(props) {
@@ -124,6 +124,12 @@ class AdminDashboard extends React.Component {
     };
     this.openWorkshopWindow = this.openWorkshopWindow.bind(this);
     this.incrementLevel = this.incrementLevel.bind(this);
+    this.decrementLevel = this.decrementLevel.bind(this);
+    this.enableWorkshop = this.enableWorkshop.bind(this);
+    this.disableWorkshop = this.disableWorkshop.bind(this);
+    this.clearAllStudents = this.clearAllStudents.bind(this);
+    this.deleteWorkshop = this.deleteWorkshop.bind(this);
+    this.findWorkshopIndex = this.findWorkshopIndex.bind(this);
   }
 
   /**
@@ -145,7 +151,39 @@ class AdminDashboard extends React.Component {
     }));
   }
 
+  enableWorkshop(Workshop_ID) {
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    console.log("test");
+  }
+
+  disableWorkshop(Workshop_ID) {
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    console.log("test");
+  }
+
+  clearAllStudents(Workshop_ID) {
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    console.log("test");
+  }
+
+  deleteWorkshop(Workshop_ID) {
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    console.log("test");
+  }
+
   incrementLevel(Workshop_ID) {
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    //write code here to push to db that the workshop level has been incremented
+    console.log("test");
+  }
+
+  decrementLevel(Workshop_ID) {
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    //write code here to push to db that the workshop level has been decremented
+    console.log("test");
+  }
+
+  findWorkshopIndex(Workshop_ID) {
     var workshopIndex = 0;
     // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
     for (var i = 0; i < this.state.workshops.length; i++) {
@@ -153,9 +191,7 @@ class AdminDashboard extends React.Component {
         workshopIndex = i;
       }
     }
-
-    //write code here to push to db that the workshop level has been incremented
-
+    return workshopIndex;
   }
 
   render() {
@@ -194,6 +230,11 @@ class AdminDashboard extends React.Component {
                 />
                 <Workshop
                   incrementLevel={this.incrementLevel}
+                  decrementLevel={this.decrementLevel}
+                  enableWorkshop={this.enableWorkshop}
+                  disableWorkshop={this.disableWorkshop}
+                  clearAllStudents={this.clearAllStudents}
+                  deleteWorkshop={this.deleteWorkshop}
                   properties={this.state.workshops[this.state.workshopView]}
                   data={this.state.studentsAtWorkshop[this.state.workshopView]}
                 />
