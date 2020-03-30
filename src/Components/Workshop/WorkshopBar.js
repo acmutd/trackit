@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  * The is a workshop bar that shows a minimized view of the information in a workshop, quick look at the data available
  *
  * Author: Harsha Srikara
- * Date: 3/22/20
+ * Date: 3/28/20
  */
 class WorkshopBar extends React.Component {
   constructor(props) {
@@ -93,14 +93,14 @@ class WorkshopBar extends React.Component {
                 </Nav.Item>
               </div>
             ) : (
-              <div>
-                <Nav.Item>
-                  <Nav.Link onClick={this.switchView}>
-                    <h3>Show View</h3>
-                  </Nav.Link>
-                </Nav.Item>
-              </div>
-            )}
+                <div>
+                  <Nav.Item>
+                    <Nav.Link onClick={this.switchView}>
+                      <h3>Show View</h3>
+                    </Nav.Link>
+                  </Nav.Item>
+                </div>
+              )}
           </Nav>
         </div>
       </div>
