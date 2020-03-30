@@ -1,10 +1,17 @@
 import React from "react";
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
 import Nav from "react-bootstrap/Nav";
 import Button from 'react-bootstrap/Button'
+import { makeStyles } from '@material-ui/core/styles';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+import { NativeSelect } from "@material-ui/core";
 
+/**
+ * Administrative toolbar to control workshop settings such as enabling a workshop, disabling a workshop, clearing all students to reset a workshop
+ * Also contains a slider to enable workshop levels
+ */
 class WorkshopLevelBar extends React.Component {
     constructor(props) {
         super(props);
@@ -24,9 +31,33 @@ class WorkshopLevelBar extends React.Component {
         return (
             <div>
                 <div className="m-3 mt-5 p-4 floating-icon">
+
                     <Nav justify>
                         <Nav.Item>
-                            <h1>Workshop Level: {this.props.Workshop_Level}</h1>
+                            <h1>Manage Workshop</h1>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link>
+                                <Button variant="success" size="lg">Enable Workshop</Button>
+                            </Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link>
+                                <Button variant="danger" size="lg">Disable Workshop</Button>
+                            </Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link>
+                            <Button variant="dark" size="lg">Clear All Students</Button>
+                            </Nav.Link>
+                        </Nav.Item>
+                    </Nav>
+                    <hr />
+                    <Nav justify>
+                        <Nav.Item>
+                            <div className="mt-2">
+                                <h3>Workshop Level: {this.props.Workshop_Level}</h3>
+                            </div>
                         </Nav.Item>
                         <Nav.Item>
                             <div className="mt-3">
@@ -45,7 +76,17 @@ class WorkshopLevelBar extends React.Component {
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link>
-                                <Button variant="success">Confirm</Button>
+                                <Fab color="primary" aria-label="add" className="ml-2 mr-2">
+                                    <AddIcon />
+                                </Fab>
+                                <Fab color="primary" aria-label="minimize" className="ml-2 mr-2">
+                                    <RemoveIcon />
+                                </Fab>
+                            </Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link>
+                                <Button variant="success" size="lg">Confirm</Button>
                             </Nav.Link>
                         </Nav.Item>
                     </Nav>
