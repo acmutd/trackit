@@ -1,9 +1,10 @@
-import React from "react";
 import Row from "react-bootstrap/Row";
+import React from "react";
 import Col from "react-bootstrap/Col";
 import CanvasJSReact from "../../assets/canvasjs.react";
 import CardTile from "./CardTile";
 import StudentBar from "./StudentBar";
+import WorkshopLevelBar from "./WorkshopLevelBar";
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -12,7 +13,7 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  * Contains summary information about the workshop as well as the graphs
  *
  * Author: Harsha Srikara
- * Date: 3/29/20
+ * Date: 3/30/20
  */
 class Workshop extends React.Component {
   constructor(props) {
@@ -56,6 +57,12 @@ class Workshop extends React.Component {
       dataArray: dps
     };
     this.parseDataPoints = this.parseDataPoints.bind(this);
+    this.incrementLevel = this.incrementLevel.bind(this);
+    this.decrementLevel = this.decrementLevel.bind(this);
+    this.enableWorkshop = this.enableWorkshop.bind(this);
+    this.disableWorkshop = this.disableWorkshop.bind(this);
+    this.clearAllStudents = this.clearAllStudents.bind(this);
+    this.deleteWorkshop = this.deleteWorkshop.bind(this);
   }
 
   //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph
@@ -70,6 +77,30 @@ class Workshop extends React.Component {
       });
 
     this.setState({ dataArray: dps });
+  }
+
+  enableWorkshop() {
+    this.props.enableWorkshop(this.props.data.Workshop_ID);
+  }
+
+  disableWorkshop() {
+    this.props.disableWorkshop(this.props.data.Workshop_ID);
+  }
+
+  clearAllStudents() {
+    this.props.clearAllStudents(this.props.data.Workshop_ID);
+  }
+
+  deleteWorkshop() {
+    this.props.deleteWorkshop(this.props.data.Workshop_ID);
+  }
+
+  incrementLevel() {
+    this.props.incrementLevel(this.props.data.Workshop_ID);
+  }
+
+  decrementLevel() {
+    this.props.decrementLevel(this.props.data.Workshop_ID);
   }
 
   render() {
@@ -145,6 +176,15 @@ class Workshop extends React.Component {
             </Col>
           </Row>
         </div>
+        <WorkshopLevelBar
+          incrementLevel={this.incrementLevel}
+          decrementLevel={this.decrementLevel}
+          enableWorkshop={this.enableWorkshop}
+          disableWorkshop={this.disableWorkshop}
+          clearAllStudents={this.clearAllStudents}
+          deleteWorkshop={this.deleteWorkshop}
+          Workshop_Level={1}
+          maxLevel={this.props.properties.Number_Of_Levels} />
         <div className="floating-icon m-3 mt-5 p-3">
           <CanvasJSChart options={options} />
         </div>
