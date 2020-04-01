@@ -5,6 +5,7 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 import CardTile from "./CardTile";
 import StudentBar from "./StudentBar";
 import WorkshopLevelBar from "./WorkshopLevelBar";
+import ConfirmationDialog from "../Layout/ConfirmationDialog";
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -51,7 +52,9 @@ class Workshop extends React.Component {
     // }
 
     this.state = {
-      dataArray: dps
+      dataArray: dps,
+      confirmationDialog: false, //this is whether or not to show a confirmation dialog
+      confirmationState: false
     };
     this.parseDataPoints = this.parseDataPoints.bind(this);
     this.incrementLevel = this.incrementLevel.bind(this);
@@ -62,6 +65,10 @@ class Workshop extends React.Component {
     this.deleteWorkshop = this.deleteWorkshop.bind(this);
     this.editWorkshop = this.editWorkshop.bind(this);
     this.exportWorkshop = this.exportWorkshop.bind(this);
+    this.makeConfirmationDialogVisible = this.makeConfirmationDialogVisible.bind(
+      this
+    );
+    this.getDialogResponse = this.getDialogResponse.bind(this);
   }
 
   //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph
@@ -91,6 +98,7 @@ class Workshop extends React.Component {
   }
 
   deleteWorkshop() {
+    this.makeConfirmationDialogVisible();
     this.props.deleteWorkshop(this.props.data.Workshop_ID);
   }
 
@@ -106,6 +114,16 @@ class Workshop extends React.Component {
   }
   exportWorkshop() {
     this.props.exportWorkshop(this.props.data.Workshop_ID);
+  }
+
+  makeConfirmationDialogVisible() {
+    this.setState(state => ({ confirmationDialog: !state.confirmationDialog, }));
+  }
+
+  getDialogResponse(bool) {
+    this.setState({confirmationState: bool});
+    this.makeConfirmationDialogVisible();
+    console.log(this.state.confirmationState);
   }
 
   render() {
@@ -173,6 +191,11 @@ class Workshop extends React.Component {
       linktwotext: "Access Workshop Resouces"
     };
 
+    //confirmation dialog setup
+    let titleText = "Confirmation";
+    let messageText =
+      "Are you sure about performing this action? This action cannot be reversed.";
+
     return (
       <div>
         <div className="mt-5">
@@ -196,13 +219,14 @@ class Workshop extends React.Component {
           editWorkshop={this.editWorkshop}
           exportWorkshop={this.exportWorkshop}
           Workshop_Level={1}
-          enabled={true}
+          enabled={false}
           maxLevel={this.props.properties.Number_Of_Levels}
         />
         <div className="floating-icon m-3 mt-5 p-3">
           <CanvasJSChart options={options} />
         </div>
         {student_progress}
+        <ConfirmationDialog isOpen={this.state.confirmationDialog} titleText={titleText} messageText={messageText} handleDialogResponse={this.getDialogResponse}/>
       </div>
     );
   }

@@ -244,7 +244,7 @@ class AdminDashboard extends React.Component {
                   incrementLevel={this.incrementLevel}
                   decrementLevel={this.decrementLevel}
                   enableWorkshop={this.enableWorkshop}
-                  disableWorkshop={this.disableWorkshop}
+                  disableWorkshop={this.disableWorkshop}  
                   clearAllStudents={this.clearAllStudents}
                   deleteWorkshop={this.deleteWorkshop}
                   editWorkshop={this.editWorkshop}
