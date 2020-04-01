@@ -32,7 +32,7 @@ class Workshop extends React.Component {
     }
 
     for (var i = 0; i < this.props.data.Progress.length; i++) {
-      yValues[this.props.data.Progress[i]-1] += 1;
+      yValues[this.props.data.Progress[i] - 1] += 1;
     }
 
     for (var i = 0; i < xValues.length; i++) {
@@ -42,8 +42,6 @@ class Workshop extends React.Component {
       });
     }
 
-
-
     //this makes the student name x axis and their progress y axis instead of aggregate values
     // for (var i = dps.length; i < this.props.data.Students.length; i++) {
     //   dps.push({
@@ -51,7 +49,6 @@ class Workshop extends React.Component {
     //     y: this.props.data.Progress[i]
     //   });
     // }
-
 
     this.state = {
       dataArray: dps
@@ -63,6 +60,8 @@ class Workshop extends React.Component {
     this.disableWorkshop = this.disableWorkshop.bind(this);
     this.clearAllStudents = this.clearAllStudents.bind(this);
     this.deleteWorkshop = this.deleteWorkshop.bind(this);
+    this.editWorkshop = this.editWorkshop.bind(this);
+    this.exportWorkshop = this.exportWorkshop.bind(this);
   }
 
   //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph
@@ -102,11 +101,22 @@ class Workshop extends React.Component {
   decrementLevel() {
     this.props.decrementLevel(this.props.data.Workshop_ID);
   }
+  editWorkshop() {
+    this.props.editWorkshop();
+  }
+  exportWorkshop() {
+    this.props.exportWorkshop(this.props.data.Workshop_ID);
+  }
 
   render() {
-
     //mapping student array into <StudentBar />
-    let student_progress = this.props.data.Students.map((item, i) => <StudentBar TotalProgress={this.props.properties.Number_Of_Levels} Progress={this.props.data.Progress[i]} Student_Name={item} />);
+    let student_progress = this.props.data.Students.map((item, i) => (
+      <StudentBar
+        TotalProgress={this.props.properties.Number_Of_Levels}
+        Progress={this.props.data.Progress[i]}
+        Student_Name={item}
+      />
+    ));
 
     //options for the CanvasJS graph, configuration basically
     const options = {
@@ -183,8 +193,12 @@ class Workshop extends React.Component {
           disableWorkshop={this.disableWorkshop}
           clearAllStudents={this.clearAllStudents}
           deleteWorkshop={this.deleteWorkshop}
+          editWorkshop={this.editWorkshop}
+          exportWorkshop={this.exportWorkshop}
           Workshop_Level={1}
-          maxLevel={this.props.properties.Number_Of_Levels} />
+          enabled={true}
+          maxLevel={this.props.properties.Number_Of_Levels}
+        />
         <div className="floating-icon m-3 mt-5 p-3">
           <CanvasJSChart options={options} />
         </div>

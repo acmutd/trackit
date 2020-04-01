@@ -34,18 +34,8 @@ class WorkshopBar extends React.Component {
             <Nav.Item>
               <h1>{this.props.data.Workshop_ID}</h1>
             </Nav.Item>
-            <Nav.Item className="mt-2">
-              <h3>{this.props.data.Day}</h3>
-            </Nav.Item>
-            <Nav.Item className="mt-2">
-              <h3>
-                {this.props.data.Date} {this.props.data.Month}{" "}
-                {this.props.data.Year}
-              </h3>
-            </Nav.Item>
-
-            {/* This needs to eventually be dynamic and use inforamtion passed in as props to render the actual proportions instead of hardcoded values */}
-            <Nav.Item className="mt-3">
+             {/* This needs to eventually be dynamic and use inforamtion passed in as props to render the actual proportions instead of hardcoded values */}
+             <Nav.Item className="mt-3">
               <ProgressBar>
                 <ProgressBar
                   striped
@@ -70,7 +60,16 @@ class WorkshopBar extends React.Component {
                 />
               </ProgressBar>
             </Nav.Item>
-            <Nav.Item>
+            <Nav.Item className="mt-2">
+              <h3>{this.props.data.Day} {this.props.data.Date} {this.props.data.Month} {this.props.data.Year}</h3>
+            </Nav.Item>
+            {/* <Nav.Item className="mt-2">
+              <h3>
+                {this.props.data.Date} {this.props.data.Month} {this.props.data.Year}
+              </h3>
+            </Nav.Item> */}
+
+            {/* <Nav.Item>
               <Nav.Link>
                 <FontAwesomeIcon icon={faEdit} size="lg" />
                 &nbsp;Edit
@@ -81,7 +80,7 @@ class WorkshopBar extends React.Component {
                 <FontAwesomeIcon icon={faDownload} size="lg" />
                 &nbsp;Download
               </Nav.Link>
-            </Nav.Item>
+            </Nav.Item> */}
 
             {/* Toggles between "Show View" and "Hide View" when the expandView state changes */}
             {this.state.expandView ? (

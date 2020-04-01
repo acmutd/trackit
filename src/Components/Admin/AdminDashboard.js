@@ -129,6 +129,8 @@ class AdminDashboard extends React.Component {
     this.disableWorkshop = this.disableWorkshop.bind(this);
     this.clearAllStudents = this.clearAllStudents.bind(this);
     this.deleteWorkshop = this.deleteWorkshop.bind(this);
+    this.editWorkshop = this.editWorkshop.bind(this);
+    this.exportWorkshop = this.exportWorkshop.bind(this);
     this.findWorkshopIndex = this.findWorkshopIndex.bind(this);
   }
 
@@ -180,6 +182,16 @@ class AdminDashboard extends React.Component {
   decrementLevel(Workshop_ID) {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
     //write code here to push to db that the workshop level has been decremented
+    console.log("test");
+  }
+
+  editWorkshop(Workshop_ID, Workshop_Object) {
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    console.log("test");
+  }
+
+  exportWorkshop(Workshop_ID) {
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
     console.log("test");
   }
 
@@ -235,6 +247,8 @@ class AdminDashboard extends React.Component {
                   disableWorkshop={this.disableWorkshop}
                   clearAllStudents={this.clearAllStudents}
                   deleteWorkshop={this.deleteWorkshop}
+                  editWorkshop={this.editWorkshop}
+                  exportWorkshop={this.exportWorkshop}
                   properties={this.state.workshops[this.state.workshopView]}
                   data={this.state.studentsAtWorkshop[this.state.workshopView]}
                 />
