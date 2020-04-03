@@ -21,6 +21,7 @@ class AdminDashboard extends React.Component {
     //data here is missing date field from the database schema, needs to be added in as a field for all items in the array
     //the following three variables represent the workshop collection on firebase
     let first = {
+      Level_Titles: ["Part 1", "Part 2", "Part 3"],
       Level_Descriptions: ["info part 1", "info part 2", "info part 3"],
       Number_Of_Levels: 5,
       Workshop_ID: "firebase",
@@ -32,6 +33,7 @@ class AdminDashboard extends React.Component {
     };
 
     let second = {
+      Level_Titles: ["Part 1", "Part 2", "Part 3"],
       Level_Descriptions: ["check part 1", "check part 2", "check part 3"],
       Number_Of_Levels: 5,
       Workshop_ID: "azure",
@@ -43,6 +45,7 @@ class AdminDashboard extends React.Component {
     };
 
     let third = {
+      Level_Titles: ["Part 1", "Part 2", "Part 3"],
       Level_Descriptions: ["info part 1", "info part 2", "info part 3"],
       Number_Of_Levels: 5,
       Workshop_ID: "aws",
@@ -89,6 +92,7 @@ class AdminDashboard extends React.Component {
     //the represents the StudentsAtWorkshop collection on firebase
     let wfirst = {
       Workshop_ID: "firebase",
+      Enabled: false,
       Level_Enabled: 0,
       Students: ["anirudh", "harsha", "sivam", "patel", "emmadi", "srikara"],
       Progress: [3, 2, 2, 4, 5, 5]
@@ -96,6 +100,7 @@ class AdminDashboard extends React.Component {
 
     let wsecond = {
       Workshop_ID: "azure",
+      Enabled: false,
       Level_Enabled: 0,
       Students: ["atharv", "gautam", "aashish", "jain", "sapre", "sharma"],
       Progress: [1, 3, 4, 1, 4, 4]
@@ -103,6 +108,7 @@ class AdminDashboard extends React.Component {
 
     let wthird = {
       Workshop_ID: "aws",
+      Enabled: false,
       Level_Enabled: 0,
       Students: [
         "sanjana",
@@ -129,7 +135,7 @@ class AdminDashboard extends React.Component {
     this.disableWorkshop = this.disableWorkshop.bind(this);
     this.clearAllStudents = this.clearAllStudents.bind(this);
     this.deleteWorkshop = this.deleteWorkshop.bind(this);
-    this.editWorkshop = this.editWorkshop.bind(this);
+    this.addEditWorkshop = this.addEditWorkshop.bind(this);
     this.exportWorkshop = this.exportWorkshop.bind(this);
     this.findWorkshopIndex = this.findWorkshopIndex.bind(this);
   }
@@ -155,11 +161,21 @@ class AdminDashboard extends React.Component {
 
   enableWorkshop(Workshop_ID) {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    let temp = this.state.studentsAtWorkshop[workshopIndex];
+    temp.Enabled = true;
+    let tempArray = this.state.studentsAtWorkshop;
+    tempArray[workshopIndex] = temp;
+    this.setState(state => ({studentsAtWorkshop: tempArray}));
     console.log("test");
   }
 
   disableWorkshop(Workshop_ID) {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    let temp = this.state.studentsAtWorkshop[workshopIndex];
+    temp.Enabled = false;
+    let tempArray = this.state.studentsAtWorkshop;
+    tempArray[workshopIndex] = temp;
+    this.setState(state => ({studentsAtWorkshop: tempArray}));
     console.log("test");
   }
 
@@ -185,18 +201,18 @@ class AdminDashboard extends React.Component {
     console.log("test");
   }
 
-  editWorkshop(Workshop_ID, Workshop_Object) {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
-    console.log("test");
-  }
-
   exportWorkshop(Workshop_ID) {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
     console.log("test");
   }
 
+  addEditWorkshop(Workshop_Object) {
+    let workshopIndex = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
+    console.log("test");
+  }
+
   findWorkshopIndex(Workshop_ID) {
-    var workshopIndex = 0;
+    var workshopIndex = -1;
     // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
     for (var i = 0; i < this.state.workshops.length; i++) {
       if (this.state.workshops[i].Workshop_ID === Workshop_ID) {
@@ -247,7 +263,7 @@ class AdminDashboard extends React.Component {
                   disableWorkshop={this.disableWorkshop}  
                   clearAllStudents={this.clearAllStudents}
                   deleteWorkshop={this.deleteWorkshop}
-                  editWorkshop={this.editWorkshop}
+                  editWorkshop={this.addEditWorkshop}
                   exportWorkshop={this.exportWorkshop}
                   properties={this.state.workshops[this.state.workshopView]}
                   data={this.state.studentsAtWorkshop[this.state.workshopView]}

@@ -85,7 +85,7 @@ class WorkshopLevelBar extends React.Component {
             <Nav.Item>
               <Nav.Link>
                 <Button
-                  onClick={this.props.editWorkshop}
+                  onClick={this.props.addEditWorkshop}
                   variant="primary"
                   size="lg"
                 >

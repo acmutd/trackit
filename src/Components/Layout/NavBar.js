@@ -1,6 +1,8 @@
 import React from "react";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
+import Avatar from '@material-ui/core/Avatar';
+import { deepOrange } from '@material-ui/core/colors';
 import { faFacebook } from "@fortawesome/free-brands-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faLinkedin } from "@fortawesome/free-brands-svg-icons";
@@ -55,6 +57,9 @@ class NavBar extends React.Component {
                   size="lg"
                 />
               </Nav.Link>
+              {/* <Nav.Link>
+                <Avatar>H</Avatar>
+              </Nav.Link> */}
             </Nav>
           </Navbar.Collapse>
         </Navbar>

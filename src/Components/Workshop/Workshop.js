@@ -63,7 +63,7 @@ class Workshop extends React.Component {
     this.disableWorkshop = this.disableWorkshop.bind(this);
     this.clearAllStudents = this.clearAllStudents.bind(this);
     this.deleteWorkshop = this.deleteWorkshop.bind(this);
-    this.editWorkshop = this.editWorkshop.bind(this);
+    this.addEditWorkshop = this.addEditWorkshop.bind(this);
     this.exportWorkshop = this.exportWorkshop.bind(this);
     this.makeConfirmationDialogVisible = this.makeConfirmationDialogVisible.bind(
       this
@@ -109,8 +109,8 @@ class Workshop extends React.Component {
   decrementLevel() {
     this.props.decrementLevel(this.props.data.Workshop_ID);
   }
-  editWorkshop() {
-    this.props.editWorkshop();
+  addEditWorkshop() {
+    this.props.addEditWorkshop();
   }
   exportWorkshop() {
     this.props.exportWorkshop(this.props.data.Workshop_ID);
@@ -175,6 +175,8 @@ class Workshop extends React.Component {
       tag +=
         "Level: " +
         i +
+        "\nTitle: " +
+        this.props.properties.Level_Titles[i] +
         "\nDescription: " +
         this.props.properties.Level_Descriptions[i] +
         "\n";
@@ -195,6 +197,7 @@ class Workshop extends React.Component {
     let titleText = "Confirmation";
     let messageText =
       "Are you sure about performing this action? This action cannot be reversed.";
+      
 
     return (
       <div>
@@ -216,10 +219,10 @@ class Workshop extends React.Component {
           disableWorkshop={this.disableWorkshop}
           clearAllStudents={this.clearAllStudents}
           deleteWorkshop={this.deleteWorkshop}
-          editWorkshop={this.editWorkshop}
+          editWorkshop={this.addEditWorkshop}
           exportWorkshop={this.exportWorkshop}
-          Workshop_Level={1}
-          enabled={false}
+          Workshop_Level={this.props.data.Level_Enabled}
+          enabled={this.props.data.Enabled}
           maxLevel={this.props.properties.Number_Of_Levels}
         />
         <div className="floating-icon m-3 mt-5 p-3">
