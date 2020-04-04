@@ -5,6 +5,8 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import FormControl from '@material-ui/core/FormControl';
+
 
 /**
  * Opens up a dialog modal for the workshop data to be edited or a new workshop informatin to be added
@@ -32,10 +34,6 @@ class WorkshopEdit extends React.Component {
     this.submit = this.submit.bind(this);
   }
 
-  componentDidMount() {
-      this.initializeState();
-  }
-
   initializeState() {
       //if it is null then a new workshop is being created else an existing  one is being updated
       if(this.props.workshop != null) {
@@ -46,10 +44,10 @@ class WorkshopEdit extends React.Component {
   }
 
   cancel() {
-      this.props.cancel();
+      this.props.submit(this.state.Workshop, false);
   }
   submit() {
-      this.props.submit();
+      this.props.submit(this.state.Workshop, true);
   }
 
   render() {
@@ -58,6 +56,8 @@ class WorkshopEdit extends React.Component {
         <Dialog
           open={this.props.isOpen}
           onClose={this.cancel}
+          onEnter={this.initializeState}
+          maxWidth="lg"
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -69,6 +69,7 @@ class WorkshopEdit extends React.Component {
               {this.props.messageText}
             </DialogContentText>
           </DialogContent>
+          
           <DialogActions>
             <Button onClick={this.cancel} color="primary">
               Cancel

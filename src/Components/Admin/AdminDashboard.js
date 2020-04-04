@@ -207,7 +207,7 @@ class AdminDashboard extends React.Component {
   }
 
   addEditWorkshop(Workshop_Object) {
-    let workshopIndex = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
+    //let workshopIndex = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
     console.log("test");
   }
 
@@ -263,7 +263,7 @@ class AdminDashboard extends React.Component {
                   disableWorkshop={this.disableWorkshop}  
                   clearAllStudents={this.clearAllStudents}
                   deleteWorkshop={this.deleteWorkshop}
-                  editWorkshop={this.addEditWorkshop}
+                  addEditWorkshop={this.addEditWorkshop}
                   exportWorkshop={this.exportWorkshop}
                   properties={this.state.workshops[this.state.workshopView]}
                   data={this.state.studentsAtWorkshop[this.state.workshopView]}

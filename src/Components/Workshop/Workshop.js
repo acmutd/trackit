@@ -6,6 +6,7 @@ import CardTile from "./CardTile";
 import StudentBar from "./StudentBar";
 import WorkshopLevelBar from "./WorkshopLevelBar";
 import ConfirmationDialog from "../Layout/ConfirmationDialog";
+import WorkshopEdit from "./WorkshopEdit";
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -53,8 +54,11 @@ class Workshop extends React.Component {
 
     this.state = {
       dataArray: dps,
+
       confirmationDialog: false, //this is whether or not to show a confirmation dialog
-      confirmationState: false
+      confirmationState: false,
+
+      addEditWorkshopDialog: false //this is whether or not to show the editing dialog
     };
     this.parseDataPoints = this.parseDataPoints.bind(this);
     this.incrementLevel = this.incrementLevel.bind(this);
@@ -65,9 +69,11 @@ class Workshop extends React.Component {
     this.deleteWorkshop = this.deleteWorkshop.bind(this);
     this.addEditWorkshop = this.addEditWorkshop.bind(this);
     this.exportWorkshop = this.exportWorkshop.bind(this);
-    this.makeConfirmationDialogVisible = this.makeConfirmationDialogVisible.bind(
+    this.showHideDeleteConfirmation = this.showHideDeleteConfirmation.bind(
       this
     );
+    this.showHideAddEditDialog = this.showHideAddEditDialog.bind(this);
+    this.receiveAddEditWorkshopInformationFromDialog = this.receiveAddEditWorkshopInformationFromDialog.bind(this);
     this.getDialogResponse = this.getDialogResponse.bind(this);
   }
 
@@ -98,7 +104,7 @@ class Workshop extends React.Component {
   }
 
   deleteWorkshop() {
-    this.makeConfirmationDialogVisible();
+    this.showHideDeleteConfirmation();
     this.props.deleteWorkshop(this.props.data.Workshop_ID);
   }
 
@@ -110,19 +116,27 @@ class Workshop extends React.Component {
     this.props.decrementLevel(this.props.data.Workshop_ID);
   }
   addEditWorkshop() {
+    this.showHideAddEditDialog();
     this.props.addEditWorkshop();
+  }
+
+  receiveAddEditWorkshopInformationFromDialog(Workshop_Object, wasSubmitPressed) {
+    this.showHideAddEditDialog();
   }
   exportWorkshop() {
     this.props.exportWorkshop(this.props.data.Workshop_ID);
   }
 
-  makeConfirmationDialogVisible() {
+  showHideDeleteConfirmation() {
     this.setState(state => ({ confirmationDialog: !state.confirmationDialog, }));
+  }
+  showHideAddEditDialog() {
+    this.setState(state => ({ addEditWorkshopDialog: !state.addEditWorkshopDialog, }));
   }
 
   getDialogResponse(bool) {
     this.setState({confirmationState: bool});
-    this.makeConfirmationDialogVisible();
+    this.showHideDeleteConfirmation();
     console.log(this.state.confirmationState);
   }
 
@@ -219,7 +233,7 @@ class Workshop extends React.Component {
           disableWorkshop={this.disableWorkshop}
           clearAllStudents={this.clearAllStudents}
           deleteWorkshop={this.deleteWorkshop}
-          editWorkshop={this.addEditWorkshop}
+          addEditWorkshop={this.addEditWorkshop}
           exportWorkshop={this.exportWorkshop}
           Workshop_Level={this.props.data.Level_Enabled}
           enabled={this.props.data.Enabled}
@@ -229,7 +243,9 @@ class Workshop extends React.Component {
           <CanvasJSChart options={options} />
         </div>
         {student_progress}
+        {/* Thw two componenets below are dialogs, modals that appear to receive additional information */}
         <ConfirmationDialog isOpen={this.state.confirmationDialog} titleText={titleText} messageText={messageText} handleDialogResponse={this.getDialogResponse}/>
+        <WorkshopEdit isOpen={this.state.addEditWorkshopDialog} titleText="Workshop Panel" messageText="Edit workshop information below" submit={this.receiveAddEditWorkshopInformationFromDialog} />
       </div>
     );
   }
