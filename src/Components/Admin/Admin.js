@@ -1,6 +1,7 @@
 import React from "react";
 import AdminAuth from "./AdminAuth";
 import AdminDashboard from "./AdminDashboard";
+import firebase from 'firebase';
 
 /** This component is designed to strictly be backend only
  * All API calls and connections to the database should take place in this component
@@ -9,6 +10,26 @@ import AdminDashboard from "./AdminDashboard";
  * Author: Harsha Srikara
  * Date: 3/22/20
  */
+
+var firebaseConfig = {
+  apiKey: "AIzaSyC10N5kRDieKncmUESxswqkYQ_359f9Qes",
+  authDomain: "trackit-271619.firebaseapp.com",
+  databaseURL: "https://trackit-271619.firebaseio.com",
+  projectId: "trackit-271619",
+  storageBucket: "trackit-271619.appspot.com",
+  messagingSenderId: "972365141905",
+  appId: "1:972365141905:web:fbda064275f635298cec30",
+  measurementId: "G-HRLPFBGB1E"
+};
+// Initialize Firebase
+let app = firebase.initializeApp(firebaseConfig);
+let db = app.firestore();
+
+// let setSf = db.collection('Student').doc('sivam').set({
+//   Name: 'Sivam Patel', Email: 'spatel@gmail.com',
+//   Password: 'Test456'
+// });
+
 class Admin extends React.Component {
   constructor(props) {
     super(props);
@@ -30,13 +51,32 @@ class Admin extends React.Component {
    * @param {*} password is the password of the person logging in
    */
   authenticate(username, password) {
+
+    db.collection("Student").doc("sivam")
+  .get()
+  .then(function(doc) {
+    if (doc.exists) {
+      console.log("Document data:", doc.data());
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  }).catch(function(error) {
+    console.log("Error getting document:", error);
+  })
+.catch(err => {
+console.log('Error getting document', err);
+
+});
     //write some legit authentication logic in here eventually
     //if authentication passes then call readFromDatabase(); otherwise not needed
-    this.setState({
-      loggedIn: true,
-      username: username,
-      password: password
-    });
+    // this.setState({
+    //   loggedIn: true,
+    //   username: username,
+    //   password: password
+    // });
+
+    
   }
 
   readFromDatabase() {

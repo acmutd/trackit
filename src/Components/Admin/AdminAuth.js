@@ -6,7 +6,6 @@ import Col from "react-bootstrap/Col";
 import FormControl from "react-bootstrap/FormControl";
 import Container from "react-bootstrap/Container";
 import NavBar from "../Layout/NavBar";
-
 /**
  * UI Component that contains two text fields to enter username and password as well as a submit button
  *
@@ -54,6 +53,7 @@ class AdminAuth extends React.Component {
   authenticate() {
     this.props.authenticate(this.state.username, this.state.password);
   }
+
 
   render() {
     return (
