@@ -36,7 +36,9 @@ class Admin extends React.Component {
     this.state = {
       loggedIn: false, //once authentication happens this will toggle to true
       username: "", //stores the username of person that logged in (not required)
-      password: "" //stores the password of person that logged in (not required)
+      password: "", //stores the password of person that logged in (not required)
+      id: '',
+      isAdmin: null
     };
 
     this.authenticate = this.authenticate.bind(this);
@@ -51,33 +53,33 @@ class Admin extends React.Component {
    * @param {*} password is the password of the person logging in
    */
   authenticate(username, password) {
-
-    db.collection("Student").doc("sivam")
-  .get()
-  .then(function(doc) {
-    if (doc.exists) {
-      console.log("Document data:", doc.data());
-    } else {
-      // doc.data() will be undefined in this case
-      console.log("No such document!");
+    if(username.charAt('@') === -1 || username.charAt('.') === -1)
+      return;
+  db.collection("Student").where('Email', '==', username).get()
+  .then(snapshot => {
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
     }
-  }).catch(function(error) {
-    console.log("Error getting document:", error);
-  })
-.catch(err => {
-console.log('Error getting document', err);
-
-});
-    //write some legit authentication logic in here eventually
-    //if authentication passes then call readFromDatabase(); otherwise not needed
-    // this.setState({
-    //   loggedIn: true,
-    //   username: username,
-    //   password: password
-    // });
-
-    
-  }
+    else{
+      snapshot.forEach(doc => {
+        var data = doc.data();
+        if(data.Password === password)
+        {
+          this.setState({
+            loggedIn: true,
+            username: data.Email,
+            password: data.Password,
+            id: data.id,
+            isAdmin: data.isAdmin
+          })
+        }
+      });
+    }
+     }).catch(function(error) {
+       console.log("Error getting document:", error);
+      })
+    }
 
   readFromDatabase() {
     //read data from database and store it in this.state
