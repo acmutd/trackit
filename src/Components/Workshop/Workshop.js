@@ -117,11 +117,13 @@ class Workshop extends React.Component {
   }
   addEditWorkshop() {
     this.showHideAddEditDialog();
-    this.props.addEditWorkshop();
   }
 
   receiveAddEditWorkshopInformationFromDialog(Workshop_Object, wasSubmitPressed) {
     this.showHideAddEditDialog();
+    if(wasSubmitPressed) {
+      this.props.addEditWorkshop(Workshop_Object);
+    }
   }
   exportWorkshop() {
     this.props.exportWorkshop(this.props.data.Workshop_ID);
@@ -245,7 +247,7 @@ class Workshop extends React.Component {
         {student_progress}
         {/* Thw two componenets below are dialogs, modals that appear to receive additional information */}
         <ConfirmationDialog isOpen={this.state.confirmationDialog} titleText={titleText} messageText={messageText} handleDialogResponse={this.getDialogResponse}/>
-        <WorkshopEdit isOpen={this.state.addEditWorkshopDialog} titleText="Workshop Panel" messageText="Edit workshop information below" submit={this.receiveAddEditWorkshopInformationFromDialog} />
+        <WorkshopEdit isOpen={this.state.addEditWorkshopDialog} titleText="Workshop Panel" messageText="Edit workshop information below" submit={this.receiveAddEditWorkshopInformationFromDialog} workshop={this.props.properties} newWorkshop={false}/>
       </div>
     );
   }

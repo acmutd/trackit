@@ -11,7 +11,7 @@ import Container from "react-bootstrap/Container";
  * UI component that manages how the admin dashboard looks like
  *
  * Author: Harsha Srikara
- * Date: 3/30/20
+ * Date: 4/5/20
  */
 class AdminDashboard extends React.Component {
   constructor(props) {
@@ -21,8 +21,8 @@ class AdminDashboard extends React.Component {
     //data here is missing date field from the database schema, needs to be added in as a field for all items in the array
     //the following three variables represent the workshop collection on firebase
     let first = {
-      Level_Titles: ["Part 1", "Part 2", "Part 3"],
-      Level_Descriptions: ["info part 1", "info part 2", "info part 3"],
+      Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
+      Level_Descriptions: ["info part 1", "info part 2", "info part 3", "info part 4", "info part 5"],
       Number_Of_Levels: 5,
       Workshop_ID: "firebase",
       Workshop_Name: "firebase",
@@ -33,8 +33,8 @@ class AdminDashboard extends React.Component {
     };
 
     let second = {
-      Level_Titles: ["Part 1", "Part 2", "Part 3"],
-      Level_Descriptions: ["check part 1", "check part 2", "check part 3"],
+      Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
+      Level_Descriptions: ["check part 1", "check part 2", "check part 3", "info part 4", "info part 5"],
       Number_Of_Levels: 5,
       Workshop_ID: "azure",
       Workshop_Name: "azure",
@@ -45,8 +45,8 @@ class AdminDashboard extends React.Component {
     };
 
     let third = {
-      Level_Titles: ["Part 1", "Part 2", "Part 3"],
-      Level_Descriptions: ["info part 1", "info part 2", "info part 3"],
+      Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
+      Level_Descriptions: ["info part 1", "info part 2", "info part 3", "info part 4", "info part 5"],
       Number_Of_Levels: 5,
       Workshop_ID: "aws",
       Workshop_Name: "aws",
@@ -207,7 +207,26 @@ class AdminDashboard extends React.Component {
   }
 
   addEditWorkshop(Workshop_Object) {
-    //let workshopIndex = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
+    let workshopIndex = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
+    if(workshopIndex===-1) {
+      let temp = this.state.workshops;
+      temp.push(Workshop_Object);
+      let tempStudentWorkshop = {
+        Workshop_ID: Workshop_Object.Workshop_ID,
+        Enabled: false,
+        Level_Enabled: 0,
+        Students: [],
+        Progress: []
+      };
+      let tempArr = this.state.studentsAtWorkshop;
+      tempArr.push(tempStudentWorkshop);
+      this.setState({workshops: temp,studentsAtWorkshop: tempArr});
+    }
+    else {
+      let temp = this.state.workshops;
+      temp[workshopIndex] = Workshop_Object;
+      this.setState({workshops: temp});
+    }
     console.log("test");
   }
 
