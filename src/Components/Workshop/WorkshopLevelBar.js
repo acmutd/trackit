@@ -9,6 +9,9 @@ import RemoveIcon from "@material-ui/icons/Remove";
 /**
  * Administrative toolbar to control workshop settings such as enabling a workshop, disabling a workshop, clearing all students to reset a workshop
  * Also contains a slider to enable workshop levels
+ * 
+ * Author: Harsha Srikara
+ * Date: 4/6/20
  */
 class WorkshopLevelBar extends React.Component {
   constructor(props) {

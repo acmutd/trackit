@@ -1,15 +1,12 @@
 import React from "react";
 import Nav from "react-bootstrap/Nav";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import { faEdit } from "@fortawesome/free-solid-svg-icons";
-import { faDownload } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
  * The is a workshop bar that shows a minimized view of the information in a workshop, quick look at the data available
  *
  * Author: Harsha Srikara
- * Date: 3/28/20
+ * Date: 4/6/20
  */
 class WorkshopBar extends React.Component {
   constructor(props) {
@@ -63,25 +60,6 @@ class WorkshopBar extends React.Component {
             <Nav.Item className="mt-2">
               <h3>{this.props.data.Day} {this.props.data.Date} {this.props.data.Month} {this.props.data.Year}</h3>
             </Nav.Item>
-            {/* <Nav.Item className="mt-2">
-              <h3>
-                {this.props.data.Date} {this.props.data.Month} {this.props.data.Year}
-              </h3>
-            </Nav.Item> */}
-
-            {/* <Nav.Item>
-              <Nav.Link>
-                <FontAwesomeIcon icon={faEdit} size="lg" />
-                &nbsp;Edit
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link>
-                <FontAwesomeIcon icon={faDownload} size="lg" />
-                &nbsp;Download
-              </Nav.Link>
-            </Nav.Item> */}
-
             {/* Toggles between "Show View" and "Hide View" when the expandView state changes */}
             {this.state.expandView ? (
               <div>

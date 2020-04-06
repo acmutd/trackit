@@ -15,7 +15,7 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  * Contains summary information about the workshop as well as the graphs
  *
  * Author: Harsha Srikara
- * Date: 3/30/20
+ * Date: 4/6/20
  */
 class Workshop extends React.Component {
   constructor(props) {
@@ -179,10 +179,8 @@ class Workshop extends React.Component {
       title: "Summary Report",
       subtitle: this.props.data.Workshop_ID,
       description: "Number of students: " + this.props.data.Students.length,
-      linkone: "",
-      linkonetext: "Download Workshop Summary",
-      linktwo: "",
-      linktwotext: "Download Raw Student Data"
+      links: [],
+      linkText: ["Download Workshop Summary", "Download Raw Student Data"]
     };
 
     //this is the description for the workshop information tile, the newline thing doesnt work for some reason
@@ -203,10 +201,8 @@ class Workshop extends React.Component {
       title: "Workshop Information",
       subtitle: this.props.properties.Workshop_ID,
       description: tag,
-      linkone: "",
-      linkonetext: "Download Workshop Content",
-      linktwo: "",
-      linktwotext: "Access Workshop Resouces"
+      links: [],
+      linkText: ["Download Workshop Content", "Access Workshop Resources"]
     };
 
     //confirmation dialog setup

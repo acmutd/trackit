@@ -18,7 +18,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
  * If a workshop is being edited then that workshop information is passed in as props
  *
  * Author: Harsha Srikara
- * Date: 4/5/20
+ * Date: 4/6/20
  */
 class WorkshopEdit extends React.Component {
   constructor(props) {
@@ -103,6 +103,20 @@ class WorkshopEdit extends React.Component {
       }
     }));
     this.props.submit(this.state.Workshop, true);
+    this.setState({
+      Workshop: {
+        Workshop_ID: null,
+        Workshop_Name: null,
+        Level_Titles: [null],
+        Level_Descriptions: [null],
+        Number_Of_Levels: 1,
+        Day: null,
+        Date: null,
+        Month: null,
+        Year: null
+      }
+    });
+    
   }
 
   incrementLevel() {

@@ -2,6 +2,7 @@ import React from "react";
 import WorkshopBar from "../Workshop/WorkshopBar";
 import NavBar from "../Layout/NavBar";
 import Workshop from "../Workshop/Workshop";
+import WorkshopEdit from "../Workshop/WorkshopEdit"
 import CardTile from "../Workshop/CardTile";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -11,7 +12,7 @@ import Container from "react-bootstrap/Container";
  * UI component that manages how the admin dashboard looks like
  *
  * Author: Harsha Srikara
- * Date: 4/5/20
+ * Date: 4/6/20
  */
 class AdminDashboard extends React.Component {
   constructor(props) {
@@ -56,35 +57,33 @@ class AdminDashboard extends React.Component {
       Year: "2020"
     };
 
+    let openDialog = () => {
+      this.showHideAddEditDialog();
+    }
+
     //more hard coded data here, this is for the texts present in the cards present on the dashboard
     let cfirst = {
       title: "Admin",
       subtitle: "Administrative Tools",
-      description: "Advanced tools for configurating workshop data",
-      linkone: "#",
-      linkonetext: "",
-      linktwo: "#",
-      linktwotext: ""
+      description: "Configuration tool for setting up new workshops",
+      links: ["", "", openDialog, ""],
+      linkText: ["Download Workshops", "Transfer Workshops", "Add Workshop", "Delete Workshops"]
     };
 
     let csecond = {
       title: "Development",
       subtitle: "Development Tools",
       description: "Try out beta tools for customizing trackit",
-      linkone: "#",
-      linkonetext: "",
-      linktwo: "#",
-      linktwotext: ""
+      links: [],
+      linkText: []
     };
 
     let cthird = {
       title: "Social",
       subtitle: "Media Tools",
       description: "Access resources and social media",
-      linkone: "#",
-      linkonetext: "",
-      linktwo: "#",
-      linktwotext: "link"
+      links: [],
+      linkText: ["Github", "LinkedIn", "Instagram"]
     };
 
     //additional hard coded data
@@ -127,6 +126,8 @@ class AdminDashboard extends React.Component {
       studentsAtWorkshop: [wfirst, wsecond, wthird], // will be  " " " "
       viewWorkshop: false, //toggle between true or false
       workshopView: 1, //change this number to 0 1 or 2
+
+      addWorkshopDialogState: false
     };
     this.openWorkshopWindow = this.openWorkshopWindow.bind(this);
     this.incrementLevel = this.incrementLevel.bind(this);
@@ -138,6 +139,8 @@ class AdminDashboard extends React.Component {
     this.addEditWorkshop = this.addEditWorkshop.bind(this);
     this.exportWorkshop = this.exportWorkshop.bind(this);
     this.findWorkshopIndex = this.findWorkshopIndex.bind(this);
+    this.receiveAddEditWorkshopInformationFromDialog = this.receiveAddEditWorkshopInformationFromDialog.bind(this);
+    this.showHideAddEditDialog = this.showHideAddEditDialog.bind(this);
   }
 
   /**
@@ -204,6 +207,17 @@ class AdminDashboard extends React.Component {
   exportWorkshop(Workshop_ID) {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
     console.log("test");
+  }
+
+  showHideAddEditDialog() {
+    this.setState(state => ({ addWorkshopDialogState: !state.addWorkshopDialogState }));
+  }
+
+  receiveAddEditWorkshopInformationFromDialog(Workshop_Object, wasSubmitPressed) {
+    this.showHideAddEditDialog();
+    if(wasSubmitPressed) {
+      this.addEditWorkshop(Workshop_Object);
+    }
   }
 
   addEditWorkshop(Workshop_Object) {
@@ -292,6 +306,7 @@ class AdminDashboard extends React.Component {
               workshopList
             )}
           </div>
+          <WorkshopEdit isOpen={this.state.addWorkshopDialogState} titleText="Workshop Panel" messageText="Add workshop information below" submit={this.receiveAddEditWorkshopInformationFromDialog} newWorkshop={true}/>
         </Container>
       </div>
     );
