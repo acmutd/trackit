@@ -28,7 +28,7 @@ class WorkshopBar extends React.Component {
 
   render() {
     return (
-      <div>
+      <div >
         <div className="m-3 mt-5 p-4 floating-icon">
           <Nav justify>
             <Nav.Item>
