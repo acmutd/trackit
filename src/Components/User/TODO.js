@@ -51,6 +51,7 @@ nextLevel()
         };
       });
 }
+
 previousLevel()
 {
     if(this.state.progress === 0)
@@ -60,23 +61,36 @@ previousLevel()
             progress: state.progress - 1
         };
       });
-
 }
 
     render() {
 
-        let workshop_levels = this.state.workshop_data.Level_Descriptions.map(function(item)
+        let workshop_levels = this.state.workshop_data.Level_Descriptions.map(function(item, index)
         {
-            return(
-                <Col>
-                    <Card >
-                        <Card.Header>{item}</Card.Header>
-                    </Card>
-                </Col>
-            )        
-        });
+            if(this.progress > index)
+            {
+                return(
+                    <Col>
+                        <Card bg = 'success'>
+                            <Card.Header>{item}</Card.Header>
+                        </Card>
+                    </Col>
+                )
+            }
+            else
+            {
+                return(
+                    <Col>
+                        <Card>
+                            <Card.Header>{item}</Card.Header>
+                        </Card>
+                    </Col>
+                )
+            }        
+        }, this.state);
 
         let workshop_level_text = this.state.workshop_data.level_text[this.state.progress];
+        let workshop_level_title = this.state.workshop_data.Level_Descriptions[this.state.progress];
 
       return (
         <div>
@@ -87,7 +101,8 @@ previousLevel()
             </Container>
             <Container>
                 <Card>
-                    <Card.Header className = 'text-left p-3 mt-2'>{this.state.workshop_data.Level_Descriptions[this.state.progress]}</Card.Header>
+                    <Card.Header className = 'text-left p-3 mt-2'>{this.state.progress === this.state.workshop_data.Number_Of_Levels ? 
+                                'Workshop Complete!' : workshop_level_title}</Card.Header>
                     <Card.Body className = 'text-left px-3 mb-3'>{workshop_level_text}</Card.Body>
                     <Row>
                         <Col className = ''>
