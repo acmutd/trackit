@@ -5,6 +5,8 @@ import CanvasJSReact from "../../assets/canvasjs.react";
 import CardTile from "./CardTile";
 import StudentBar from "./StudentBar";
 import WorkshopLevelBar from "./WorkshopLevelBar";
+import ConfirmationDialog from "../Layout/ConfirmationDialog";
+import WorkshopEdit from "./WorkshopEdit";
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -13,7 +15,7 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  * Contains summary information about the workshop as well as the graphs
  *
  * Author: Harsha Srikara
- * Date: 3/30/20
+ * Date: 4/6/20
  */
 class Workshop extends React.Component {
   constructor(props) {
@@ -32,7 +34,7 @@ class Workshop extends React.Component {
     }
 
     for (var i = 0; i < this.props.data.Progress.length; i++) {
-      yValues[this.props.data.Progress[i]-1] += 1;
+      yValues[this.props.data.Progress[i] - 1] += 1;
     }
 
     for (var i = 0; i < xValues.length; i++) {
@@ -42,8 +44,6 @@ class Workshop extends React.Component {
       });
     }
 
-
-
     //this makes the student name x axis and their progress y axis instead of aggregate values
     // for (var i = dps.length; i < this.props.data.Students.length; i++) {
     //   dps.push({
@@ -52,9 +52,13 @@ class Workshop extends React.Component {
     //   });
     // }
 
-
     this.state = {
-      dataArray: dps
+      dataArray: dps,
+
+      confirmationDialog: false, //this is whether or not to show a confirmation dialog
+      confirmationState: false,
+
+      addEditWorkshopDialog: false //this is whether or not to show the editing dialog
     };
     this.parseDataPoints = this.parseDataPoints.bind(this);
     this.incrementLevel = this.incrementLevel.bind(this);
@@ -63,6 +67,14 @@ class Workshop extends React.Component {
     this.disableWorkshop = this.disableWorkshop.bind(this);
     this.clearAllStudents = this.clearAllStudents.bind(this);
     this.deleteWorkshop = this.deleteWorkshop.bind(this);
+    this.addEditWorkshop = this.addEditWorkshop.bind(this);
+    this.exportWorkshop = this.exportWorkshop.bind(this);
+    this.showHideDeleteConfirmation = this.showHideDeleteConfirmation.bind(
+      this
+    );
+    this.showHideAddEditDialog = this.showHideAddEditDialog.bind(this);
+    this.receiveAddEditWorkshopInformationFromDialog = this.receiveAddEditWorkshopInformationFromDialog.bind(this);
+    this.getDialogResponse = this.getDialogResponse.bind(this);
   }
 
   //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph
@@ -92,6 +104,7 @@ class Workshop extends React.Component {
   }
 
   deleteWorkshop() {
+    this.showHideDeleteConfirmation();
     this.props.deleteWorkshop(this.props.data.Workshop_ID);
   }
 
@@ -102,11 +115,42 @@ class Workshop extends React.Component {
   decrementLevel() {
     this.props.decrementLevel(this.props.data.Workshop_ID);
   }
+  addEditWorkshop() {
+    this.showHideAddEditDialog();
+  }
+
+  receiveAddEditWorkshopInformationFromDialog(Workshop_Object, wasSubmitPressed) {
+    this.showHideAddEditDialog();
+    if(wasSubmitPressed) {
+      this.props.addEditWorkshop(Workshop_Object);
+    }
+  }
+  exportWorkshop() {
+    this.props.exportWorkshop(this.props.data.Workshop_ID);
+  }
+
+  showHideDeleteConfirmation() {
+    this.setState(state => ({ confirmationDialog: !state.confirmationDialog, }));
+  }
+  showHideAddEditDialog() {
+    this.setState(state => ({ addEditWorkshopDialog: !state.addEditWorkshopDialog, }));
+  }
+
+  getDialogResponse(bool) {
+    this.setState({confirmationState: bool});
+    this.showHideDeleteConfirmation();
+    console.log(this.state.confirmationState);
+  }
 
   render() {
-
     //mapping student array into <StudentBar />
-    let student_progress = this.props.data.Students.map((item, i) => <StudentBar TotalProgress={this.props.properties.Number_Of_Levels} Progress={this.props.data.Progress[i]} Student_Name={item} />);
+    let student_progress = this.props.data.Students.map((item, i) => (
+      <StudentBar
+        TotalProgress={this.props.properties.Number_Of_Levels}
+        Progress={this.props.data.Progress[i]}
+        Student_Name={item}
+      />
+    ));
 
     //options for the CanvasJS graph, configuration basically
     const options = {
@@ -135,10 +179,8 @@ class Workshop extends React.Component {
       title: "Summary Report",
       subtitle: this.props.data.Workshop_ID,
       description: "Number of students: " + this.props.data.Students.length,
-      linkone: "",
-      linkonetext: "Download Workshop Summary",
-      linktwo: "",
-      linktwotext: "Download Raw Student Data"
+      links: [],
+      linkText: ["Download Workshop Summary", "Download Raw Student Data"]
     };
 
     //this is the description for the workshop information tile, the newline thing doesnt work for some reason
@@ -147,6 +189,8 @@ class Workshop extends React.Component {
       tag +=
         "Level: " +
         i +
+        "\nTitle: " +
+        this.props.properties.Level_Titles[i] +
         "\nDescription: " +
         this.props.properties.Level_Descriptions[i] +
         "\n";
@@ -157,11 +201,15 @@ class Workshop extends React.Component {
       title: "Workshop Information",
       subtitle: this.props.properties.Workshop_ID,
       description: tag,
-      linkone: "",
-      linkonetext: "Download Workshop Content",
-      linktwo: "",
-      linktwotext: "Access Workshop Resouces"
+      links: [],
+      linkText: ["Download Workshop Content", "Access Workshop Resources"]
     };
+
+    //confirmation dialog setup
+    let titleText = "Confirmation";
+    let messageText =
+      "Are you sure about performing this action? This action cannot be reversed.";
+      
 
     return (
       <div>
@@ -183,12 +231,19 @@ class Workshop extends React.Component {
           disableWorkshop={this.disableWorkshop}
           clearAllStudents={this.clearAllStudents}
           deleteWorkshop={this.deleteWorkshop}
-          Workshop_Level={1}
-          maxLevel={this.props.properties.Number_Of_Levels} />
+          addEditWorkshop={this.addEditWorkshop}
+          exportWorkshop={this.exportWorkshop}
+          Workshop_Level={this.props.data.Level_Enabled}
+          enabled={this.props.data.Enabled}
+          maxLevel={this.props.properties.Number_Of_Levels}
+        />
         <div className="floating-icon m-3 mt-5 p-3">
           <CanvasJSChart options={options} />
         </div>
         {student_progress}
+        {/* Thw two componenets below are dialogs, modals that appear to receive additional information */}
+        <ConfirmationDialog isOpen={this.state.confirmationDialog} titleText={titleText} messageText={messageText} handleDialogResponse={this.getDialogResponse}/>
+        <WorkshopEdit isOpen={this.state.addEditWorkshopDialog} titleText="Workshop Panel" messageText="Edit workshop information below" submit={this.receiveAddEditWorkshopInformationFromDialog} workshop={this.props.properties} newWorkshop={false}/>
       </div>
     );
   }
