@@ -6,47 +6,29 @@ import Col from "react-bootstrap/Col";
 import FormControl from "react-bootstrap/FormControl";
 import Container from "react-bootstrap/Container";
 import NavBar from "../Layout/NavBar";
-import Alert from 'react-bootstrap/Alert'
 
-/**
- * UI Component that contains two text fields to enter username and password as well as a submit button
- *
- * Author: Harsha Srikara
- * Date: 4/2/20
- */
-class AdminAuth extends React.Component {
+class UserAuth extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "", //stores username
-      password: "", //stores password
-      loginError: false
+      name: "", // stores name of user
+      workshop: ""
     };
 
-    this.fillUsername = this.fillUsername.bind(this);
-    this.fillPassword = this.fillPassword.bind(this);
+    this.fillName = this.fillName.bind(this);
+    this.fillWorkshop = this.fillWorkshop.bind(this);
     this.authenticate = this.authenticate.bind(this);
   }
 
-  /**
-   * Saves username to the component state
-   *
-   * @param {*} event contains target value from the username text field
-   */
-  fillUsername(event) {
+  fillName(event) {
     this.setState({
-      username: event.target.value
+      name: event.target.value
     });
   }
 
-  /**
-   * Saves password to the component state
-   *
-   * @param {*} event contains target value from the password text field
-   */
-  fillPassword(event) {
+  fillWorkshop(event) {
     this.setState({
-      password: event.target.value
+      workshop: event.target.value
     });
   }
 
@@ -54,31 +36,16 @@ class AdminAuth extends React.Component {
    * Calls the authenticate function passed in from <Admin /> with the username and password stored in state
    */
   authenticate() {
-    if(!this.props.authenticate(this.state.username, this.state.password))
-    {
-      this.setState({
-        loginError: true
-      })
-    }
+    this.props.authenticate(this.state.name, this.state.workshop);
   }
 
 
-
   render() {
-
-    function setShow(show)
-    { 
-    this.setState({
-      loginError: show
-      })
-    }
-
     return (
       <div>
-        <NavBar /> 
+        <NavBar />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
-          {this.state.loginError ? (<Alert variant = 'danger'>Invalid Username or Password </Alert>) : ('')}
             <Row>
               {/* Username text field */}
               <Col xs={12} sm={12} md={5}>
@@ -89,12 +56,11 @@ class AdminAuth extends React.Component {
                     <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                   </InputGroup.Prepend>
                   <FormControl
-                    placeholder="Username"
+                    placeholder="Name"
                     aria-label="Username"
                     aria-describedby="basic-addon1"
-                    type = "email"
-                    value={this.state.username}
-                    onChange={this.fillUsername}
+                    value={this.state.name}
+                    onChange={this.fillName}
                   />
                 </InputGroup>
               </Col>
@@ -105,12 +71,11 @@ class AdminAuth extends React.Component {
                     <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                   </InputGroup.Prepend>
                   <FormControl
-                    placeholder="Password"
+                    placeholder="Workshop"
                     aria-label="Password"
                     aria-describedby="basic-addon1"
-                    type="password"
-                    value={this.state.password}
-                    onChange={this.fillPassword}
+                    value={this.state.workshop}
+                    onChange={this.fillWorkshop}
                   />
                 </InputGroup>
               </Col>
@@ -128,4 +93,4 @@ class AdminAuth extends React.Component {
   }
 }
 
-export default AdminAuth;
+export default UserAuth;

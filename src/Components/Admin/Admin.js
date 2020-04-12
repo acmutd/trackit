@@ -2,6 +2,8 @@ import React from "react";
 import AdminAuth from "./AdminAuth";
 import AdminDashboard from "./AdminDashboard";
 import firebase from 'firebase';
+import 'firebase/firestore';
+
 
 /** This component is designed to strictly be backend only
  * All API calls and connections to the database should take place in this component
@@ -11,19 +13,7 @@ import firebase from 'firebase';
  * Date: 3/22/20
  */
 
-var firebaseConfig = {
-  apiKey: "AIzaSyC10N5kRDieKncmUESxswqkYQ_359f9Qes",
-  authDomain: "trackit-271619.firebaseapp.com",
-  databaseURL: "https://trackit-271619.firebaseio.com",
-  projectId: "trackit-271619",
-  storageBucket: "trackit-271619.appspot.com",
-  messagingSenderId: "972365141905",
-  appId: "1:972365141905:web:fbda064275f635298cec30",
-  measurementId: "G-HRLPFBGB1E"
-};
 // Initialize Firebase
-let app = firebase.initializeApp(firebaseConfig);
-let db = app.firestore();
 
 // let setSf = db.collection('Student').doc('sivam').set({
 //   Name: 'Sivam Patel', Email: 'spatel@gmail.com',
@@ -38,7 +28,8 @@ class Admin extends React.Component {
       username: "", //stores the username of person that logged in (not required)
       password: "", //stores the password of person that logged in (not required)
       id: '',
-      isAdmin: null
+      isAdmin: null,
+      loginError: false
     };
 
     this.authenticate = this.authenticate.bind(this);
@@ -53,31 +44,33 @@ class Admin extends React.Component {
    * @param {*} password is the password of the person logging in
    */
   authenticate(username, password) {
+    let db = this.props.database;
     if(username.charAt('@') === -1 || username.charAt('.') === -1)
-      return;
+      return false;
   db.collection("Student").where('Email', '==', username).get()
   .then(snapshot => {
     if (snapshot.empty) {
       console.log('No matching documents.');
-      return;
+      return false;
     }
     else{
       snapshot.forEach(doc => {
         var data = doc.data();
-        if(data.Password === password)
+        if(data.Password === password && data.isAdmin)
         {
           this.setState({
             loggedIn: true,
             username: data.Email,
             password: data.Password,
             id: data.id,
-            isAdmin: data.isAdmin
+            isAdmin: true
           })
         }
       });
     }
      }).catch(function(error) {
        console.log("Error getting document:", error);
+       return false;
       })
     }
 
@@ -94,7 +87,7 @@ class Admin extends React.Component {
         {this.state.loggedIn ? (
           <AdminDashboard />
         ) : (
-          <AdminAuth authenticate={this.authenticate} />
+          <AdminAuth authenticate={this.authenticate}/>
         )}
       </div>
     );
