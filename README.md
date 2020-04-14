@@ -1,5 +1,7 @@
 # TrackIT
 
+Checkout the `dev` branch to view more recent changes
+
 ### Some UI and Backend guidelines
 
 ##### Backend
