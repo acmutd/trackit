@@ -68,7 +68,7 @@ export class Pricing extends Component {
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
             <h1>Pricing</h1>
-            <p>
+            <p className="mt-3">
               We try our best to offer our services for free for personal use as
               one of our core beliefs is free education. However, nothing is
               ever truly free. We still need to host this application somewhere
