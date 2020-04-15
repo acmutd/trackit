@@ -48,7 +48,17 @@ class NavBar extends React.Component {
           <Navbar.Brand>TrackIT</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">{navlinks}</Nav>
+            <Nav className="mr-auto">
+              {navlinks}
+              <Nav.Link>
+                <a
+                  className="whiteLink"
+                  href="https://github.com/acmutd/TrackIT/blob/master/README.md"
+                >
+                  Docs
+                </a>
+              </Nav.Link>
+            </Nav>
 
             <Nav className="ml-auto">
               {/* className="whiteStyle" will set the color to white */}
