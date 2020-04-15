@@ -26,6 +26,10 @@ class NavBar extends React.Component {
           link: "/",
         },
         {
+          name: "Admin",
+          link: "/admin",
+        },
+        {
           name: "Pricing",
           link: "/pricing",
         },
@@ -36,11 +40,7 @@ class NavBar extends React.Component {
   render() {
     // maps the links to be displayed at the top, eventually one of them can be like "Hello " + this.props.studentUsername
     let navlinks = this.state.Navlink.map((item) => (
-      <Nav.Link>
-        <Link className="whiteLink" to={item.link}>
-          {item.name}
-        </Link>
-      </Nav.Link>
+      <Nav.Link href={item.link}>{item.name}</Nav.Link>
     ));
     return (
       <div>
@@ -50,44 +50,33 @@ class NavBar extends React.Component {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
               {navlinks}
-              <Nav.Link>
-                <a
-                  className="whiteLink"
-                  href="https://github.com/acmutd/TrackIT/blob/master/README.md"
-                >
-                  Docs
-                </a>
+              <Nav.Link href="https://github.com/acmutd/TrackIT/blob/master/README.md">
+                Docs
               </Nav.Link>
             </Nav>
 
             <Nav className="ml-auto">
               {/* className="whiteStyle" will set the color to white */}
-              <Nav.Link>
-                <a href="https://github.com/acmutd/TrackIT">
-                  <FontAwesomeIcon
-                    className="whiteStyle"
-                    icon={faGithub}
-                    size="lg"
-                  />
-                </a>
+              <Nav.Link href="https://github.com/acmutd/TrackIT">
+                <FontAwesomeIcon
+                  className="whiteStyle"
+                  icon={faGithub}
+                  size="lg"
+                />
               </Nav.Link>
-              <Nav.Link>
-                <a href="https://www.instagram.com/utdacm/">
-                  <FontAwesomeIcon
-                    className="whiteStyle"
-                    icon={faInstagram}
-                    size="lg"
-                  />
-                </a>
+              <Nav.Link href="https://www.instagram.com/utdacm/">
+                <FontAwesomeIcon
+                  className="whiteStyle"
+                  icon={faInstagram}
+                  size="lg"
+                />
               </Nav.Link>
-              <Nav.Link>
-                <a href="https://www.acmutd.co/">
-                  <FontAwesomeIcon
-                    className="whiteStyle"
-                    icon={faCreativeCommonsBy}
-                    size="lg"
-                  />
-                </a>
+              <Nav.Link href="https://www.acmutd.co/">
+                <FontAwesomeIcon
+                  className="whiteStyle"
+                  icon={faCreativeCommonsBy}
+                  size="lg"
+                />
               </Nav.Link>
               {/* <Nav.Link>
                 <Avatar>H</Avatar>
