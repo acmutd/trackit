@@ -1,7 +1,8 @@
 import React from "react";
 import Admin from "./Components/Admin/Admin";
 import User from "./Components/User/TODO";
-import { BrowserRouter, Route, Switch } from "react-router-dom"
+import Pricing from "./Components/Pages/Pricing";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <Switch>
         <Route path="/" component={User} exact />
         <Route path="/admin" component={Admin} />
+        <Route path="/pricing" component={Pricing} />
         {/* <Route component={Error} /> enable this once there is a 404 page*/}
       </Switch>
     </div>
