@@ -6,7 +6,7 @@ import ProgressBar from "react-bootstrap/ProgressBar";
  * The is a workshop bar that shows a minimized view of the information in a workshop, quick look at the data available
  *
  * Author: Harsha Srikara
- * Date: 4/6/20
+ * Date: 4/15/20
  */
 class WorkshopBar extends React.Component {
   constructor(props) {

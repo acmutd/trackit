@@ -12,7 +12,7 @@ import Container from "react-bootstrap/Container";
  * UI component that manages how the admin dashboard looks like
  *
  * Author: Harsha Srikara
- * Date: 4/6/20
+ * Date: 4/15/20
  */
 class AdminDashboard extends React.Component {
   constructor(props) {
@@ -83,7 +83,7 @@ class AdminDashboard extends React.Component {
     let wfirst = {
       Workshop_ID: "firebase",
       Enabled: false,
-      Level_Enabled: 0,
+      Level_Enabled: 1,
       Students: ["anirudh", "harsha", "sivam", "patel", "emmadi", "srikara"],
       Progress: [3, 2, 2, 4, 5, 5]
     };
@@ -91,7 +91,7 @@ class AdminDashboard extends React.Component {
     let wsecond = {
       Workshop_ID: "azure",
       Enabled: false,
-      Level_Enabled: 0,
+      Level_Enabled: 1,
       Students: ["atharv", "gautam", "aashish", "jain", "sapre", "sharma"],
       Progress: [1, 3, 4, 1, 4, 4]
     };
@@ -99,7 +99,7 @@ class AdminDashboard extends React.Component {
     let wthird = {
       Workshop_ID: "aws",
       Enabled: false,
-      Level_Enabled: 0,
+      Level_Enabled: 1,
       Students: [
         "sanjana",
         "ifrit",

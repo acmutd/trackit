@@ -19,7 +19,7 @@ import DatePicker from "react-datepicker";
  * If a workshop is being edited then that workshop information is passed in as props
  *
  * Author: Harsha Srikara
- * Date: 4/6/20
+ * Date: 4/15/20
  */
 class WorkshopEdit extends React.Component {
   constructor(props) {
@@ -33,8 +33,8 @@ class WorkshopEdit extends React.Component {
         Level_Titles: [null],
         Level_Descriptions: [null],
         Number_Of_Levels: 1,
-        Date: null
-      }
+        Date: null,
+      },
     };
     this.initializeState = this.initializeState.bind(this);
     this.cancel = this.cancel.bind(this);
@@ -73,7 +73,7 @@ class WorkshopEdit extends React.Component {
         Level_Titles: [null],
         Level_Descriptions: [null],
         Number_Of_Levels: 1,
-        Date: null
+        Date: null,
       },
     });
     this.props.submit(this.state.Workshop, false);
@@ -110,7 +110,7 @@ class WorkshopEdit extends React.Component {
         Level_Titles: [null],
         Level_Descriptions: [null],
         Number_Of_Levels: 1,
-        Date: null
+        Date: null,
       },
     });
   }
@@ -122,9 +122,11 @@ class WorkshopEdit extends React.Component {
   }
 
   decrementLevel() {
-    let workshop = this.state.Workshop;
-    workshop.Number_Of_Levels = workshop.Number_Of_Levels - 1;
-    this.setState({ Workshop: workshop });
+    if (this.state.Workshop.Number_Of_Levels > 1) {
+      let workshop = this.state.Workshop;
+      workshop.Number_Of_Levels = workshop.Number_Of_Levels - 1;
+      this.setState({ Workshop: workshop });
+    }
   }
 
   /**
@@ -187,13 +189,13 @@ class WorkshopEdit extends React.Component {
   setWorkshopDate(date) {
     console.log(date);
     let d = new Date(date);
-    // console.log(d.getDate()); 
-    // console.log(d.getMonth() + 1); 
+    // console.log(d.getDate());
+    // console.log(d.getMonth() + 1);
     // console.log(d.getFullYear());
-    this.setState(state => ({
+    this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
-        Date: d
+        Date: d,
       },
     }));
   }
@@ -282,7 +284,7 @@ class WorkshopEdit extends React.Component {
           {/* This date field needs to be made prettier */}
           <DialogContent>
             <form className="mt-4">
-            <p>Workshop Date: </p>
+              <p>Workshop Date: </p>
               <DatePicker
                 selected={this.state.Workshop.Date}
                 onChange={this.setWorkshopDate}
