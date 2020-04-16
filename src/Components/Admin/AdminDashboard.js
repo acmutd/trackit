@@ -12,7 +12,7 @@ import Container from "react-bootstrap/Container";
  * UI component that manages how the admin dashboard looks like
  *
  * Author: Harsha Srikara
- * Date: 4/15/20
+ * Date: 4/16/20
  */
 class AdminDashboard extends React.Component {
   constructor(props) {

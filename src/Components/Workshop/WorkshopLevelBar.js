@@ -11,7 +11,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
  * Also contains a slider to enable workshop levels
  *
  * Author: Harsha Srikara
- * Date: 4/15/20
+ * Date: 4/16/20
  */
 class WorkshopLevelBar extends React.Component {
   constructor(props) {

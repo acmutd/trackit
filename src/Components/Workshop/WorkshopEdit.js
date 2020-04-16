@@ -19,7 +19,7 @@ import DatePicker from "react-datepicker";
  * If a workshop is being edited then that workshop information is passed in as props
  *
  * Author: Harsha Srikara
- * Date: 4/15/20
+ * Date: 4/16/20
  */
 class WorkshopEdit extends React.Component {
   constructor(props) {
@@ -50,13 +50,15 @@ class WorkshopEdit extends React.Component {
   }
 
   /**
-   * Does not actually get called, the props are directly fed into the textFields
+   * A temporary copy is created because the object is being passed by reference. We want to clone it to ensure that changes here are not always directly saved
+   * The JSON.parse(JSON.stringify()) will create a deep copy of the object
    */
   initializeState() {
     //if it is null then a new workshop is being created else an existing  one is being updated
     if (this.props.workshop != null) {
+      let tempX = JSON.parse(JSON.stringify(this.props.workshop))
       this.setState({
-        Workshop: this.props.workshop,
+        Workshop: tempX
       });
     }
   }
