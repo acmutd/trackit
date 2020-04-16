@@ -9,6 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
+import DatePicker from "react-datepicker";
 
 /**
  * Opens up a dialog modal for the workshop data to be edited or a new workshop informatin to be added
@@ -18,7 +19,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
  * If a workshop is being edited then that workshop information is passed in as props
  *
  * Author: Harsha Srikara
- * Date: 4/6/20
+ * Date: 4/16/20
  */
 class WorkshopEdit extends React.Component {
   constructor(props) {
@@ -32,11 +33,8 @@ class WorkshopEdit extends React.Component {
         Level_Titles: [null],
         Level_Descriptions: [null],
         Number_Of_Levels: 1,
-        Day: null,
         Date: null,
-        Month: null,
-        Year: null
-      }
+      },
     };
     this.initializeState = this.initializeState.bind(this);
     this.cancel = this.cancel.bind(this);
@@ -48,16 +46,19 @@ class WorkshopEdit extends React.Component {
     this.setWorkshopLevelDescription = this.setWorkshopLevelDescription.bind(
       this
     );
+    this.setWorkshopDate = this.setWorkshopDate.bind(this);
   }
 
   /**
-   * Does not actually get called, the props are directly fed into the textFields
+   * A temporary copy is created because the object is being passed by reference. We want to clone it to ensure that changes here are not always directly saved
+   * The JSON.parse(JSON.stringify()) will create a deep copy of the object
    */
   initializeState() {
     //if it is null then a new workshop is being created else an existing  one is being updated
     if (this.props.workshop != null) {
+      let tempX = JSON.parse(JSON.stringify(this.props.workshop))
       this.setState({
-        Workshop: this.props.workshop
+        Workshop: tempX
       });
     }
   }
@@ -74,11 +75,8 @@ class WorkshopEdit extends React.Component {
         Level_Titles: [null],
         Level_Descriptions: [null],
         Number_Of_Levels: 1,
-        Day: null,
         Date: null,
-        Month: null,
-        Year: null
-      }
+      },
     });
     this.props.submit(this.state.Workshop, false);
   }
@@ -87,6 +85,8 @@ class WorkshopEdit extends React.Component {
    * This gets called when the submit button is pressed to save changes made to a workshop or save a new workshop
    */
   submit() {
+    //the slice commands below ensure that when the workshop is saved then only the correct number of levels are passed back
+    //For example if the workshop used to have 5 levels but was edited to only have 4 then the slice commands will remove the extra one
     let lvlTitl = this.state.Workshop.Level_Titles.slice(
       0,
       this.state.Workshop.Number_Of_Levels
@@ -95,14 +95,16 @@ class WorkshopEdit extends React.Component {
       0,
       this.state.Workshop.Number_Of_Levels
     );
-    this.setState(state => ({
+    //updates the workshop state to have the sliced arrays
+    this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
         Level_Titles: lvlTitl,
-        Level_Descriptions: lvlDesc
-      }
+        Level_Descriptions: lvlDesc,
+      },
     }));
     this.props.submit(this.state.Workshop, true);
+    //sets to null to prepare for the next time the component may get used
     this.setState({
       Workshop: {
         Workshop_ID: null,
@@ -110,13 +112,9 @@ class WorkshopEdit extends React.Component {
         Level_Titles: [null],
         Level_Descriptions: [null],
         Number_Of_Levels: 1,
-        Day: null,
         Date: null,
-        Month: null,
-        Year: null
-      }
+      },
     });
-    
   }
 
   incrementLevel() {
@@ -126,9 +124,11 @@ class WorkshopEdit extends React.Component {
   }
 
   decrementLevel() {
-    let workshop = this.state.Workshop;
-    workshop.Number_Of_Levels = workshop.Number_Of_Levels - 1;
-    this.setState({ Workshop: workshop });
+    if (this.state.Workshop.Number_Of_Levels > 1) {
+      let workshop = this.state.Workshop;
+      workshop.Number_Of_Levels = workshop.Number_Of_Levels - 1;
+      this.setState({ Workshop: workshop });
+    }
   }
 
   /**
@@ -137,12 +137,12 @@ class WorkshopEdit extends React.Component {
    */
   setWorkshopName(event) {
     let temp = event.target.value;
-    this.setState(state => ({
+    this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
         Workshop_ID: temp,
-        Workshop_Name: temp
-      }
+        Workshop_Name: temp,
+      },
     }));
   }
 
@@ -159,13 +159,12 @@ class WorkshopEdit extends React.Component {
       }
     }
 
-    this.setState(state => ({
+    this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
-        Level_Titles: tempArray
-      }
+        Level_Titles: tempArray,
+      },
     }));
-    console.log(this.state.Workshop.Level_Titles);
   }
 
   /**
@@ -173,7 +172,7 @@ class WorkshopEdit extends React.Component {
    * @param {*} event
    */
   setWorkshopLevelDescription(event) {
-    let temp = event.target.id;
+    let temp = event.target.id; //used to identify the correct description to edit
     let tempArray = this.state.Workshop.Level_Descriptions;
     for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
       if (temp === i + "-level") {
@@ -181,13 +180,26 @@ class WorkshopEdit extends React.Component {
       }
     }
 
-    this.setState(state => ({
+    this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
-        Level_Descriptions: tempArray
-      }
+        Level_Descriptions: tempArray,
+      },
     }));
-    console.log(this.state.Workshop.Level_Descriptions);
+  }
+
+  setWorkshopDate(date) {
+    console.log(date);
+    let d = new Date(date);
+    // console.log(d.getDate());
+    // console.log(d.getMonth() + 1);
+    // console.log(d.getFullYear());
+    this.setState((state) => ({
+      Workshop: {
+        ...state.Workshop,
+        Date: d,
+      },
+    }));
   }
 
   render() {
@@ -269,8 +281,21 @@ class WorkshopEdit extends React.Component {
             </form>
           </DialogContent>
           {/* Dynamically add in required number of text fields based on the number of levels */}
-
           {lvlTitleFields}
+
+          {/* This date field needs to be made prettier */}
+          <DialogContent>
+            <form className="mt-4">
+              <p>Workshop Date: </p>
+              <DatePicker
+                selected={this.state.Workshop.Date}
+                onChange={this.setWorkshopDate}
+                name="startDate"
+                dateFormat="MM/dd/yyyy"
+                placeholderText="Select Date"
+              />
+            </form>
+          </DialogContent>
 
           <DialogActions>
             <Button onClick={this.cancel} color="primary">

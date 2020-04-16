@@ -15,7 +15,7 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  * Contains summary information about the workshop as well as the graphs
  *
  * Author: Harsha Srikara
- * Date: 4/6/20
+ * Date: 4/16/20
  */
 class Workshop extends React.Component {
   constructor(props) {
@@ -56,7 +56,6 @@ class Workshop extends React.Component {
       dataArray: dps,
 
       confirmationDialog: false, //this is whether or not to show a confirmation dialog
-      confirmationState: false,
 
       addEditWorkshopDialog: false //this is whether or not to show the editing dialog
     };
@@ -105,7 +104,8 @@ class Workshop extends React.Component {
 
   deleteWorkshop() {
     this.showHideDeleteConfirmation();
-    this.props.deleteWorkshop(this.props.data.Workshop_ID);
+    //the below function gets called if confirm is clicked
+    //this.props.deleteWorkshop(this.props.data.Workshop_ID);
   }
 
   incrementLevel() {
@@ -137,9 +137,10 @@ class Workshop extends React.Component {
   }
 
   getDialogResponse(bool) {
-    this.setState({confirmationState: bool});
     this.showHideDeleteConfirmation();
-    console.log(this.state.confirmationState);
+    if(bool) {
+      this.props.deleteWorkshop(this.props.data.Workshop_ID);
+    }
   }
 
   render() {

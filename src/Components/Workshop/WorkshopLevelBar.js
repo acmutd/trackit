@@ -9,9 +9,9 @@ import RemoveIcon from "@material-ui/icons/Remove";
 /**
  * Administrative toolbar to control workshop settings such as enabling a workshop, disabling a workshop, clearing all students to reset a workshop
  * Also contains a slider to enable workshop levels
- * 
+ *
  * Author: Harsha Srikara
- * Date: 4/6/20
+ * Date: 4/16/20
  */
 class WorkshopLevelBar extends React.Component {
   constructor(props) {
@@ -19,7 +19,7 @@ class WorkshopLevelBar extends React.Component {
 
     this.state = {
       workshopLevel: this.props.Workshop_Level,
-      enabled: this.props.enabled
+      enabled: this.props.enabled,
     };
 
     this.incrementLevel = this.incrementLevel.bind(this);
@@ -29,23 +29,25 @@ class WorkshopLevelBar extends React.Component {
   }
 
   incrementLevel() {
-    this.setState(state => ({ workshopLevel: state.workshopLevel + 1 }));
-    this.props.incrementLevel();
-    //add checks to ensure it cannot go over maxLevel
+    if (this.state.workshopLevel < this.props.maxLevel) {
+      this.setState((state) => ({ workshopLevel: state.workshopLevel + 1 }));
+      this.props.incrementLevel();
+    }
   }
   decrementLevel() {
-    this.setState(state => ({ workshopLevel: state.workshopLevel - 1 }));
-    this.props.decrementLevel();
-    //add checks to ensure it cannot go sub-zero
+    if (this.state.workshopLevel > 1) {
+      this.setState((state) => ({ workshopLevel: state.workshopLevel - 1 }));
+      this.props.decrementLevel();
+    }
   }
 
   enableWorkshop() {
-    this.setState({enabled: true});
+    this.setState({ enabled: true });
     this.props.enableWorkshop();
   }
 
   disableWorkshop() {
-    this.setState({enabled: false});
+    this.setState({ enabled: false });
     this.props.disableWorkshop();
   }
 
@@ -154,10 +156,20 @@ class WorkshopLevelBar extends React.Component {
             </Nav.Item>
             <Nav.Item>
               <Nav.Link>
-                <Fab color="primary" aria-label="remove" className="ml-2 mr-2" disabled={!this.state.enabled}>
+                <Fab
+                  color="primary"
+                  aria-label="remove"
+                  className="ml-2 mr-2"
+                  disabled={!this.state.enabled}
+                >
                   <RemoveIcon onClick={this.decrementLevel} />
                 </Fab>
-                <Fab color="primary" aria-label="add" className="ml-2 mr-2" disabled={!this.state.enabled}>
+                <Fab
+                  color="primary"
+                  aria-label="add"
+                  className="ml-2 mr-2"
+                  disabled={!this.state.enabled}
+                >
                   <AddIcon onClick={this.incrementLevel} />
                 </Fab>
               </Nav.Link>
