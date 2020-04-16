@@ -27,10 +27,7 @@ class AdminDashboard extends React.Component {
       Number_Of_Levels: 5,
       Workshop_ID: "firebase",
       Workshop_Name: "firebase",
-      Day: "Monday",
-      Date: "16",
-      Month: "March",
-      Year: "2020"
+      Date: null
     };
 
     let second = {
@@ -39,11 +36,8 @@ class AdminDashboard extends React.Component {
       Number_Of_Levels: 5,
       Workshop_ID: "azure",
       Workshop_Name: "azure",
-      Day: "Tuesday",
-      Date: "17",
-      Month: "March",
-      Year: "2020"
-    };
+      Date: null
+    }; 
 
     let third = {
       Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
@@ -51,10 +45,7 @@ class AdminDashboard extends React.Component {
       Number_Of_Levels: 5,
       Workshop_ID: "aws",
       Workshop_Name: "aws",
-      Day: "Wednesday",
-      Date: "18",
-      Month: "March",
-      Year: "2020"
+      Date: null
     };
 
     let openDialog = () => {

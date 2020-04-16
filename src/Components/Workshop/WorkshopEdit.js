@@ -33,12 +33,8 @@ class WorkshopEdit extends React.Component {
         Level_Titles: [null],
         Level_Descriptions: [null],
         Number_Of_Levels: 1,
-        Day: null,
-        Date: null,
-        Month: null,
-        Year: null,
-      },
-      selectedDate: null,
+        Date: null
+      }
     };
     this.initializeState = this.initializeState.bind(this);
     this.cancel = this.cancel.bind(this);
@@ -77,10 +73,7 @@ class WorkshopEdit extends React.Component {
         Level_Titles: [null],
         Level_Descriptions: [null],
         Number_Of_Levels: 1,
-        Day: null,
-        Date: null,
-        Month: null,
-        Year: null,
+        Date: null
       },
     });
     this.props.submit(this.state.Workshop, false);
@@ -117,10 +110,7 @@ class WorkshopEdit extends React.Component {
         Level_Titles: [null],
         Level_Descriptions: [null],
         Number_Of_Levels: 1,
-        Day: null,
-        Date: null,
-        Month: null,
-        Year: null,
+        Date: null
       },
     });
   }
@@ -171,7 +161,6 @@ class WorkshopEdit extends React.Component {
         Level_Titles: tempArray,
       },
     }));
-    console.log(this.state.Workshop.Level_Titles);
   }
 
   /**
@@ -193,24 +182,19 @@ class WorkshopEdit extends React.Component {
         Level_Descriptions: tempArray,
       },
     }));
-    console.log(this.state.Workshop.Level_Descriptions);
   }
 
   setWorkshopDate(date) {
     console.log(date);
     let d = new Date(date);
-    console.log(d.getDate()); 
-    console.log(d.getMonth() + 1); 
-    console.log(d.getFullYear());
+    // console.log(d.getDate()); 
+    // console.log(d.getMonth() + 1); 
+    // console.log(d.getFullYear());
     this.setState(state => ({
       Workshop: {
         ...state.Workshop,
-        Date: d.getDate(),
-        Month: d.getMonth() + 1,
-        Year: d.getFullYear(),
-        Day: d.getDay()
+        Date: d
       },
-      selectedDate: date
     }));
   }
 
@@ -300,7 +284,7 @@ class WorkshopEdit extends React.Component {
             <form className="mt-4">
             <p>Workshop Date: </p>
               <DatePicker
-                selected={this.state.selectedDate}
+                selected={this.state.Workshop.Date}
                 onChange={this.setWorkshopDate}
                 name="startDate"
                 dateFormat="MM/dd/yyyy"

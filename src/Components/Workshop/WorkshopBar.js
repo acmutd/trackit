@@ -12,7 +12,7 @@ class WorkshopBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      expandView: this.props.expandState //if this is true then the <Workshop /> Component is also rendered on the AdminDashboard, here it only changes the "Show View" to "Hide View"
+      expandView: this.props.expandState, //if this is true then the <Workshop /> Component is also rendered on the AdminDashboard, here it only changes the "Show View" to "Hide View"
     };
     this.switchView = this.switchView.bind(this);
   }
@@ -24,6 +24,25 @@ class WorkshopBar extends React.Component {
   }
 
   render() {
+    //extract the day, month, year from the date Object
+    let date = null;
+    let month = null;
+    let year = null;
+    let day = null;
+    if (this.props.data.Date != null) {
+      date = this.props.data.Date.getDate();
+      
+      month = this.props.data.Date.getMonth();
+      let monthsOfYear = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      month = monthsOfYear[month];
+
+      year = this.props.data.Date.getFullYear();
+      
+      day = this.props.data.Date.getDay();
+      let daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      day = daysOfWeek[day];
+    }
+
     return (
       <div>
         <div className="m-3 mt-5 p-4 floating-icon">
@@ -31,8 +50,8 @@ class WorkshopBar extends React.Component {
             <Nav.Item>
               <h1>{this.props.data.Workshop_ID}</h1>
             </Nav.Item>
-             {/* This needs to eventually be dynamic and use inforamtion passed in as props to render the actual proportions instead of hardcoded values */}
-             <Nav.Item className="mt-3">
+            {/* This needs to eventually be dynamic and use inforamtion passed in as props to render the actual proportions instead of hardcoded values */}
+            <Nav.Item className="mt-3">
               <ProgressBar>
                 <ProgressBar
                   striped
@@ -58,7 +77,9 @@ class WorkshopBar extends React.Component {
               </ProgressBar>
             </Nav.Item>
             <Nav.Item className="mt-2">
-              <h3>{this.props.data.Day} {this.props.data.Date} {this.props.data.Month} {this.props.data.Year}</h3>
+              <h3>
+                {day} {date} {month} {year}
+              </h3>
             </Nav.Item>
             {/* Toggles between "Show View" and "Hide View" when the expandView state changes */}
             {this.state.expandView ? (
@@ -70,14 +91,14 @@ class WorkshopBar extends React.Component {
                 </Nav.Item>
               </div>
             ) : (
-                <div>
-                  <Nav.Item>
-                    <Nav.Link onClick={this.switchView}>
-                      <h3>Show View</h3>
-                    </Nav.Link>
-                  </Nav.Item>
-                </div>
-              )}
+              <div>
+                <Nav.Item>
+                  <Nav.Link onClick={this.switchView}>
+                    <h3>Show View</h3>
+                  </Nav.Link>
+                </Nav.Item>
+              </div>
+            )}
           </Nav>
         </div>
       </div>
