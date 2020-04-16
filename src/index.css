@@ -17,6 +17,9 @@ code {
   text-align: center;
 }
 
+.whiteLink:hover,
+.whiteLink:active,
+.whiteLink:visited,
 .whiteStyle {
   color: white;
 }
