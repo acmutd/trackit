@@ -12,9 +12,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 /**
  * This is the <NavBar /> used at the top, uses the bootstrap components but extracted it to a separate component
  * Eventually we can customize it to show the username displayed at the top or something like that
- *
- * Author: Harsha Srikara
- * Date: 3/22/20
  */
 class NavBar extends React.Component {
   constructor(props) {
