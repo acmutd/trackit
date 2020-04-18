@@ -7,38 +7,27 @@ import FormControl from "react-bootstrap/FormControl";
 import Container from "react-bootstrap/Container";
 import NavBar from "../Layout/NavBar";
 
-class UserAuth extends React.Component {
+class WorkshopLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "", // stores name of user
-      workshop: ""
+      workshopID: '',
     };
 
-    this.fillName = this.fillName.bind(this);
-    this.fillPassword = this.fillPassword.bind(this);
+    this.fillWorkshop = this.fillWorkshop.bind(this);
     this.authenticate = this.authenticate.bind(this);
   }
 
-  fillName(event) {
+  fillWorkshop(event) {
     this.setState({
-      name: event.target.value
+      workshopID: event.target.value
     });
   }
 
-  fillPassword(event) {
-    this.setState({
-      workshop: event.target.value
-    });
+  authenticate()
+  {
+      this.props.authenticate(this.state.workshopID)
   }
-
-  /**
-   * Calls the authenticate function passed in from <Admin /> with the username and password stored in state
-   */
-  authenticate() {
-    this.props.authenticate(this.state.name, this.state.workshop);
-  }
-
 
   render() {
     return (
@@ -56,26 +45,11 @@ class UserAuth extends React.Component {
                     <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                   </InputGroup.Prepend>
                   <FormControl
-                    placeholder="Name"
-                    aria-label="Username"
+                    placeholder="Workshop ID"
+                    aria-label="Workshop"
                     aria-describedby="basic-addon1"
                     value={this.state.name}
-                    onChange={this.fillName}
-                  />
-                </InputGroup>
-              </Col>
-              {/* Password text field */}
-              <Col xs={12} sm={12} md={5}>
-                <InputGroup className="mb-3">
-                  <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
-                  </InputGroup.Prepend>
-                  <FormControl
-                    placeholder="password"
-                    aria-label="Password"
-                    aria-describedby="basic-addon1"
-                    value={this.state.workshop}
-                    onChange={this.fillPassword}
+                    onChange={this.fillWorkshop}
                   />
                 </InputGroup>
               </Col>
@@ -93,4 +67,4 @@ class UserAuth extends React.Component {
   }
 }
 
-export default UserAuth;
+export default WorkshopLogin;

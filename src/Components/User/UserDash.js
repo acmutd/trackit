@@ -1,4 +1,3 @@
-// TODO
 import React from "react";
 import NavBar from "../Layout/NavBar";
 import Row from "react-bootstrap/Row";
@@ -7,11 +6,20 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import Container from "react-bootstrap/Container";
+import firebase from 'firebase';
 
 class UserDash extends React.Component {
     constructor(props) {
         super(props);
 
+        let first = {
+            Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
+            Level_Descriptions: ["info part 1", "info part 2", "info part 3", "info part 4", "info part 5"],
+            Number_Of_Levels: 5,
+            Workshop_ID: "firebase",
+            Workshop_Name: "firebase",
+            Date: null
+          };
             this.state = 
           {
               user: '',
@@ -20,12 +28,32 @@ class UserDash extends React.Component {
               adminProgress: 4,
               currentPage: 0
           }
-
         this.previousLevel = this.previousLevel.bind(this);
         this.nextLevel = this.nextLevel.bind(this);
         this.markCompleted = this.markCompleted.bind(this);
-    }
+        //this.readFromDatabase = this.readFromDatabase.bind(this);
+}
 
+async componentWillUnmount()
+{
+    this.props.removeListener();
+}
+
+componentDidMount()
+{
+    
+}
+componentDidUpdate(prevProps)
+{
+    if(this.props.workshop_data !== prevProps.workshop_data)
+    {
+        this.setState({
+            workshop_data: this.props.workshop_data
+        })
+    }
+}
+
+// increments current level by 1. This is not their overall progress, but the stage which they are viewing.
 nextLevel()
 {
     this.setState(function(state, props) {
@@ -35,6 +63,7 @@ nextLevel()
       });
 }
 
+// decrements current level by 1. This is not their overall progress, but the stage which they are viewing.
 previousLevel()
 {
     this.setState(function(state, props) {
@@ -44,6 +73,7 @@ previousLevel()
       });
 }
 
+// marks current stage completed and sends data to database. 
 markCompleted()
 {
     // update database on current user progress
@@ -54,13 +84,29 @@ markCompleted()
       });
 }
 
-updateAdminProgress()
+/*
+readFromDatabase()
 {
-    // get data from db
+    console.log("workshop if : " + this.props.workshopID);
+    var removeListener = this.props.database.firestore().collection('Workshop').doc(this.props.workshopID)
+        .onSnapshot.then(snapshot =>
+        {
+            console.log(snapshot.data())
+            this.setState({
+                workshop_data: snapshot.data()
+            })
+        })
+    this.setState({
+        removeListener: removeListener
+    })
+    console.log("titles " + this.state.workshop_data.Level_Titles)
+    console.log(this.state.workshop_data.Level_Descriptions)
 }
+*/
+
 
     render() {
-        let workshop_levels = this.state.workshop_data.Level_Descriptions.map(function(item, index)
+        let workshop_levels = this.state.workshop_data.Level_Titles.map(function(item, index)
         {
             if(this.userProgress > index)
             {
@@ -84,13 +130,14 @@ updateAdminProgress()
             }        
         }, this.state);
 
-        let workshop_level_text = this.state.workshop_data.level_text[this.state.currentPage];
-        let workshop_level_title = this.state.workshop_data.Level_Descriptions[this.state.currentPage];
+        let workshop_level_text = this.state.workshop_data.Level_Descriptions[this.state.currentPage];
+        let workshop_level_title = this.state.workshop_data.Level_Titles[this.state.currentPage];
 
         var displayMarkCompleted = (this.state.userProgress === this.state.currentPage && !displayNext);
         var displayPrevious = (this.state.currentPage != 0);
         var displayNext = (this.state.adminProgress > this.state.userProgress && 
-            this.state.userProgress > this.state.currentPage)
+            this.state.userProgress > this.state.currentPage) || (
+            this.state.adminProgress == this.state.userProgress && this.state.currentPage < this.state.userProgress - 1)
 
       return (
         <div>

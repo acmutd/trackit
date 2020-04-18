@@ -2,65 +2,78 @@ import React from "react";
 import firebase from 'firebase';
 import UserAuth from './UserAuth';
 import UserDash from './UserDash';
+import WorkshopLogin from './WorkshopLogin';
 
 class User extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loggedIn: false, //once authentication happens this will toggle to true
-      name: '',
-      workshop: '',
-      workshop_data: null
+      workshopID: null,
+      workshop_date: null,
+      removeListener: null,
+      dataLoaded: false
     };
 
     this.authenticate = this.authenticate.bind(this);
+    this.authenticateWorkshop = this.authenticateWorkshop.bind(this);
     this.readFromDatabase = this.readFromDatabase.bind(this);
   }
 
-  authenticate(userName, workshop_name) {
-      this.readFromDatabase(workshop_name)
-      this.setState({
-          name: userName,
-          workshop: workshop_name,
-          loggedIn: true
-      })
-    }
-
-  readFromDatabase(workshop_name) 
+  componentWillUnmount()
   {
-      /*
-    let db = this.props.database;
-    db.collection("Workshop").doc(workshop_name).get().then(doc => {
-        if (!doc.exists) {
-          console.log('No such document!');
-        } else {
-          console.log(" data :" + doc.data().Date)
-          this.setState({
-              workshop_data: doc.data()
-          })
-        }
+    this.state.removeListener();
+  }
+
+  // contacts firestore and authenticates the user. Sets user data if user login works.
+  authenticate(userName, password) 
+  {
+    this.props.database.firestore().collection('Student').doc(userName).get().then(doc =>
+      {
+          if(doc.empty)
+              console.log('no workshop found');
+          else
+          {
+            if(password === doc.data().Password)
+            {
+              this.setState({
+                loggedIn: true
+              })
+              console.log("user found. logged in")
+            }
+          }
       })
-      .catch(err => {
-        console.log('Error getting document', err);
-      });
-      */
+      
+  }
 
-     let first = {
-        Level_Descriptions: ["info part 1", "info part 2", "info part 3", 'part 4', 'part 5'],
-        Number_Of_Levels: 5,
-        Workshop_ID: "firebase",
-        Workshop_Name: "firebase",
-        Day: "Monday",
-        Date: "16",
-        Month: "March",
-        Year: "2020",
-        level_text: ['Setup the project', 'Researc the project', 'Learn the Project', 
-                    'Do the Project', 'Present the Project']
-        };
-
-        this.setState({
-            workshop_data: first
-        })
+  authenticateWorkshop(workshop)
+  {
+    this.props.database.firestore().collection('Workshop').doc(workshop).get().then(doc =>
+      {
+          if(doc.empty)
+              console.log('no workshop found');
+          else
+          {
+            this.setState(
+            { 
+              workshopID: workshop
+            },
+            this.readFromDatabase) // callback for setState is set to readFromDatabase()
+          }
+      })
+  }
+ 
+  readFromDatabase()
+  {
+      var removeListener = this.props.database.firestore().collection('Workshop').doc(this.state.workshopID)
+          .onSnapshot(snapshot =>
+          {
+              console.log(snapshot.data())
+              this.setState({
+                  workshop_data: snapshot.data(),
+                  dataLoaded: true
+              })
+          })
   }
 
   render() {
@@ -69,7 +82,12 @@ class User extends React.Component {
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
         {this.state.loggedIn ? (
-          <UserDash workshop_data = {this.state.workshop_data}/>
+          ( this.state.dataLoaded == false ? (
+          <WorkshopLogin authenticate = {this.authenticateWorkshop}/>
+          ) : (
+            <UserDash database = {this.props.database} workshop_data = {this.state.workshop_data} removeListener = {this.state.removeListener}/>
+          )
+          )
         ) : (
           <UserAuth authenticate={this.authenticate} />
         )}
