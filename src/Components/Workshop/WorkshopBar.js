@@ -1,6 +1,5 @@
 import React from "react";
-import Nav from "react-bootstrap/Nav";
-import ProgressBar from "react-bootstrap/ProgressBar";
+import { Nav, ProgressBar } from "react-bootstrap";
 
 /**
  * The is a workshop bar that shows a minimized view of the information in a workshop, quick look at the data available
@@ -31,20 +30,41 @@ class WorkshopBar extends React.Component {
     let day = null;
     if (this.props.data.Date != null) {
       date = this.props.data.Date.getDate();
-      
+
       month = this.props.data.Date.getMonth();
-      let monthsOfYear = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      let monthsOfYear = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
       month = monthsOfYear[month];
 
       year = this.props.data.Date.getFullYear();
-      
+
       day = this.props.data.Date.getDay();
-      let daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      let daysOfWeek = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
       day = daysOfWeek[day];
     }
 
     return (
-      <div >
+      <div>
         <div className="m-3 mt-5 p-4 floating-icon">
           <Nav justify>
             <Nav.Item>

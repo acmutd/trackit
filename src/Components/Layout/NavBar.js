@@ -1,13 +1,13 @@
 import React from "react";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import { Link } from "react-router-dom";
-import Avatar from "@material-ui/core/Avatar";
-import { deepOrange } from "@material-ui/core/colors";
-import { faGithub } from "@fortawesome/free-brands-svg-icons";
-import { faInstagram } from "@fortawesome/free-brands-svg-icons";
-import { faCreativeCommonsBy } from "@fortawesome/free-brands-svg-icons";
+import { Nav, Navbar } from "react-bootstrap";
+import {
+  faGithub,
+  faInstagram,
+  faCreativeCommonsBy,
+} from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+// import { Avatar, deepOrange } from "@material-ui/core"; (later use)
 
 /**
  * This is the <NavBar /> used at the top, uses the bootstrap components but extracted it to a separate component
