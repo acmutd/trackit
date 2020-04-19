@@ -17,6 +17,7 @@ class User extends React.Component {
 
     this.authenticate = this.authenticate.bind(this);
     this.authenticateWorkshop = this.authenticateWorkshop.bind(this);
+    this.signInWorkshop = this.signInWorkshop.bind(this);
     this.readFromDatabase = this.readFromDatabase.bind(this);
   }
 
@@ -26,22 +27,20 @@ class User extends React.Component {
   }
 
   // contacts firestore and authenticates the user. Sets user data if user login works.
-  authenticate(userName, password) 
+  authenticate(email, password) 
   {
-    this.props.database.firestore().collection('Student').doc(userName).get().then(doc =>
+    this.props.database.auth().signInWithEmailAndPassword(email, password).catch(err =>
       {
-          if(doc.empty)
-              console.log('no workshop found');
-          else
-          {
-            if(password === doc.data().Password)
-            {
-              this.setState({
-                loggedIn: true
-              })
-              console.log("user found. logged in")
-            }
-          }
+        console.log("Invalid Email or Password")
+      })
+    this.props.database.auth().onAuthStateChanged( user =>
+      {
+        if(user) // user is signed in
+        {
+          this.setState({
+            loggedIn: true
+          })
+        }
       })
       
   }
@@ -63,6 +62,11 @@ class User extends React.Component {
       })
   }
  
+  signInWorkshop()
+  {
+    
+  }
+
   readFromDatabase()
   {
       var removeListener = this.props.database.firestore().collection('Workshop').doc(this.state.workshopID)

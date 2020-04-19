@@ -11,30 +11,19 @@ import firebase from 'firebase';
 class UserDash extends React.Component {
     constructor(props) {
         super(props);
-
-        let first = {
-            Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
-            Level_Descriptions: ["info part 1", "info part 2", "info part 3", "info part 4", "info part 5"],
-            Number_Of_Levels: 5,
-            Workshop_ID: "firebase",
-            Workshop_Name: "firebase",
-            Date: null
-          };
             this.state = 
           {
               user: '',
               workshop_data: this.props.workshop_data,
               userProgress: 0,
-              adminProgress: 4,
               currentPage: 0
           }
         this.previousLevel = this.previousLevel.bind(this);
         this.nextLevel = this.nextLevel.bind(this);
         this.markCompleted = this.markCompleted.bind(this);
-        //this.readFromDatabase = this.readFromDatabase.bind(this);
 }
 
-async componentWillUnmount()
+componentWillUnmount()
 {
     this.props.removeListener();
 }
@@ -43,6 +32,8 @@ componentDidMount()
 {
     
 }
+
+// lifecycle method that is invoked anytime the component props are updated
 componentDidUpdate(prevProps)
 {
     if(this.props.workshop_data !== prevProps.workshop_data)
@@ -84,25 +75,6 @@ markCompleted()
       });
 }
 
-/*
-readFromDatabase()
-{
-    console.log("workshop if : " + this.props.workshopID);
-    var removeListener = this.props.database.firestore().collection('Workshop').doc(this.props.workshopID)
-        .onSnapshot.then(snapshot =>
-        {
-            console.log(snapshot.data())
-            this.setState({
-                workshop_data: snapshot.data()
-            })
-        })
-    this.setState({
-        removeListener: removeListener
-    })
-    console.log("titles " + this.state.workshop_data.Level_Titles)
-    console.log(this.state.workshop_data.Level_Descriptions)
-}
-*/
 
 
     render() {
@@ -135,9 +107,9 @@ readFromDatabase()
 
         var displayMarkCompleted = (this.state.userProgress === this.state.currentPage && !displayNext);
         var displayPrevious = (this.state.currentPage != 0);
-        var displayNext = (this.state.adminProgress > this.state.userProgress && 
+        var displayNext = (this.state.workshop_data.adminProgress > this.state.userProgress && 
             this.state.userProgress > this.state.currentPage) || (
-            this.state.adminProgress == this.state.userProgress && this.state.currentPage < this.state.userProgress - 1)
+            this.state.workshop_data.adminProgress == this.state.userProgress && this.state.currentPage < this.state.userProgress - 1)
 
       return (
         <div>
@@ -146,8 +118,8 @@ readFromDatabase()
                 <Row className = 'm-3 mb-5'>{workshop_levels}</Row>
                 <ProgressBar className = 'mb-4'>
                     <ProgressBar variant = 'success' animated now = {this.state.userProgress * 100 / this.state.workshop_data.Number_Of_Levels}  key={1}/>
-                    <ProgressBar  variant = 'warning' animated now = {(this.state.adminProgress - this.state.userProgress) * 100 / this.state.workshop_data.Number_Of_Levels}  key={2}/>
-                    <ProgressBar variant = 'danger' animated now = {(this.state.workshop_data.Number_Of_Levels - this.state.adminProgress) * 100 / this.state.workshop_data.Number_Of_Levels}  key={3}/>
+                    <ProgressBar  variant = 'warning' animated now = {(this.state.workshop_data.adminProgress - this.state.userProgress) * 100 / this.state.workshop_data.Number_Of_Levels}  key={2}/>
+                    <ProgressBar variant = 'danger' animated now = {(this.state.workshop_data.Number_Of_Levels - this.state.workshop_data.adminProgress) * 100 / this.state.workshop_data.Number_Of_Levels}  key={3}/>
                 </ProgressBar>
                 <Card className = 'mt-4 floating-icon'>
                     <Card.Header className = 'text-left p-3 mt-2'>{this.state.currentPage === this.state.workshop_data.Number_Of_Levels ? 

@@ -38,7 +38,6 @@ class WorkshopLogin extends React.Component {
             <Row>
               {/* Username text field */}
               <Col xs={12} sm={12} md={5}>
-                {" "}
                 {/* bootstrap size makes everything be on one line on large screens and vertical on smaller displays */}
                 <InputGroup className="mb-3">
                   <InputGroup.Prepend>
