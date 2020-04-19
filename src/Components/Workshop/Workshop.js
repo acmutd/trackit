@@ -32,14 +32,14 @@ class Workshop extends React.Component {
       yValues.push(0); //initial count for aggregate
     }
 
-    for (var i = 0; i < this.props.data.Progress.length; i++) {
-      yValues[this.props.data.Progress[i] - 1] += 1;
+    for (var k = 0; k < this.props.data.Progress.length; k++) {
+      yValues[this.props.data.Progress[k] - 1] += 1;
     }
 
-    for (var i = 0; i < xValues.length; i++) {
+    for (var j = 0; j < xValues.length; j++) {
       dps.push({
-        label: xValues[i],
-        y: yValues[i],
+        label: xValues[j],
+        y: yValues[j],
       });
     }
 

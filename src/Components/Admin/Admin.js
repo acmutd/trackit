@@ -1,7 +1,6 @@
 import React from "react";
 import AdminAuth from "./AdminAuth";
 import AdminDashboard from "./AdminDashboard";
-import firebase from "firebase";
 import "firebase/firestore";
 
 /** This component is designed to strictly be backend only

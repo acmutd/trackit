@@ -197,29 +197,29 @@ class AdminDashboard extends React.Component {
   }
 
   clearAllStudents(Workshop_ID) {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    this.findWorkshopIndex(Workshop_ID);
     console.log("test");
   }
 
   deleteWorkshop(Workshop_ID) {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    this.findWorkshopIndex(Workshop_ID);
     console.log("test");
   }
 
   incrementLevel(Workshop_ID) {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    this.findWorkshopIndex(Workshop_ID);
     //write code here to push to db that the workshop level has been incremented
     console.log("test");
   }
 
   decrementLevel(Workshop_ID) {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    this.findWorkshopIndex(Workshop_ID);
     //write code here to push to db that the workshop level has been decremented
     console.log("test");
   }
 
   exportWorkshop(Workshop_ID) {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    this.findWorkshopIndex(Workshop_ID);
     console.log("test");
   }
 

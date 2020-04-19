@@ -86,12 +86,12 @@ class UserDash extends React.Component {
       this.state.currentPage
     ];
 
-    var displayMarkCompleted =
-      this.state.userProgress === this.state.currentPage && !displayNext;
-    var displayPrevious = this.state.currentPage != 0;
+    var displayPrevious = this.state.currentPage !== 0;
     var displayNext =
       this.state.adminProgress > this.state.userProgress &&
       this.state.userProgress > this.state.currentPage;
+    var displayMarkCompleted =
+      this.state.userProgress === this.state.currentPage && !displayNext;
 
     return (
       <div>

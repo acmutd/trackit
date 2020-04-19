@@ -64,6 +64,7 @@ class AdminAuth extends React.Component {
   }
 
   render() {
+    // eslint-disable-next-line
     function setShow(show) {
       this.setState({
         loginError: show,
