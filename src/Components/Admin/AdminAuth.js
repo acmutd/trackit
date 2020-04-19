@@ -54,14 +54,13 @@ class AdminAuth extends React.Component {
    * Calls the authenticate function passed in from <Admin /> with the username and password stored in state
    */
   authenticate() {
-    if(!this.props.authenticate(this.state.username, this.state.password))
+    if(!this.props.authenticate(this.state.username, this.state.password) != undefined)
     {
       this.setState({
         loginError: true
       })
     }
   }
-
 
 
   render() {
