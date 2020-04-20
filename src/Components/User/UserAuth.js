@@ -1,10 +1,12 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import FormControl from "react-bootstrap/FormControl";
-import Container from "react-bootstrap/Container";
+import {
+  Button,
+  InputGroup,
+  Row,
+  Col,
+  FormControl,
+  Container,
+} from "react-bootstrap";
 import NavBar from "../Layout/NavBar";
 
 class UserAuth extends React.Component {
@@ -38,7 +40,6 @@ class UserAuth extends React.Component {
   authenticate() {
     this.props.authenticate(this.state.email, this.state.password);
   }
-
 
   render() {
     return (

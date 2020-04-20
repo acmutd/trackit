@@ -42,7 +42,6 @@ class User extends React.Component {
           })
         }
       })
-      
   }
 
   authenticateWorkshop(workshop)

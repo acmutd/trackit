@@ -1,12 +1,14 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import FormControl from "react-bootstrap/FormControl";
-import Container from "react-bootstrap/Container";
+import {
+  Button,
+  InputGroup,
+  Row,
+  Col,
+  FormControl,
+  Container,
+  Alert,
+} from "react-bootstrap";
 import NavBar from "../Layout/NavBar";
-import Alert from 'react-bootstrap/Alert'
 
 /**
  * UI Component that contains two text fields to enter username and password as well as a submit button
@@ -20,7 +22,7 @@ class AdminAuth extends React.Component {
     this.state = {
       username: "", //stores username
       password: "", //stores password
-      loginError: false
+      loginError: false,
     };
 
     this.fillUsername = this.fillUsername.bind(this);
@@ -35,7 +37,7 @@ class AdminAuth extends React.Component {
    */
   fillUsername(event) {
     this.setState({
-      username: event.target.value
+      username: event.target.value,
     });
   }
 
@@ -46,7 +48,7 @@ class AdminAuth extends React.Component {
    */
   fillPassword(event) {
     this.setState({
-      password: event.target.value
+      password: event.target.value,
     });
   }
 
@@ -57,27 +59,29 @@ class AdminAuth extends React.Component {
     if(!this.props.authenticate(this.state.username, this.state.password) != undefined)
     {
       this.setState({
-        loginError: true
-      })
+        loginError: true,
+      });
     }
   }
 
-
   render() {
-
-    function setShow(show)
-    { 
-    this.setState({
-      loginError: show
-      })
+    // eslint-disable-next-line
+    function setShow(show) {
+      this.setState({
+        loginError: show,
+      });
     }
 
     return (
       <div>
-        <NavBar /> 
+        <NavBar />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
-          {this.state.loginError ? (<Alert variant = 'danger'>Invalid Username or Password </Alert>) : ('')}
+            {this.state.loginError ? (
+              <Alert variant="danger">Invalid Username or Password </Alert>
+            ) : (
+              ""
+            )}
             <Row>
               {/* Username text field */}
               <Col xs={12} sm={12} md={5}>
@@ -91,7 +95,7 @@ class AdminAuth extends React.Component {
                     placeholder="Username"
                     aria-label="Username"
                     aria-describedby="basic-addon1"
-                    type = "email"
+                    type="email"
                     value={this.state.username}
                     onChange={this.fillUsername}
                   />

@@ -2,11 +2,11 @@ import React from "react";
 import Admin from "./Components/Admin/Admin";
 import User from "./Components/User/User";
 import Pricing from "./Components/Pages/Pricing";
-import { BrowserRouter, Route, Switch } from "react-router-dom"
-import firebase from 'firebase';
+import Error404 from "./Components/Pages/Error404";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import firebase from "firebase";
 
-
-var firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyC10N5kRDieKncmUESxswqkYQ_359f9Qes",
   authDomain: "trackit-271619.firebaseapp.com",
   databaseURL: "https://trackit-271619.firebaseio.com",
@@ -14,8 +14,9 @@ var firebaseConfig = {
   storageBucket: "trackit-271619.appspot.com",
   messagingSenderId: "972365141905",
   appId: "1:972365141905:web:fbda064275f635298cec30",
-  measurementId: "G-HRLPFBGB1E"
+  measurementId: "G-HRLPFBGB1E",
 };
+
 let app = firebase.initializeApp(firebaseConfig);
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
         <Route path="/" render = {(props) => <User database = {app} />} exact />
         <Route path="/admin" render = {(props) => <Admin database = {app} />} exact />
         <Route path="/pricing" component={Pricing} exact />
-        {/* <Route component={Error} /> enable this once there is a 404 page*/}
+        <Route path="*" component={Error404} exact />
       </Switch>
     </div>
   );

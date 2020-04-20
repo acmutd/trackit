@@ -68,14 +68,12 @@ previousLevel()
 markCompleted()
 {
     // update database on current user progress
-    this.setState(function(state, props) {
-        return {
-            userProgress: state.userProgress + 1
-        };
-      });
-}
-
-
+    this.setState(function (state, props) {
+      return {
+        userProgress: state.userProgress + 1,
+      };
+    });
+  }
 
     render() {
         let workshop_levels = this.state.workshop_data.Level_Titles.map(function(item, index)
@@ -145,5 +143,6 @@ markCompleted()
       );
     }
   }
+}
 
 export default UserDash;

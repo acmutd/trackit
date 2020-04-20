@@ -1,9 +1,7 @@
 import React from "react";
 import AdminAuth from "./AdminAuth";
 import AdminDashboard from "./AdminDashboard";
-import firebase from 'firebase';
-import 'firebase/firestore';
-
+import "firebase/firestore";
 
 /** This component is designed to strictly be backend only
  * All API calls and connections to the database should take place in this component
@@ -66,7 +64,7 @@ class Admin extends React.Component {
                 // logout non Admin user
                 this.props.database.auth().signOut().then(() =>
                 {
-                  console.log('successfully logged ou t non admin ')
+                  console.log('successfully logged out non admin ')
                 }).catch(err => 
                   {
                     console.log("error logging out non admin user")

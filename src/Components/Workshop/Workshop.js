@@ -1,6 +1,5 @@
-import Row from "react-bootstrap/Row";
 import React from "react";
-import Col from "react-bootstrap/Col";
+import { Row, Col } from "react-bootstrap";
 import CanvasJSReact from "../../assets/canvasjs.react";
 import CardTile from "./CardTile";
 import StudentBar from "./StudentBar";
@@ -33,14 +32,14 @@ class Workshop extends React.Component {
       yValues.push(0); //initial count for aggregate
     }
 
-    for (var i = 0; i < this.props.data.Progress.length; i++) {
-      yValues[this.props.data.Progress[i] - 1] += 1;
+    for (var k = 0; k < this.props.data.Progress.length; k++) {
+      yValues[this.props.data.Progress[k] - 1] += 1;
     }
 
-    for (var i = 0; i < xValues.length; i++) {
+    for (var j = 0; j < xValues.length; j++) {
       dps.push({
-        label: xValues[i],
-        y: yValues[i]
+        label: xValues[j],
+        y: yValues[j],
       });
     }
 
@@ -57,7 +56,7 @@ class Workshop extends React.Component {
 
       confirmationDialog: false, //this is whether or not to show a confirmation dialog
 
-      addEditWorkshopDialog: false //this is whether or not to show the editing dialog
+      addEditWorkshopDialog: false, //this is whether or not to show the editing dialog
     };
     this.parseDataPoints = this.parseDataPoints.bind(this);
     this.incrementLevel = this.incrementLevel.bind(this);
@@ -72,7 +71,9 @@ class Workshop extends React.Component {
       this
     );
     this.showHideAddEditDialog = this.showHideAddEditDialog.bind(this);
-    this.receiveAddEditWorkshopInformationFromDialog = this.receiveAddEditWorkshopInformationFromDialog.bind(this);
+    this.receiveAddEditWorkshopInformationFromDialog = this.receiveAddEditWorkshopInformationFromDialog.bind(
+      this
+    );
     this.getDialogResponse = this.getDialogResponse.bind(this);
   }
 
@@ -84,7 +85,7 @@ class Workshop extends React.Component {
     for (var i = dps.length; i < this.props.data.Students.length; i++)
       dps.push({
         label: this.props.data.Students[i],
-        y: this.props.data.Progress[i]
+        y: this.props.data.Progress[i],
       });
 
     this.setState({ dataArray: dps });
@@ -119,9 +120,12 @@ class Workshop extends React.Component {
     this.showHideAddEditDialog();
   }
 
-  receiveAddEditWorkshopInformationFromDialog(Workshop_Object, wasSubmitPressed) {
+  receiveAddEditWorkshopInformationFromDialog(
+    Workshop_Object,
+    wasSubmitPressed
+  ) {
     this.showHideAddEditDialog();
-    if(wasSubmitPressed) {
+    if (wasSubmitPressed) {
       this.props.addEditWorkshop(Workshop_Object);
     }
   }
@@ -130,15 +134,19 @@ class Workshop extends React.Component {
   }
 
   showHideDeleteConfirmation() {
-    this.setState(state => ({ confirmationDialog: !state.confirmationDialog, }));
+    this.setState((state) => ({
+      confirmationDialog: !state.confirmationDialog,
+    }));
   }
   showHideAddEditDialog() {
-    this.setState(state => ({ addEditWorkshopDialog: !state.addEditWorkshopDialog, }));
+    this.setState((state) => ({
+      addEditWorkshopDialog: !state.addEditWorkshopDialog,
+    }));
   }
 
   getDialogResponse(bool) {
     this.showHideDeleteConfirmation();
-    if(bool) {
+    if (bool) {
       this.props.deleteWorkshop(this.props.data.Workshop_ID);
     }
   }
@@ -159,10 +167,10 @@ class Workshop extends React.Component {
       exportEnabled: true,
       theme: "light2", //"light1", "dark1", "dark2"
       title: {
-        text: this.props.data.Workshop_ID
+        text: this.props.data.Workshop_ID,
       },
       axisY: {
-        valueFormatString: "#"
+        valueFormatString: "#",
       },
       data: [
         {
@@ -170,9 +178,9 @@ class Workshop extends React.Component {
           //indexLabel: "{y}", //Shows y value on all Data Points
           indexLabelFontColor: "#5A5757",
           indexLabelPlacement: "outside",
-          dataPoints: this.state.dataArray
-        }
-      ]
+          dataPoints: this.state.dataArray,
+        },
+      ],
     };
 
     //information for the summary report tile
@@ -181,7 +189,7 @@ class Workshop extends React.Component {
       subtitle: this.props.data.Workshop_ID,
       description: "Number of students: " + this.props.data.Students.length,
       links: [],
-      linkText: ["Download Workshop Summary", "Download Raw Student Data"]
+      linkText: ["Download Workshop Summary", "Download Raw Student Data"],
     };
 
     //this is the description for the workshop information tile, the newline thing doesnt work for some reason
@@ -203,14 +211,13 @@ class Workshop extends React.Component {
       subtitle: this.props.properties.Workshop_ID,
       description: tag,
       links: [],
-      linkText: ["Download Workshop Content", "Access Workshop Resources"]
+      linkText: ["Download Workshop Content", "Access Workshop Resources"],
     };
 
     //confirmation dialog setup
     let titleText = "Confirmation";
     let messageText =
       "Are you sure about performing this action? This action cannot be reversed.";
-      
 
     return (
       <div>
@@ -243,8 +250,20 @@ class Workshop extends React.Component {
         </div>
         {student_progress}
         {/* Thw two componenets below are dialogs, modals that appear to receive additional information */}
-        <ConfirmationDialog isOpen={this.state.confirmationDialog} titleText={titleText} messageText={messageText} handleDialogResponse={this.getDialogResponse}/>
-        <WorkshopEdit isOpen={this.state.addEditWorkshopDialog} titleText="Workshop Panel" messageText="Edit workshop information below" submit={this.receiveAddEditWorkshopInformationFromDialog} workshop={this.props.properties} newWorkshop={false}/>
+        <ConfirmationDialog
+          isOpen={this.state.confirmationDialog}
+          titleText={titleText}
+          messageText={messageText}
+          handleDialogResponse={this.getDialogResponse}
+        />
+        <WorkshopEdit
+          isOpen={this.state.addEditWorkshopDialog}
+          titleText="Workshop Panel"
+          messageText="Edit workshop information below"
+          submit={this.receiveAddEditWorkshopInformationFromDialog}
+          workshop={this.props.properties}
+          newWorkshop={false}
+        />
       </div>
     );
   }
