@@ -1,10 +1,10 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
-import firebase from "firebase";
-
 import Admin from "./Components/Admin/Admin";
 import User from "./Components/User/User";
 import Pricing from "./Components/Pages/Pricing";
+import Error404 from "./Components/Pages/Error404";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import firebase from "firebase";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC10N5kRDieKncmUESxswqkYQ_359f9Qes",
@@ -32,7 +32,7 @@ function App() {
           exact
         />
         <Route path="/pricing" component={Pricing} exact />
-        {/* <Route component={Error} /> enable this once there is a 404 page*/}
+        <Route path="*" component={Error404} exact />
       </Switch>
     </div>
   );
