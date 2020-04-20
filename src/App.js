@@ -31,7 +31,7 @@ function App() {
           exact
         />
         <Route path="/pricing" component={Pricing} exact />
-        <Route path="/404" component={Error404} exact />
+        <Route path="*" component={Error404} exact />
       </Switch>
     </div>
   );
