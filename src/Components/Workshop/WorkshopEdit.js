@@ -1,12 +1,14 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import TextField from "@material-ui/core/TextField";
-import Fab from "@material-ui/core/Fab";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  Fab,
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import DatePicker from "react-datepicker";
@@ -56,9 +58,9 @@ class WorkshopEdit extends React.Component {
   initializeState() {
     //if it is null then a new workshop is being created else an existing  one is being updated
     if (this.props.workshop != null) {
-      let tempX = {...this.props.workshop};
+      let tempX = { ...this.props.workshop };
       this.setState({
-        Workshop: tempX
+        Workshop: tempX,
       });
     }
   }

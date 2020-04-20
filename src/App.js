@@ -6,7 +6,7 @@ import Error404 from "./Components/Pages/Error404";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import firebase from "firebase";
 
-var firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyC10N5kRDieKncmUESxswqkYQ_359f9Qes",
   authDomain: "trackit-271619.firebaseapp.com",
   databaseURL: "https://trackit-271619.firebaseio.com",
@@ -16,6 +16,7 @@ var firebaseConfig = {
   appId: "1:972365141905:web:fbda064275f635298cec30",
   measurementId: "G-HRLPFBGB1E",
 };
+
 let app = firebase.initializeApp(firebaseConfig);
 let db = app.firestore();
 
