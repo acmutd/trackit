@@ -1,16 +1,15 @@
 import React from "react";
-import firebase from 'firebase';
-import UserAuth from './UserAuth';
-import UserDash from './UserDash';
+import UserAuth from "./UserAuth";
+import UserDash from "./UserDash";
 
 class User extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loggedIn: false, //once authentication happens this will toggle to true
-      name: '',
-      workshop: '',
-      workshop_data: null
+      name: "",
+      workshop: "",
+      workshop_data: null,
     };
 
     this.authenticate = this.authenticate.bind(this);
@@ -18,17 +17,16 @@ class User extends React.Component {
   }
 
   authenticate(userName, workshop_name) {
-      this.readFromDatabase(workshop_name)
-      this.setState({
-          name: userName,
-          workshop: workshop_name,
-          loggedIn: true
-      })
-    }
+    this.readFromDatabase(workshop_name);
+    this.setState({
+      name: userName,
+      workshop: workshop_name,
+      loggedIn: true,
+    });
+  }
 
-  readFromDatabase(workshop_name) 
-  {
-      /*
+  readFromDatabase(workshop_name) {
+    /*
     let db = this.props.database;
     db.collection("Workshop").doc(workshop_name).get().then(doc => {
         if (!doc.exists) {
@@ -45,22 +43,33 @@ class User extends React.Component {
       });
       */
 
-     let first = {
-        Level_Descriptions: ["info part 1", "info part 2", "info part 3", 'part 4', 'part 5'],
-        Number_Of_Levels: 5,
-        Workshop_ID: "firebase",
-        Workshop_Name: "firebase",
-        Day: "Monday",
-        Date: "16",
-        Month: "March",
-        Year: "2020",
-        level_text: ['Setup the project', 'Researc the project', 'Learn the Project', 
-                    'Do the Project', 'Present the Project']
-        };
+    let first = {
+      Level_Descriptions: [
+        "info part 1",
+        "info part 2",
+        "info part 3",
+        "part 4",
+        "part 5",
+      ],
+      Number_Of_Levels: 5,
+      Workshop_ID: "firebase",
+      Workshop_Name: "firebase",
+      Day: "Monday",
+      Date: "16",
+      Month: "March",
+      Year: "2020",
+      level_text: [
+        "Setup the project",
+        "Researc the project",
+        "Learn the Project",
+        "Do the Project",
+        "Present the Project",
+      ],
+    };
 
-        this.setState({
-            workshop_data: first
-        })
+    this.setState({
+      workshop_data: first,
+    });
   }
 
   render() {
@@ -69,7 +78,7 @@ class User extends React.Component {
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
         {this.state.loggedIn ? (
-          <UserDash workshop_data = {this.state.workshop_data}/>
+          <UserDash workshop_data={this.state.workshop_data} />
         ) : (
           <UserAuth authenticate={this.authenticate} />
         )}

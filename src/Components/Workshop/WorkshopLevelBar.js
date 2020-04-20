@@ -1,8 +1,6 @@
 import React from "react";
-import Slider from "@material-ui/core/Slider";
-import Nav from "react-bootstrap/Nav";
-import Button from "react-bootstrap/Button";
-import Fab from "@material-ui/core/Fab";
+import { Slider, Fab } from "@material-ui/core";
+import { Nav, Button } from "react-bootstrap";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 
