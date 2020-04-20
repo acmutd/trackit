@@ -13,24 +13,24 @@ class UserAuth extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "", // stores name of user
-      workshop: "",
+      email: "", // stores name of user
+      password: ""
     };
 
-    this.fillName = this.fillName.bind(this);
-    this.fillWorkshop = this.fillWorkshop.bind(this);
+    this.fillEmail = this.fillEmail.bind(this);
+    this.fillPassword = this.fillPassword.bind(this);
     this.authenticate = this.authenticate.bind(this);
   }
 
-  fillName(event) {
+  fillEmail(event) {
     this.setState({
-      name: event.target.value,
+      email: event.target.value
     });
   }
 
-  fillWorkshop(event) {
+  fillPassword(event) {
     this.setState({
-      workshop: event.target.value,
+      password: event.target.value
     });
   }
 
@@ -38,7 +38,7 @@ class UserAuth extends React.Component {
    * Calls the authenticate function passed in from <Admin /> with the username and password stored in state
    */
   authenticate() {
-    this.props.authenticate(this.state.name, this.state.workshop);
+    this.props.authenticate(this.state.email, this.state.password);
   }
 
   render() {
@@ -57,11 +57,11 @@ class UserAuth extends React.Component {
                     <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                   </InputGroup.Prepend>
                   <FormControl
-                    placeholder="Name"
-                    aria-label="Username"
+                    placeholder="Email"
+                    aria-label="Email"
                     aria-describedby="basic-addon1"
-                    value={this.state.name}
-                    onChange={this.fillName}
+                    value={this.state.email}
+                    onChange={this.fillEmail}
                   />
                 </InputGroup>
               </Col>
@@ -72,11 +72,11 @@ class UserAuth extends React.Component {
                     <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                   </InputGroup.Prepend>
                   <FormControl
-                    placeholder="Workshop"
+                    placeholder="password"
                     aria-label="Password"
                     aria-describedby="basic-addon1"
-                    value={this.state.workshop}
-                    onChange={this.fillWorkshop}
+                    value={this.state.password}
+                    onChange={this.fillPassword}
                   />
                 </InputGroup>
               </Col>

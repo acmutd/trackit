@@ -13,25 +13,21 @@ import "firebase/firestore";
 
 // Initialize Firebase
 
-// let setSf = db.collection('Student').doc('sivam').set({
-//   Name: 'Sivam Patel', Email: 'spatel@gmail.com',
-//   Password: 'Test456'
-// });
-
 class Admin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loggedIn: false, //once authentication happens this will toggle to true
-      username: "", //stores the username of person that logged in (not required)
-      password: "", //stores the password of person that logged in (not required)
-      id: "",
-      isAdmin: null,
-      loginError: false,
+      loginError: false
     };
 
     this.authenticate = this.authenticate.bind(this);
     this.readFromDatabase = this.readFromDatabase.bind(this);
+  }
+
+  componentWillUnmount()
+  {
+    this.props.database.auth.signOut();
   }
 
   /**
@@ -41,36 +37,42 @@ class Admin extends React.Component {
    * @param {*} username is the username of the person logging in
    * @param {*} password is the password of the person logging in
    */
+
   authenticate(username, password) {
-    let db = this.props.database;
-    if (username.charAt("@") === -1 || username.charAt(".") === -1)
-      return false;
-    db.collection("Student")
-      .where("Email", "==", username)
-      .get()
-      .then((snapshot) => {
-        if (snapshot.empty) {
-          console.log("No matching documents.");
-          return false;
-        } else {
-          snapshot.forEach((doc) => {
-            var data = doc.data();
-            if (data.Password === password && data.isAdmin) {
-              this.setState({
-                loggedIn: true,
-                username: data.Email,
-                password: data.Password,
-                id: data.id,
-                isAdmin: true,
-              });
-            }
-          });
+    this.props.database.auth().signInWithEmailAndPassword(username, password).catch(err =>
+      {
+        console.log("Invalid Email or Password")
+      })
+    this.props.database.auth().onAuthStateChanged(user =>
+      {
+        // user is signed in
+        if(user) 
+        {
+          // get user data from Students collection to check if they are an admin
+          this.props.database.firestore().collection('Student').doc(user.uid).get().then(doc =>
+            {
+              // login user, allow to admin dashboard if admin
+              if(doc.data().isAdmin === true)
+              {
+                this.setState({
+                  loggedIn: true
+                })
+              }
+              else 
+              {
+                
+                // logout non Admin user
+                this.props.database.auth().signOut().then(() =>
+                {
+                  console.log('successfully logged out non admin ')
+                }).catch(err => 
+                  {
+                    console.log("error logging out non admin user")
+                  })
+              }
+            })
         }
       })
-      .catch(function (error) {
-        console.log("Error getting document:", error);
-        return false;
-      });
   }
 
   readFromDatabase() {
@@ -86,7 +88,7 @@ class Admin extends React.Component {
         {this.state.loggedIn ? (
           <AdminDashboard />
         ) : (
-          <AdminAuth authenticate={this.authenticate} />
+          <AdminAuth authenticate={this.authenticate} loginError = {this.props.loginError}/>
         )}
       </div>
     );
