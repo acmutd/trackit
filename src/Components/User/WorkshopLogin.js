@@ -37,7 +37,7 @@ class WorkshopLogin extends React.Component {
           <div className="m-5 p-5 floating-icon">
             <Row>
               {/* Username text field */}
-              <Col xs={12} sm={12} md={5}>
+              <Col xs={12} sm={12} md={10}>
                 {/* bootstrap size makes everything be on one line on large screens and vertical on smaller displays */}
                 <InputGroup className="mb-3">
                   <InputGroup.Prepend>
