@@ -15,7 +15,7 @@ import { Row, Col, Container } from "react-bootstrap";
 class AdminDashboard extends React.Component {
   constructor(props) {
     super(props);
-
+    console.log('opening dash')
     //hardcoded data below, will need to eventually read back the same information from firebase and receive it as props
     //data here is missing date field from the database schema, needs to be added in as a field for all items in the array
     //the following three variables represent the workshop collection on firebase
@@ -133,7 +133,7 @@ class AdminDashboard extends React.Component {
     };
 
     this.state = {
-      workshops: [first, second, third], //this will eventually be passed in through props
+      workshops: this.props.workshop_data, //[first, second, third], //this will eventually be passed in through props
       cards: [cfirst, csecond, cthird], //will be " " " "
       studentsAtWorkshop: [wfirst, wsecond, wthird], // will be  " " " "
       viewWorkshop: false, //toggle between true or false
@@ -155,6 +155,16 @@ class AdminDashboard extends React.Component {
       this
     );
     this.showHideAddEditDialog = this.showHideAddEditDialog.bind(this);
+  }
+
+  componentDidUpdate(prevProps)
+  {
+      if(this.props.workshop_data !== prevProps.workshop_data)
+      {
+          this.setState({
+              workshops: this.props.workshop_data
+          })
+      }
   }
 
   /**

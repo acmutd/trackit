@@ -143,6 +143,5 @@ markCompleted()
       );
     }
   }
-}
 
 export default UserDash;

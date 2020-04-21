@@ -28,10 +28,12 @@ class WorkshopBar extends React.Component {
     let month = null;
     let year = null;
     let day = null;
-    if (this.props.data.Date != null) {
-      date = this.props.data.Date.getDate();
+    let temp = new Date(this.props.data.Date.seconds * 1000)
+    console.log(temp)
+    if (temp != null) {
+      date = temp.getDate();
 
-      month = this.props.data.Date.getMonth();
+      month = temp.getMonth();
       let monthsOfYear = [
         "January",
         "February",
@@ -48,9 +50,9 @@ class WorkshopBar extends React.Component {
       ];
       month = monthsOfYear[month];
 
-      year = this.props.data.Date.getFullYear();
+      year = temp.getFullYear();
 
-      day = this.props.data.Date.getDay();
+      day = temp.getDay();
       let daysOfWeek = [
         "Sunday",
         "Monday",

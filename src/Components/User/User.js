@@ -10,7 +10,7 @@ class User extends React.Component {
     this.state = {
       loggedIn: false, //once authentication happens this will toggle to true
       workshopID: null,
-      workshop_date: null,
+      workshop_data: null,
       removeListener: null,
       dataLoaded: false
     };

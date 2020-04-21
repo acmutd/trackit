@@ -18,16 +18,24 @@ class Admin extends React.Component {
     super(props);
     this.state = {
       loggedIn: false, //once authentication happens this will toggle to true
-      loginError: false
+      loginError: false,
+      workshop_data: null,
+      student_data: null,
+      dataLoaded: false,
     };
 
     this.authenticate = this.authenticate.bind(this);
-    this.readFromDatabase = this.readFromDatabase.bind(this);
+    this.readStudentData = this.readStudentData.bind(this);
+    this.readWorkshopData = this.readWorkshopData.bind(this);
   }
 
   componentWillUnmount()
   {
-    this.props.database.auth.signOut();
+    this.props.database.auth().signOut().then(function() {
+      console.log("signed out")
+    }).catch(function(error) {
+      console.log("error signing out")
+    });
   }
 
   /**
@@ -42,7 +50,8 @@ class Admin extends React.Component {
     this.props.database.auth().signInWithEmailAndPassword(username, password).catch(err =>
       {
         console.log("Invalid Email or Password")
-      })
+        return;
+      })  
     this.props.database.auth().onAuthStateChanged(user =>
       {
         // user is signed in
@@ -54,6 +63,7 @@ class Admin extends React.Component {
               // login user, allow to admin dashboard if admin
               if(doc.data().isAdmin === true)
               {
+                this.readWorkshopData();
                 this.setState({
                   loggedIn: true
                 })
@@ -75,9 +85,29 @@ class Admin extends React.Component {
       })
   }
 
-  readFromDatabase() {
-    //read data from database and store it in this.state
-    //eventually pass in the data to AdminDashboard as props
+  readWorkshopData() 
+  {
+    var removeListener = this.props.database.firestore().collection('Workshop')
+          .onSnapshot(snapshot =>
+          {
+            var arr = [];
+            snapshot.forEach(snap =>
+              {
+                arr.push(snap.data())
+              })
+              console.log(arr)
+
+              this.setState({
+                  workshop_data: arr,
+                  dataLoaded: true,
+                  removeListener: removeListener
+              })
+          })
+  }
+
+  readStudentData()
+  {
+
   }
 
   render() {
@@ -85,8 +115,8 @@ class Admin extends React.Component {
       <div>
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
-        {this.state.loggedIn ? (
-          <AdminDashboard />
+        {(this.state.loggedIn && this.state.dataLoaded) ? (
+          <AdminDashboard workshop_data = {this.state.workshop_data}/>
         ) : (
           <AdminAuth authenticate={this.authenticate} loginError = {this.props.loginError}/>
         )}
