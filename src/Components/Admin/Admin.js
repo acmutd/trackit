@@ -28,6 +28,7 @@ class Admin extends React.Component {
     this.readStudentData = this.readStudentData.bind(this);
     this.readWorkshopData = this.readWorkshopData.bind(this);
     this.updateWorkshopLevel = this.updateWorkshopLevel.bind(this);
+    this.readStudentData = this.readStudentData.bind(this);
   }
 
   componentWillUnmount()
@@ -99,16 +100,29 @@ class Admin extends React.Component {
               console.log(arr)
 
               this.setState({
-                  workshop_data: arr,
-                  dataLoaded: true
-                  //removeListener: removeListener
-              })
+                  workshop_data: arr
+              }, this.readStudentData)
           })
   }
 
   readStudentData()
   {
+    this.props.database.firestore().collection('StudentsAtWorkshop')
+          .onSnapshot(snapshot =>
+          {
+            var arr = [];
+            snapshot.forEach(snap =>
+              {
+                arr.push(snap.data())
+              })
+              console.log(arr)
 
+              this.setState({
+                  student_data: arr,
+                  dataLoaded: true
+                  //removeListener: removeListener
+              })
+          })
   }
 
   updateWorkshopLevel(level, workshopID)
@@ -127,7 +141,7 @@ class Admin extends React.Component {
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
         {(this.state.loggedIn && this.state.dataLoaded) ? (
-          <AdminDashboard workshop_data = {this.state.workshop_data} updateLevel = {this.updateWorkshopLevel}/>
+          <AdminDashboard workshop_data = {this.state.workshop_data} updateLevel = {this.updateWorkshopLevel} student_data = {this.state.student_data}/>
         ) : (
           <AdminAuth authenticate={this.authenticate} loginError = {this.props.loginError} />
         )}

@@ -88,7 +88,7 @@ class AdminDashboard extends React.Component {
     this.state = {
       workshops: this.props.workshop_data, //[first, second, third], //this will eventually be passed in through props
       cards: [cfirst, csecond, cthird], //will be " " " "
-      studentsAtWorkshop: [wthird, wsecond, wfirst], // will be  " " " "
+      studentsAtWorkshop: this.props.student_data, // will be  " " " "
       viewWorkshop: false, //toggle between true or false
       workshopView: 1, //change this number to 0 1 or 2
 
@@ -116,6 +116,12 @@ class AdminDashboard extends React.Component {
       {
           this.setState({
               workshops: this.props.workshop_data
+          })
+      }
+      if(this.props.student_data !== prevProps.student_data)
+      {
+          this.setState({
+              studentsAtWorkshop: this.props.student_data
           })
       }
   }
