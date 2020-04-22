@@ -16,53 +16,6 @@ class AdminDashboard extends React.Component {
   constructor(props) {
     super(props);
     console.log('opening dash')
-    //hardcoded data below, will need to eventually read back the same information from firebase and receive it as props
-    //data here is missing date field from the database schema, needs to be added in as a field for all items in the array
-    //the following three variables represent the workshop collection on firebase
-    let first = {
-      Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
-      Level_Descriptions: [
-        "info part 1",
-        "info part 2",
-        "info part 3",
-        "info part 4",
-        "info part 5",
-      ],
-      Number_Of_Levels: 5,
-      Workshop_ID: "firebase",
-      Workshop_Name: "firebase",
-      Date: null,
-    };
-
-    let second = {
-      Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
-      Level_Descriptions: [
-        "check part 1",
-        "check part 2",
-        "check part 3",
-        "info part 4",
-        "info part 5",
-      ],
-      Number_Of_Levels: 5,
-      Workshop_ID: "azure",
-      Workshop_Name: "azure",
-      Date: null,
-    };
-
-    let third = {
-      Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
-      Level_Descriptions: [
-        "info part 1",
-        "info part 2",
-        "info part 3",
-        "info part 4",
-        "info part 5",
-      ],
-      Number_Of_Levels: 5,
-      Workshop_ID: "aws",
-      Workshop_Name: "aws",
-      Date: null,
-    };
 
     let openDialog = () => {
       this.showHideAddEditDialog();
@@ -118,7 +71,7 @@ class AdminDashboard extends React.Component {
     };
 
     let wthird = {
-      Workshop_ID: "aws",
+      Workshop_ID: "AWS",
       Enabled: false,
       Level_Enabled: 1,
       Students: [
@@ -135,7 +88,7 @@ class AdminDashboard extends React.Component {
     this.state = {
       workshops: this.props.workshop_data, //[first, second, third], //this will eventually be passed in through props
       cards: [cfirst, csecond, cthird], //will be " " " "
-      studentsAtWorkshop: [wfirst, wsecond, wthird], // will be  " " " "
+      studentsAtWorkshop: [wthird, wsecond, wfirst], // will be  " " " "
       viewWorkshop: false, //toggle between true or false
       workshopView: 1, //change this number to 0 1 or 2
 
@@ -167,6 +120,7 @@ class AdminDashboard extends React.Component {
       }
   }
 
+
   /**
    * Changes the viewWorkshop state to true/false, this function is passed in as props to the <WorkshopBar /> Component which will return the its respective Workshop_ID back as param
    *
@@ -187,7 +141,9 @@ class AdminDashboard extends React.Component {
   }
 
   enableWorkshop(Workshop_ID) {
+    console.log(Workshop_ID)
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    console.log(workshopIndex)
     let temp = this.state.studentsAtWorkshop[workshopIndex];
     temp.Enabled = true;
     let tempArray = this.state.studentsAtWorkshop;
@@ -218,6 +174,7 @@ class AdminDashboard extends React.Component {
 
   incrementLevel(Workshop_ID) {
     this.findWorkshopIndex(Workshop_ID);
+  this.props.updateLevel(10, Workshop_ID)
     //write code here to push to db that the workshop level has been incremented
     console.log("test");
   }

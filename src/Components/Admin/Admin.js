@@ -27,6 +27,7 @@ class Admin extends React.Component {
     this.authenticate = this.authenticate.bind(this);
     this.readStudentData = this.readStudentData.bind(this);
     this.readWorkshopData = this.readWorkshopData.bind(this);
+    this.updateWorkshopLevel = this.updateWorkshopLevel.bind(this);
   }
 
   componentWillUnmount()
@@ -87,8 +88,8 @@ class Admin extends React.Component {
 
   readWorkshopData() 
   {
-    var removeListener = this.props.database.firestore().collection('Workshop')
-          .onSnapshot(snapshot =>
+    this.props.database.firestore().collection('Workshop')
+          .get().then(snapshot =>
           {
             var arr = [];
             snapshot.forEach(snap =>
@@ -99,8 +100,8 @@ class Admin extends React.Component {
 
               this.setState({
                   workshop_data: arr,
-                  dataLoaded: true,
-                  removeListener: removeListener
+                  dataLoaded: true
+                  //removeListener: removeListener
               })
           })
   }
@@ -110,15 +111,25 @@ class Admin extends React.Component {
 
   }
 
+  updateWorkshopLevel(level, workshopID)
+  {
+    console.log("updating data for: " + level + " " + workshopID)
+    this.props.database.firestore().collection('StudentsAtWorkshop').doc(workshopID).update({
+      adminProgress: level
+    }).then(() => {
+      console.log("updated")
+    })
+  }
+
   render() {
     return (
       <div>
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
         {(this.state.loggedIn && this.state.dataLoaded) ? (
-          <AdminDashboard workshop_data = {this.state.workshop_data}/>
+          <AdminDashboard workshop_data = {this.state.workshop_data} updateLevel = {this.updateWorkshopLevel}/>
         ) : (
-          <AdminAuth authenticate={this.authenticate} loginError = {this.props.loginError}/>
+          <AdminAuth authenticate={this.authenticate} loginError = {this.props.loginError} />
         )}
       </div>
     );
