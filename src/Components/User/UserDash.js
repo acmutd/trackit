@@ -16,7 +16,8 @@ class UserDash extends React.Component {
               user: '',
               workshop_data: this.props.workshop_data,
               userProgress: 0,
-              currentPage: 0
+              currentPage: 0,
+              Level_Enabled: this.props.Level_Enabled
           }
         this.previousLevel = this.previousLevel.bind(this);
         this.nextLevel = this.nextLevel.bind(this);
@@ -36,10 +37,10 @@ componentDidMount()
 // lifecycle method that is invoked anytime the component props are updated
 componentDidUpdate(prevProps)
 {
-    if(this.props.workshop_data !== prevProps.workshop_data)
+    if(this.props.Level_Enabled !== prevProps.Level_Enabled)
     {
         this.setState({
-            workshop_data: this.props.workshop_data
+            Level_Enabled: this.props.Level_Enabled
         })
     }
 }
@@ -105,9 +106,9 @@ markCompleted()
 
         var displayMarkCompleted = (this.state.userProgress === this.state.currentPage && !displayNext);
         var displayPrevious = (this.state.currentPage != 0);
-        var displayNext = (this.state.workshop_data.adminProgress > this.state.userProgress && 
+        var displayNext = (this.state.Level_Enabled > this.state.userProgress && 
             this.state.userProgress > this.state.currentPage) || (
-            this.state.workshop_data.adminProgress == this.state.userProgress && this.state.currentPage < this.state.userProgress - 1)
+            this.state.Level_Enabled == this.state.userProgress && this.state.currentPage < this.state.userProgress - 1)
 
       return (
         <div>
@@ -116,8 +117,8 @@ markCompleted()
                 <Row className = 'm-3 mb-5'>{workshop_levels}</Row>
                 <ProgressBar className = 'mb-4'>
                     <ProgressBar variant = 'success' animated now = {this.state.userProgress * 100 / this.state.workshop_data.Number_Of_Levels}  key={1}/>
-                    <ProgressBar  variant = 'warning' animated now = {(this.state.workshop_data.adminProgress - this.state.userProgress) * 100 / this.state.workshop_data.Number_Of_Levels}  key={2}/>
-                    <ProgressBar variant = 'danger' animated now = {(this.state.workshop_data.Number_Of_Levels - this.state.workshop_data.adminProgress) * 100 / this.state.workshop_data.Number_Of_Levels}  key={3}/>
+                    <ProgressBar  variant = 'warning' animated now = {(this.state.Level_Enabled - this.state.userProgress) * 100 / this.state.workshop_data.Number_Of_Levels}  key={2}/>
+                    <ProgressBar variant = 'danger' animated now = {(this.state.workshop_data.Number_Of_Levels - this.state.Level_Enabled) * 100 / this.state.workshop_data.Number_Of_Levels}  key={3}/>
                 </ProgressBar>
                 <Card className = 'mt-4 floating-icon'>
                     <Card.Header className = 'text-left p-3 mt-2'>{this.state.currentPage === this.state.workshop_data.Number_Of_Levels ? 

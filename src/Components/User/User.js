@@ -12,13 +12,14 @@ class User extends React.Component {
       workshopID: null,
       workshop_data: null,
       removeListener: null,
+      Level_Enabled: 0,
       dataLoaded: false
     };
 
     this.authenticate = this.authenticate.bind(this);
     this.authenticateWorkshop = this.authenticateWorkshop.bind(this);
     this.signInWorkshop = this.signInWorkshop.bind(this);
-    this.readFromDatabase = this.readFromDatabase.bind(this);
+    this.getWorkshopData = this.getWorkshopData.bind(this);
   }
 
   componentWillUnmount()
@@ -56,7 +57,7 @@ class User extends React.Component {
             { 
               workshopID: workshop
             },
-            this.readFromDatabase) // callback for setState is set to readFromDatabase()
+            this.getWorkshopData) // callback for setState is set to readFromDatabase()
           }
       })
   }
@@ -66,14 +67,26 @@ class User extends React.Component {
     
   }
 
-  readFromDatabase()
+  getWorkshopData()
   {
       var removeListener = this.props.database.firestore().collection('Workshop').doc(this.state.workshopID)
-          .onSnapshot(snapshot =>
+          .get().then(snapshot =>
           {
               console.log(snapshot.data())
               this.setState({
                   workshop_data: snapshot.data(),
+              }, this.getProgressData)
+          })
+  }
+
+  getProgressData()
+  {
+    var removeListener = this.props.database.firestore().collection('StudentsAtWorkshop').doc(this.state.workshopID)
+          .onSnapshot(snapshot =>
+          {
+              console.log(snapshot.data() + "inside progress")
+              this.setState({
+                  Level_Enabled: snapshot.data().Level_Enabled,
                   dataLoaded: true
               })
           })
@@ -88,7 +101,8 @@ class User extends React.Component {
           ( this.state.dataLoaded == false ? (
           <WorkshopLogin authenticate = {this.authenticateWorkshop}/>
           ) : (
-            <UserDash database = {this.props.database} workshop_data = {this.state.workshop_data} removeListener = {this.state.removeListener}/>
+            <UserDash database = {this.props.database} workshop_data = {this.state.workshop_data} 
+            removeListener = {this.state.removeListener} Level_Enabled = {this.state.Level_Enabled}/>
           )
           )
         ) : (

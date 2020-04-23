@@ -112,12 +112,6 @@ class AdminDashboard extends React.Component {
 
   componentDidUpdate(prevProps)
   {
-      if(this.props.workshop_data !== prevProps.workshop_data)
-      {
-          this.setState({
-              workshops: this.props.workshop_data
-          })
-      }
       if(this.props.student_data !== prevProps.student_data)
       {
           this.setState({
@@ -187,6 +181,7 @@ class AdminDashboard extends React.Component {
 
   decrementLevel(Workshop_ID) {
     this.findWorkshopIndex(Workshop_ID);
+    this.props.updateLevel(1, Workshop_ID)
     //write code here to push to db that the workshop level has been decremented
     console.log("test");
   }
