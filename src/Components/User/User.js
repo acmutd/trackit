@@ -19,6 +19,7 @@ class User extends React.Component {
     this.authenticate = this.authenticate.bind(this);
     this.authenticateWorkshop = this.authenticateWorkshop.bind(this);
     this.signInWorkshop = this.signInWorkshop.bind(this);
+    this.updateUserProgress = this.updateUserProgress.bind(this);
     this.getWorkshopData = this.getWorkshopData.bind(this);
   }
 
@@ -56,8 +57,7 @@ class User extends React.Component {
             this.setState(
             { 
               workshopID: workshop
-            },
-            this.getWorkshopData) // callback for setState is set to readFromDatabase()
+            }, this.getWorkshopData)//this.getWorkshopData) // callback for setState is set to readFromDatabase()
           }
       })
   }
@@ -84,13 +84,22 @@ class User extends React.Component {
     var removeListener = this.props.database.firestore().collection('StudentsAtWorkshop').doc(this.state.workshopID)
           .onSnapshot(snapshot =>
           {
-              console.log(snapshot.data() + "inside progress")
+              console.log(snapshot.data())
               this.setState({
                   Level_Enabled: snapshot.data().Level_Enabled,
                   dataLoaded: true
               })
           })
   }
+
+updateUserProgress(progress)
+{
+  this.props.database.firestore().collection('StudentsAtWorkshop').doc(this.state.workshopID).update({
+    ['Progress.' + this.props.database.auth().currentUser.uid] : progress
+  }).then(() => {
+    console.log("updated")
+  })
+}
 
   render() {
     return (
@@ -101,7 +110,7 @@ class User extends React.Component {
           ( this.state.dataLoaded == false ? (
           <WorkshopLogin authenticate = {this.authenticateWorkshop}/>
           ) : (
-            <UserDash database = {this.props.database} workshop_data = {this.state.workshop_data} 
+            <UserDash workshop_data = {this.state.workshop_data} updateUserProgress = {this.state.updateUserProgress} 
             removeListener = {this.state.removeListener} Level_Enabled = {this.state.Level_Enabled}/>
           )
           )
