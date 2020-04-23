@@ -147,6 +147,15 @@ class Admin extends React.Component {
     })
   }
 
+  deleteWorkshop(workshopID)
+  {
+    // to delete or not delete in workshops collection, that is the question
+    console.log('deleting workshop')
+    this.props.database.firestore().collection('StudentsAtWorkshop').doc(workshopID).delete().then(() => {
+      console.log("deleted students at workshop")
+    })
+  }
+
   render() {
     return (
       <div>
