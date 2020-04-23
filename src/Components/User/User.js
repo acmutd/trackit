@@ -13,7 +13,8 @@ class User extends React.Component {
       workshop_data: null,
       removeListener: null,
       Level_Enabled: 0,
-      dataLoaded: false
+      dataLoaded: false,
+      Enabled: false
     };
 
     this.authenticate = this.authenticate.bind(this);
@@ -64,7 +65,8 @@ class User extends React.Component {
  
   signInWorkshop()
   {
-    
+    if(this.state.Enabled)
+      this.updateUserProgress(0);
   }
 
   getWorkshopData()
@@ -87,6 +89,7 @@ class User extends React.Component {
               console.log(snapshot.data())
               this.setState({
                   Level_Enabled: snapshot.data().Level_Enabled,
+                  Enabled: snapshot.data().Enabled,
                   dataLoaded: true
               })
           })

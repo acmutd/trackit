@@ -79,7 +79,17 @@ markCompleted()
     render() {
         let workshop_levels = this.state.workshop_data.Level_Titles.map(function(item, index)
         {
-            if(this.userProgress > index)
+            if(this.currentPage === index)
+            {
+                return(
+                    <Col key = {index}>
+                        <Card className = 'floating-icon' bg = 'success'>
+                            <Card.Header>{item}</Card.Header>
+                        </Card>
+                    </Col>
+                )
+            }
+            else if(this.userProgress > index)
             {
                 return(
                     <Col key = {index}>
