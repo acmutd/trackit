@@ -29,6 +29,7 @@ class Admin extends React.Component {
     this.readWorkshopData = this.readWorkshopData.bind(this);
     this.updateWorkshopLevel = this.updateWorkshopLevel.bind(this);
     this.readStudentData = this.readStudentData.bind(this);
+    this.updateWorkshopStatus = this.updateWorkshopStatus.bind(this);
   }
 
   componentWillUnmount()
@@ -135,13 +136,25 @@ class Admin extends React.Component {
     })
   }
 
+  updateWorkshopStatus(workshopID, status)
+  {
+    console.log("updating status")
+    console.log(this.state.student_data.Enabled)
+    this.props.database.firestore().collection('StudentsAtWorkshop').doc(workshopID).update({
+      Enabled: status
+    }).then(() => {
+      console.log("updated")
+    })
+  }
+
   render() {
     return (
       <div>
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
         {(this.state.loggedIn && this.state.dataLoaded) ? (
-          <AdminDashboard workshop_data = {this.state.workshop_data} updateLevel = {this.updateWorkshopLevel} student_data = {this.state.student_data}/>
+          <AdminDashboard workshop_data = {this.state.workshop_data} updateLevel = {this.updateWorkshopLevel} 
+          student_data = {this.state.student_data} updateStatus = {this.updateWorkshopStatus} />
         ) : (
           <AdminAuth authenticate={this.authenticate} loginError = {this.props.loginError} />
         )}

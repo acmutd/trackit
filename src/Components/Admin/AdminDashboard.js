@@ -142,6 +142,7 @@ class AdminDashboard extends React.Component {
 
   enableWorkshop(Workshop_ID) {
     console.log(Workshop_ID)
+    this.props.updateStatus(Workshop_ID, true);
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
     console.log(workshopIndex)
     let temp = this.state.studentsAtWorkshop[workshopIndex];
@@ -154,6 +155,7 @@ class AdminDashboard extends React.Component {
 
   disableWorkshop(Workshop_ID) {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    this.props.updateStatus(Workshop_ID, false);
     let temp = this.state.studentsAtWorkshop[workshopIndex];
     temp.Enabled = false;
     let tempArray = this.state.studentsAtWorkshop;
@@ -174,7 +176,7 @@ class AdminDashboard extends React.Component {
 
   incrementLevel(Workshop_ID) {
     this.findWorkshopIndex(Workshop_ID);
-  this.props.updateLevel(10, Workshop_ID)
+    this.props.updateLevel(10, Workshop_ID)
     //write code here to push to db that the workshop level has been incremented
     console.log("test");
   }
