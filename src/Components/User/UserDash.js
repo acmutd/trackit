@@ -26,12 +26,8 @@ class UserDash extends React.Component {
 
 componentWillUnmount()
 {
-    this.props.removeListener();
-}
-
-componentDidMount()
-{
-    
+    if(this.props.progressListener)
+        this.props.progressListener();
 }
 
 // lifecycle method that is invoked anytime the component props are updated

@@ -11,10 +11,9 @@ class User extends React.Component {
       loggedIn: false, //once authentication happens this will toggle to true
       workshopID: null,
       workshop_data: null,
-      removeListener: null,
       Level_Enabled: 0,
       dataLoaded: false,
-      Enabled: false
+      Enabled: false,    
     };
 
     this.authenticate = this.authenticate.bind(this);
@@ -26,7 +25,8 @@ class User extends React.Component {
 
   componentWillUnmount()
   {
-    this.state.removeListener();
+    if(this.progressListener)
+      this.progressListener();
   }
 
   // contacts firestore and authenticates the user. Sets user data if user login works.
@@ -71,7 +71,7 @@ class User extends React.Component {
 
   getWorkshopData()
   {
-      var removeListener = this.props.database.firestore().collection('Workshop').doc(this.state.workshopID)
+      this.props.database.firestore().collection('Workshop').doc(this.state.workshopID)
           .get().then(snapshot =>
           {
               console.log(snapshot.data())
@@ -83,7 +83,7 @@ class User extends React.Component {
 
   getProgressData()
   {
-    var removeListener = this.props.database.firestore().collection('StudentsAtWorkshop').doc(this.state.workshopID)
+    this.progressListener = this.props.database.firestore().collection('StudentsAtWorkshop').doc(this.state.workshopID)
           .onSnapshot(snapshot =>
           {
               console.log(snapshot.data())
@@ -97,6 +97,7 @@ class User extends React.Component {
 
 updateUserProgress(progress)
 {
+  // BELOW IS CODE TO UPDATE IF PROGRESS STORES IN A MAP
   this.props.database.firestore().collection('StudentsAtWorkshop').doc(this.state.workshopID).update({
     ['Progress.' + this.props.database.auth().currentUser.uid] : progress
   }).then(() => {
@@ -114,7 +115,7 @@ updateUserProgress(progress)
           <WorkshopLogin authenticate = {this.authenticateWorkshop}/>
           ) : (
             <UserDash workshop_data = {this.state.workshop_data} updateUserProgress = {this.state.updateUserProgress} 
-            removeListener = {this.state.removeListener} Level_Enabled = {this.state.Level_Enabled}/>
+            progressListener = {this.progressListener} Level_Enabled = {this.state.Level_Enabled}/>
           )
           )
         ) : (

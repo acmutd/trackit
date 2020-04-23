@@ -120,6 +120,11 @@ class AdminDashboard extends React.Component {
       }
   }
 
+  componentWillUnmount()
+  {
+    if(this.props.progressListener)
+      this.props.progressListener();
+  }
 
   /**
    * Changes the viewWorkshop state to true/false, this function is passed in as props to the <WorkshopBar /> Component which will return the its respective Workshop_ID back as param

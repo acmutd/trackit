@@ -34,6 +34,8 @@ class Admin extends React.Component {
 
   componentWillUnmount()
   {
+    if(this.progressListener)
+      this.progressListener();
     this.props.database.auth().signOut().then(function() {
       console.log("signed out")
     }).catch(function(error) {
@@ -108,7 +110,7 @@ class Admin extends React.Component {
 
   readStudentData()
   {
-    this.props.database.firestore().collection('StudentsAtWorkshop')
+    this.progressListener = this.props.database.firestore().collection('StudentsAtWorkshop')
           .onSnapshot(snapshot =>
           {
             var arr = [];
@@ -130,7 +132,7 @@ class Admin extends React.Component {
   {
     console.log("updating data for: " + level + " " + workshopID)
     this.props.database.firestore().collection('StudentsAtWorkshop').doc(workshopID).update({
-      adminProgress: level
+      Level_Enabled: level
     }).then(() => {
       console.log("updated")
     })
@@ -163,7 +165,7 @@ class Admin extends React.Component {
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
         {(this.state.loggedIn && this.state.dataLoaded) ? (
           <AdminDashboard workshop_data = {this.state.workshop_data} updateLevel = {this.updateWorkshopLevel} 
-          student_data = {this.state.student_data} updateStatus = {this.updateWorkshopStatus} />
+          student_data = {this.state.student_data} updateStatus = {this.updateWorkshopStatus} progressListener = {this.progressListener} />
         ) : (
           <AdminAuth authenticate={this.authenticate} loginError = {this.props.loginError} />
         )}
