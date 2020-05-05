@@ -123,16 +123,15 @@ class Admin extends React.Component {
               this.setState({
                   student_data: arr,
                   dataLoaded: true
-                  //removeListener: removeListener
               })
           })
   }
 
-  updateWorkshopLevel(level, workshopID)
+  updateWorkshopLevel(index, workshopID, value)
   {
-    console.log("updating data for: " + level + " " + workshopID)
+    console.log("updating data for: " + index + " " + workshopID)
     this.props.database.firestore().collection('StudentsAtWorkshop').doc(workshopID).update({
-      Level_Enabled: level
+      Level_Enabled: value
     }).then(() => {
       console.log("updated")
     })

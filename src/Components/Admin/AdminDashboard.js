@@ -108,6 +108,7 @@ class AdminDashboard extends React.Component {
       this
     );
     this.showHideAddEditDialog = this.showHideAddEditDialog.bind(this);
+    this.findStudentIndex = this.findStudentIndex.bind(this);
   }
 
   componentDidUpdate(prevProps)
@@ -131,6 +132,7 @@ class AdminDashboard extends React.Component {
    *
    * @param {*} Workshop_ID is the name of the workshop that needs to be expanded, received from <WorkshopBar /> Component
    */
+
   openWorkshopWindow(Workshop_ID) {
     var workshopIndex = 0;
     // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
@@ -180,16 +182,15 @@ class AdminDashboard extends React.Component {
   }
 
   incrementLevel(Workshop_ID) {
-    this.findWorkshopIndex(Workshop_ID);
-    this.props.updateLevel(10, Workshop_ID)
-    //write code here to push to db that the workshop level has been incremented
+    console.log(Workshop_ID)
+    var x = this.findStudentIndex(Workshop_ID);
+    this.props.updateLevel(x, Workshop_ID, this.state.studentsAtWorkshop[x].Level_Enabled + 1)
     console.log("test");
   }
 
   decrementLevel(Workshop_ID) {
-    this.findWorkshopIndex(Workshop_ID);
-    this.props.updateLevel(1, Workshop_ID)
-    //write code here to push to db that the workshop level has been decremented
+    var x = this.findStudentIndex(Workshop_ID);
+    this.props.updateLevel(x, Workshop_ID, this.state.studentsAtWorkshop[x].Level_Enabled - 1)
     console.log("test");
   }
 
@@ -246,6 +247,16 @@ class AdminDashboard extends React.Component {
       }
     }
     return workshopIndex;
+  }
+  findStudentIndex(Workshop_ID) {
+    var studentIndex = -1;
+    // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
+    for (var i = 0; i < this.state.studentsAtWorkshop.length; i++) {
+      if (this.state.studentsAtWorkshop[i].Workshop_ID === Workshop_ID) {
+        studentIndex = i;
+      }
+    }
+    return studentIndex;
   }
 
   render() {
