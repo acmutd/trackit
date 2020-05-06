@@ -89,6 +89,7 @@ class UserAuth extends React.Component {
                   <FormControl
                     placeholder="password"
                     aria-label="Password"
+                    type="password"
                     aria-describedby="basic-addon1"
                     value={this.state.password}
                     onChange={this.fillPassword}

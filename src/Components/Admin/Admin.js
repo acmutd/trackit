@@ -55,19 +55,19 @@ class Admin extends React.Component {
    * @param {*} password is the password of the person logging in
    */
 
-  authenticate(username, password) {
+  async authenticate(username, password) {
     this.props.database
       .auth()
       .signInWithEmailAndPassword(username, password)
       .catch((err) => {
         console.log("Invalid Email or Password");
-        return;
+        return false;
       });
-    this.props.database.auth().onAuthStateChanged((user) => {
+    await this.props.database.auth().onAuthStateChanged((user) => {
       // user is signed in
       if (user) {
         // get user data from Students collection to check if they are an admin
-        this.props.database
+         this.props.database
           .firestore()
           .collection("Student")
           .doc(user.uid)
