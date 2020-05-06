@@ -43,19 +43,10 @@ class Workshop extends React.Component {
       });
     }
 
-    //this makes the student name x axis and their progress y axis instead of aggregate values
-    // for (var i = dps.length; i < this.props.data.Students.length; i++) {
-    //   dps.push({
-    //     label: i,// this.props.data.Students[i],
-    //     y: this.props.data.Progress[i]
-    //   });
-    // }
-
     this.state = {
       dataArray: dps,
 
       confirmationDialog: false, //this is whether or not to show a confirmation dialog
-
       addEditWorkshopDialog: false, //this is whether or not to show the editing dialog
     };
     this.parseDataPoints = this.parseDataPoints.bind(this);
@@ -75,6 +66,37 @@ class Workshop extends React.Component {
       this
     );
     this.getDialogResponse = this.getDialogResponse.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.properties !== prevProps.properties) {
+      var dps = [];
+
+      var xValues = [];
+      var yValues = [];
+
+      for (var i = 0; i < this.props.properties.Number_Of_Levels; i++) {
+        let a = i + 1; //make the index start from 0 instead of 1
+        xValues.push(a + ""); //convert to string to represent as a label instead of coordinate
+        yValues.push(0); //initial count for aggregate
+      }
+
+      for (var k = 0; k < this.props.data.Progress.length; k++) {
+        yValues[this.props.data.Progress[k] - 1] += 1;
+      }
+
+      for (var j = 0; j < xValues.length; j++) {
+        dps.push({
+          label: xValues[j],
+          y: yValues[j],
+        });
+      }
+      this.setState({
+        dataArray: dps,
+      });
+
+      //redraw the chart somehow here
+    }
   }
 
   //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph

@@ -33,8 +33,12 @@ class Admin extends React.Component {
     this.signOutUser = this.signOutUser.bind(this);
     this.updateWorkshop = this.updateWorkshop.bind(this);
     this.createNewWorkshop = this.createNewWorkshop.bind(this);
+    this.clearStudentsAtWorkshop = this.clearStudentsAtWorkshop.bind(this);
   }
 
+  /**
+   * If the page crashes then the user gets automatically logged out
+   */
   componentWillUnmount() {
     this.props.database
       .auth()
@@ -55,7 +59,6 @@ class Admin extends React.Component {
    * @param {*} username is the username of the person logging in
    * @param {*} password is the password of the person logging in
    */
-
   authenticate(username, password) {
     this.props.database
       .auth()
@@ -102,6 +105,10 @@ class Admin extends React.Component {
     });
   }
 
+  /**
+   * Read workshop data and set listener to see if any updates are being made
+   * Calls readStudentData(); once it has finished reading the workshop data
+   */
   readWorkshopData() {
     this.workshopListener = this.props.database
       .firestore()
@@ -122,6 +129,9 @@ class Admin extends React.Component {
       });
   }
   
+  /**
+   * Read student data and set listener to see if any updates are being made
+   */
   readStudentData()
   {
     this.progressListener = this.props.database.firestore().collection('StudentsAtWorkshop')
@@ -158,6 +168,11 @@ class Admin extends React.Component {
           })
   }
 
+  /**
+   * updates the workshop level in the db
+   * @param {*} workshopID 
+   * @param {*} level 
+   */
   updateWorkshopLevel(workshopID, level) {
     console.log("setting admin level for workshop: " + workshopID + " = " + level);
     this.props.database
@@ -172,6 +187,11 @@ class Admin extends React.Component {
       });
   }
 
+  /**
+   * 
+   * @param {*} workshopID 
+   * @param {*} status 
+   */
   updateWorkshopStatus(workshopID, status) {
     console.log("updating status");
     this.props.database
@@ -186,10 +206,26 @@ class Admin extends React.Component {
       });
   }
 
-  
+  /**
+   * clears the map containing student username and progress
+   * @param {*} workshopID 
+   */
+  clearStudentsAtWorkshop(workshopID) {
+    console.log("remove all students from workshop");
+    this.props.database.firestore().collection("StudentsAtWorkshop").doc(workshopID).update({
+      testProgress: {},
+    }).then(() => {
+      console.log("cleared all students");
+    });
+  }
 
+  /**
+   * updates all fields in a workshop by overwriting them
+   * @param {*} workshopID 
+   * @param {*} workshopObject 
+   */
   updateWorkshop(workshopID, workshopObject) {
-    console.log("updating all fields in studentsAtWorkshop collection");
+    console.log("updating all fields in workshop collection");
     this.props.database.firestore().collection("Workshop").doc(workshopID).set({
       Date: workshopObject.Date,
       Level_Descriptions: workshopObject.Level_Descriptions,
@@ -200,8 +236,18 @@ class Admin extends React.Component {
     }).then(() => {
       console.log("update complete");
     });
+
+    this.props.database.firestore().collection("StudentsAtWorkshop").doc(workshopID).update({
+      Level_Enabled: 1,
+    }).then(() => {
+      console.log("reset level enabled for workshop to be 1");
+    })
   }
 
+  /**
+   * creates a new workshop, should fail if a workshop already exists with the same name
+   * @param {*} workshopObject 
+   */
   createNewWorkshop(workshopObject) {
     console.log("creating new workshop");
     this.props.database.firestore().collection("Workshop").doc(workshopObject.Workshop_ID).set(workshopObject).then(() => {
@@ -220,6 +266,10 @@ class Admin extends React.Component {
     })
   }
 
+  /**
+   * deletes a workshop from both the workshop and the studentsAtworkshop collection
+   * @param {*} workshopID 
+   */
   deleteWorkshop(workshopID) {
     console.log("deleting workshop from both Workshop and StudentAtWorkshop collection");
 
@@ -242,6 +292,9 @@ class Admin extends React.Component {
       });
   }
 
+  /**
+   * signs out the user
+   */
   signOutUser()
   {
     console.log('signing Out');
@@ -256,6 +309,9 @@ class Admin extends React.Component {
       })
   }
 
+  /**
+   * renders the page
+   */
   render() {
     return (
       <div>
@@ -270,6 +326,7 @@ class Admin extends React.Component {
             createWorkshop={this.createNewWorkshop}
             deleteWorkshop={this.deleteWorkshop}
             updateStatus={this.updateWorkshopStatus}
+            clearWorkshop={this.clearStudentsAtWorkshop}
             progressListener = {this.progressListener}
             workshopListener={this.workshopListener}
             signOut = {this.signOutUser}

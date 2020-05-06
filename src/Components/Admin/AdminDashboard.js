@@ -127,8 +127,7 @@ class AdminDashboard extends React.Component {
   }
 
   clearAllStudents(Workshop_ID) {
-    this.findWorkshopIndex(Workshop_ID);
-    console.log("test");
+    this.props.clearWorkshop(Workshop_ID);
   }
 
   deleteWorkshop(Workshop_ID) {
