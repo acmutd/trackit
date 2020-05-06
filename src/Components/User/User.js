@@ -98,7 +98,7 @@ updateUserProgress(progress)
 {
   // BELOW IS CODE TO UPDATE IF PROGRESS STORES IN A MAP
   this.props.database.firestore().collection('StudentsAtWorkshop').doc(this.state.workshopID).update({
-    ['Progress.' + this.props.database.auth().currentUser.uid] : progress
+    ['testProgress.' + this.props.database.auth().currentUser.uid] : progress
   }).then(() => {
     console.log("updated")
   })

@@ -47,6 +47,7 @@ class Admin extends React.Component {
       });
   }
 
+
   /**
    * This function is passed as props to the AdminAuth Component which returns the username and password entered
    * Currrently just changes the loggedIn state to true without any checks
@@ -63,7 +64,7 @@ class Admin extends React.Component {
         this.setState({
           loginError: true
         })
-        console.log("Invalid Email or Password" + this.state.loginError);
+        console.log("Invalid Email or Password");
       });
     this.props.database.auth().onAuthStateChanged((user) => {
       // user is signed in
@@ -121,25 +122,6 @@ class Admin extends React.Component {
         );
       });
   }
-
-  readStudentData() {
-    this.props.database
-      .firestore()
-      .collection("StudentsAtWorkshop")
-      .onSnapshot((snapshot) => {
-        var arr = [];
-        snapshot.forEach((snap) => {
-          arr.push(snap.data());
-        });
-        console.log(arr);
-
-        this.setState({
-          student_data: arr,
-          dataLoaded: true,
-          //removeListener: removeListener
-        });
-      });
-  }
   
   readStudentData()
   {
@@ -149,7 +131,24 @@ class Admin extends React.Component {
             var arr = [];
             snapshot.forEach(snap =>
               {
-                arr.push(snap.data())
+                var students = [];
+                var progress = []
+                for(var x in snap.data().testProgress)
+                {
+                  students.push(x)
+                  progress.push(snap.data().testProgress[x])
+                }
+                console.log(students)
+                console.log(progress)
+
+                var temp = {}
+                temp.Students = students;
+                temp.Progress = progress;
+                temp.Enabled = snap.data().Enabled;
+                temp.Workshop_ID = snap.data().Workshop_ID;
+                temp.Level_Enabled = snap.data().Level_Enabled;
+                arr.push(temp)
+                console.log(temp)
               })
               console.log(arr)
 
