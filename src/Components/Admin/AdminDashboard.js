@@ -278,7 +278,7 @@ class AdminDashboard extends React.Component {
 
     return (
       <div>
-        <NavBar />
+        <NavBar dashboard = {true} signOut = {this.props.signOut}/>
         <Container fluid>
           <div className="m-5">
             <Row>{tiles}</Row>

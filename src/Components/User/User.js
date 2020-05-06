@@ -20,7 +20,7 @@ class User extends React.Component {
     this.authenticateWorkshop = this.authenticateWorkshop.bind(this);
     this.signInWorkshop = this.signInWorkshop.bind(this);
     this.updateUserProgress = this.updateUserProgress.bind(this);
-    this.getWorkshopData = this.getWorkshopData.bind(this);
+    this.getProgressData = this.getProgressData.bind(this);
   }
 
   componentWillUnmount()
@@ -35,8 +35,9 @@ class User extends React.Component {
     this.props.database.auth().signInWithEmailAndPassword(email, password).catch(err =>
       {
         console.log("Invalid Email or Password")
+        return false;
       })
-    this.props.database.auth().onAuthStateChanged( user =>
+    this.props.database.auth().onAuthStateChanged(user =>
       {
         if(user) // user is signed in
         {
@@ -45,40 +46,31 @@ class User extends React.Component {
           })
         }
       })
+      return false;
   }
 
   authenticateWorkshop(workshop)
   {
     this.props.database.firestore().collection('Workshop').doc(workshop).get().then(doc =>
       {
-          if(doc.empty)
+          if(!doc.exists)
               console.log('no workshop found');
           else
           {
             this.setState(
             { 
-              workshopID: workshop
-            }, this.getWorkshopData)//this.getWorkshopData) // callback for setState is set to readFromDatabase()
+                workshop_data: doc.data(),
+                workshopID: workshop
+            }, this.getProgressData)
           }
       })
+      return false;
   }
  
   signInWorkshop()
   {
     if(this.state.Enabled)
       this.updateUserProgress(0);
-  }
-
-  getWorkshopData()
-  {
-      this.props.database.firestore().collection('Workshop').doc(this.state.workshopID)
-          .get().then(snapshot =>
-          {
-              console.log(snapshot.data())
-              this.setState({
-                  workshop_data: snapshot.data(),
-              }, this.getProgressData)
-          })
   }
 
   getProgressData()

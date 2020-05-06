@@ -30,6 +30,7 @@ class Admin extends React.Component {
     this.updateWorkshopLevel = this.updateWorkshopLevel.bind(this);
     this.readStudentData = this.readStudentData.bind(this);
     this.updateWorkshopStatus = this.updateWorkshopStatus.bind(this);
+    this.signOutUser = this.signOutUser.bind(this);
   }
 
   componentWillUnmount()
@@ -88,6 +89,7 @@ class Admin extends React.Component {
             })
         }
       })
+      return false
   }
 
   readWorkshopData() 
@@ -157,6 +159,20 @@ class Admin extends React.Component {
     })
   }
 
+  signOutUser()
+  {
+    console.log('signing Out');
+    this.props.database.auth().signOut().then(() =>
+    {
+      this.setState({
+        loggedIn: false
+      })
+    }).catch(err =>
+      {
+        console.log("error signing user out")
+      })
+  }
+
   render() {
     return (
       <div>
@@ -164,9 +180,9 @@ class Admin extends React.Component {
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
         {(this.state.loggedIn && this.state.dataLoaded) ? (
           <AdminDashboard workshop_data = {this.state.workshop_data} updateLevel = {this.updateWorkshopLevel} 
-          student_data = {this.state.student_data} updateStatus = {this.updateWorkshopStatus} progressListener = {this.progressListener} />
+          student_data = {this.state.student_data} updateStatus = {this.updateWorkshopStatus} progressListener = {this.progressListener} signOut = {this.signOutUser}/>
         ) : (
-          <AdminAuth authenticate={this.authenticate} loginError = {this.props.loginError} />
+          <AdminAuth authenticate={this.authenticate} loginError = {this.props.loginError}/>
         )}
       </div>
     );

@@ -6,6 +6,7 @@ import {
   faCreativeCommonsBy,
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from 'react-bootstrap/Button'
 
 // import { Avatar, deepOrange } from "@material-ui/core"; (later use)
 
@@ -75,6 +76,9 @@ class NavBar extends React.Component {
                   size="lg"
                 />
               </Nav.Link>
+              {this.props.dashboard === true ? 
+              (<Button variant="dark" onClick = {this.props.signOut}>Sign Out</Button>
+              ) : ('')}
               {/* <Nav.Link>
                 <Avatar>H</Avatar>
               </Nav.Link> */}

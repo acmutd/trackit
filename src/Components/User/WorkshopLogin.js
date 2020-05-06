@@ -6,16 +6,19 @@ import Col from "react-bootstrap/Col";
 import FormControl from "react-bootstrap/FormControl";
 import Container from "react-bootstrap/Container";
 import NavBar from "../Layout/NavBar";
+import Alert from 'react-bootstrap/Alert'
 
 class WorkshopLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       workshopID: '',
+      loginError: false
     };
 
     this.fillWorkshop = this.fillWorkshop.bind(this);
     this.authenticate = this.authenticate.bind(this);
+    this.setShow = this.setShow.bind(this)
   }
 
   fillWorkshop(event) {
@@ -26,7 +29,14 @@ class WorkshopLogin extends React.Component {
 
   authenticate()
   {
-      this.props.authenticate(this.state.workshopID)
+      if(this.props.authenticate(this.state.workshopID) === false)
+        this.setShow(true)
+  }
+
+  setShow(show) {
+    this.setState({
+      loginError: show
+    });
   }
 
   render() {
@@ -35,6 +45,9 @@ class WorkshopLogin extends React.Component {
         <NavBar />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
+          {this.state.loginError ? (
+              <Alert variant="danger" onClose = {() => this.setShow(false)} dismissible>Invalid Username or Password</Alert>
+            ) : ("")}
             <Row>
               {/* Username text field */}
               <Col xs={12} sm={12} md={10}>

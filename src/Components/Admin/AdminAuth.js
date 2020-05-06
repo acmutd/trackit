@@ -22,12 +22,13 @@ class AdminAuth extends React.Component {
     this.state = {
       username: "", //stores username
       password: "", //stores password
-      loginError: false,
+      loginError: false
     };
 
     this.fillUsername = this.fillUsername.bind(this);
     this.fillPassword = this.fillPassword.bind(this);
     this.authenticate = this.authenticate.bind(this);
+    this.setShow = this.setShow.bind(this);
   }
 
   /**
@@ -56,32 +57,28 @@ class AdminAuth extends React.Component {
    * Calls the authenticate function passed in from <Admin /> with the username and password stored in state
    */
   authenticate() {
-    if(this.props.authenticate(this.state.username, this.state.password) != undefined)
+    if(this.props.authenticate(this.state.username, this.state.password) === false)
     {
-      this.setState({
-        loginError: true,
-      });
+      this.setShow(true)
     }
   }
 
+  setShow(show) {
+    this.setState({
+      loginError: show
+    });
+  }
+
   render() {
-    // eslint-disable-next-line
-    function setShow(show) {
-      this.setState({
-        loginError: show,
-      });
-    }
 
     return (
       <div>
-        <NavBar />
+        <NavBar/>
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
             {this.state.loginError ? (
-              <Alert variant="danger">Invalid Username or Password </Alert>
-            ) : (
-              ""
-            )}
+              <Alert variant="danger" onClose = {() => this.setShow(false)} dismissible>Invalid Username or Password</Alert>
+            ) : ("")}
             <Row>
               {/* Username text field */}
               <Col xs={12} sm={12} md={5}>

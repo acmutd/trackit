@@ -6,6 +6,7 @@ import {
   Col,
   FormControl,
   Container,
+  Alert
 } from "react-bootstrap";
 import NavBar from "../Layout/NavBar";
 
@@ -14,12 +15,14 @@ class UserAuth extends React.Component {
     super(props);
     this.state = {
       email: "", // stores name of user
-      password: ""
+      password: "",
+      loginError: false
     };
 
     this.fillEmail = this.fillEmail.bind(this);
     this.fillPassword = this.fillPassword.bind(this);
     this.authenticate = this.authenticate.bind(this);
+    this.setShow = this.setShow.bind(this);
   }
 
   fillEmail(event) {
@@ -38,7 +41,16 @@ class UserAuth extends React.Component {
    * Calls the authenticate function passed in from <Admin /> with the username and password stored in state
    */
   authenticate() {
-    this.props.authenticate(this.state.email, this.state.password);
+    if(this.props.authenticate(this.state.email, this.state.password) === false)
+    {
+      this.setShow(true)
+    }
+  }
+
+  setShow(show) {
+    this.setState({
+      loginError: show
+    });
   }
 
   render() {
@@ -47,6 +59,9 @@ class UserAuth extends React.Component {
         <NavBar />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
+          {this.state.loginError ? (
+              <Alert variant="danger" onClose = {() => this.setShow(false)} dismissible>Invalid Email or Password</Alert>
+            ) : ("")}
             <Row>
               {/* Username text field */}
               <Col xs={12} sm={12} md={5}>
