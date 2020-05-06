@@ -58,7 +58,10 @@ class WorkshopEdit extends React.Component {
   initializeState() {
     //if it is null then a new workshop is being created else an existing  one is being updated
     if (this.props.workshop != null) {
-      let tempX = { ...this.props.workshop };
+      let temp = new Date(this.props.workshop.Date.seconds * 1000);
+      let tempX = { 
+      ...this.props.workshop,
+      Date: temp };
       this.setState({
         Workshop: tempX,
       });
