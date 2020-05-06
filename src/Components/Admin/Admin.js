@@ -103,11 +103,10 @@ class Admin extends React.Component {
   }
 
   readWorkshopData() {
-    this.props.database
+    this.workshopListener = this.props.database
       .firestore()
       .collection("Workshop")
-      .get()
-      .then((snapshot) => {
+      .onSnapshot((snapshot) => {
         var arr = [];
         snapshot.forEach((snap) => {
           arr.push(snap.data());
@@ -175,7 +174,6 @@ class Admin extends React.Component {
 
   updateWorkshopStatus(workshopID, status) {
     console.log("updating status");
-    console.log(this.state.student_data.Enabled);
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
@@ -188,12 +186,11 @@ class Admin extends React.Component {
       });
   }
 
+  
+
   updateWorkshop(workshopID, workshopObject) {
     console.log("updating all fields in studentsAtWorkshop collection");
-
-    // I think the date field in the workshop object needs some changing for it to work
-
-    this.props.database.firestore().collection("Workshop").doc(workshopID).update({
+    this.props.database.firestore().collection("Workshop").doc(workshopID).set({
       Date: workshopObject.Date,
       Level_Descriptions: workshopObject.Level_Descriptions,
       Level_Titles: workshopObject.Level_Titles,
@@ -206,18 +203,19 @@ class Admin extends React.Component {
   }
 
   createNewWorkshop(workshopObject) {
-    this.props.database.firestore().collection("Workshop").doc(workshopObject.workshop_ID).set(workshopObject).then(() => {
+    console.log("creating new workshop");
+    this.props.database.firestore().collection("Workshop").doc(workshopObject.Workshop_ID).set(workshopObject).then(() => {
       console.log("new workshop created");
     });
 
     let tempStudentWorkshop = {
       Workshop_ID: workshopObject.Workshop_ID,
       Enabled: false,
-      Level_Enabled: 0,
+      Level_Enabled: 1,
       Students: [],
       Progress: [],
     };
-    this.props.database.firestore().collection("StudentsAtWorkshop").doc(workshopObject.workshop_ID).set(tempStudentWorkshop).then(() => {
+    this.props.database.firestore().collection("StudentsAtWorkshop").doc(workshopObject.Workshop_ID).set(tempStudentWorkshop).then(() => {
       console.log("empty students at workshop entry created")
     })
   }
@@ -272,7 +270,8 @@ class Admin extends React.Component {
             createWorkshop={this.createNewWorkshop}
             deleteWorkshop={this.deleteWorkshop}
             updateStatus={this.updateWorkshopStatus}
-            progressListener = {this.progressListener} 
+            progressListener = {this.progressListener}
+            workshopListener={this.workshopListener}
             signOut = {this.signOutUser}
           />
         ) : (

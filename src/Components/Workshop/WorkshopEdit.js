@@ -49,6 +49,7 @@ class WorkshopEdit extends React.Component {
       this
     );
     this.setWorkshopDate = this.setWorkshopDate.bind(this);
+    this.callPropsSubmit = this.callPropsSubmit.bind(this);
   }
 
   /**
@@ -90,24 +91,6 @@ class WorkshopEdit extends React.Component {
    * This gets called when the submit button is pressed to save changes made to a workshop or save a new workshop
    */
   submit() {
-    //the slice commands below ensure that when the workshop is saved then only the correct number of levels are passed back
-    //For example if the workshop used to have 5 levels but was edited to only have 4 then the slice commands will remove the extra one
-    let lvlTitl = this.state.Workshop.Level_Titles.slice(
-      0,
-      this.state.Workshop.Number_Of_Levels
-    );
-    let lvlDesc = this.state.Workshop.Level_Descriptions.slice(
-      0,
-      this.state.Workshop.Number_Of_Levels
-    );
-    //updates the workshop state to have the sliced arrays
-    this.setState((state) => ({
-      Workshop: {
-        ...state.Workshop,
-        Level_Titles: lvlTitl,
-        Level_Descriptions: lvlDesc,
-      },
-    }));
     this.props.submit(this.state.Workshop, true);
     //sets to null to prepare for the next time the component may get used
     this.setState({
@@ -120,6 +103,10 @@ class WorkshopEdit extends React.Component {
         Date: null,
       },
     });
+  }
+
+  callPropsSubmit() {
+    this.props.submit(this.state.Workshop, true);
   }
 
   incrementLevel() {
