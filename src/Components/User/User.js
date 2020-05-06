@@ -132,7 +132,7 @@ signOutUser()
           ( this.state.dataLoaded == false ? (
           <WorkshopLogin authenticate = {this.authenticateWorkshop}/>
           ) : (
-            <UserDash workshop_data = {this.state.workshop_data} updateUserProgress = {this.state.updateUserProgress} 
+            <UserDash workshop_data = {this.state.workshop_data} updateUserProgress = {this.updateUserProgress} 
             progressListener = {this.progressListener} Level_Enabled = {this.state.Level_Enabled} signOut = {this.signOutUser} />
           )
           )

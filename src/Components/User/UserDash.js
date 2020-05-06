@@ -64,12 +64,13 @@ previousLevel()
 // marks current stage completed and sends data to database. 
 markCompleted()
 {
+    console.log(this.state.userProgress + ' '  + this.state.currentPage )
     // update database on current user progress
     this.setState(function (state, props) {
       return {
         userProgress: state.userProgress + 1,
       };
-    });
+    }, this.props.updateUserProgress(this.state.userProgress + 1));
   }
 
     render() {
