@@ -21,6 +21,7 @@ class User extends React.Component {
     this.signInWorkshop = this.signInWorkshop.bind(this);
     this.updateUserProgress = this.updateUserProgress.bind(this);
     this.getProgressData = this.getProgressData.bind(this);
+    this.signOutUser = this.signOutUser.bind(this);
   }
 
   componentWillUnmount()
@@ -32,10 +33,16 @@ class User extends React.Component {
   // contacts firestore and authenticates the user. Sets user data if user login works.
   authenticate(email, password) 
   {
+    if(this.props.database.currentUser !== undefined)
+      {
+        console.log(this.props.database.currentUser)
+        this.setState({
+          loggedIn: true
+        })
+      }
     this.props.database.auth().signInWithEmailAndPassword(email, password).catch(err =>
       {
         console.log("Invalid Email or Password")
-        return false;
       })
     this.props.database.auth().onAuthStateChanged(user =>
       {
@@ -46,7 +53,7 @@ class User extends React.Component {
           })
         }
       })
-      return false;
+      return this.props.database.currentUser !== undefined;
   }
 
   authenticateWorkshop(workshop)
@@ -54,7 +61,7 @@ class User extends React.Component {
     this.props.database.firestore().collection('Workshop').doc(workshop).get().then(doc =>
       {
           if(!doc.exists)
-              console.log('no workshop found');
+              return;
           else
           {
             this.setState(
@@ -97,6 +104,25 @@ updateUserProgress(progress)
   })
 }
 
+signOutUser()
+  {
+    console.log('signing Out');
+    this.props.database.auth().signOut().then(() =>
+    {
+      this.setState({
+        loggedIn: false, //once authentication happens this will toggle to true
+        workshopID: null,
+        workshop_data: null,
+        Level_Enabled: 0,
+        dataLoaded: false,
+        Enabled: false,
+      })
+    }).catch(err =>
+      {
+        console.log("error signing user out")
+      })
+  }
+
   render() {
     return (
       <div>
@@ -107,7 +133,7 @@ updateUserProgress(progress)
           <WorkshopLogin authenticate = {this.authenticateWorkshop}/>
           ) : (
             <UserDash workshop_data = {this.state.workshop_data} updateUserProgress = {this.state.updateUserProgress} 
-            progressListener = {this.progressListener} Level_Enabled = {this.state.Level_Enabled}/>
+            progressListener = {this.progressListener} Level_Enabled = {this.state.Level_Enabled} signOut = {this.signOutUser} />
           )
           )
         ) : (

@@ -118,7 +118,7 @@ markCompleted()
 
       return (
         <div>
-            <NavBar /> 
+            <NavBar dashboard = {true} signOut = {this.props.signOut}/> 
             <Container fluid className = "text-center p-3">
                 <Row className = 'm-3 mb-5'>{workshop_levels}</Row>
                 <ProgressBar className = 'mb-4'>

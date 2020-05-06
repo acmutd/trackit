@@ -182,7 +182,7 @@ class Admin extends React.Component {
           <AdminDashboard workshop_data = {this.state.workshop_data} updateLevel = {this.updateWorkshopLevel} 
           student_data = {this.state.student_data} updateStatus = {this.updateWorkshopStatus} progressListener = {this.progressListener} signOut = {this.signOutUser}/>
         ) : (
-          <AdminAuth authenticate={this.authenticate} loginError = {this.props.loginError}/>
+          <AdminAuth authenticate={this.authenticate} loginError = {this.state.loginError}/>
         )}
       </div>
     );
