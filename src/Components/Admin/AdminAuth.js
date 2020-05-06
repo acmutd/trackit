@@ -31,6 +31,16 @@ class AdminAuth extends React.Component {
     this.setShow = this.setShow.bind(this);
   }
 
+  componentDidUpdate(prevProps)
+  {
+      if(this.props.loginError !== prevProps.loginError)
+      {
+          this.setState({
+              loginError: this.props.loginError
+          })
+      }
+  }
+
   /**
    * Saves username to the component state
    *
@@ -56,11 +66,9 @@ class AdminAuth extends React.Component {
   /**
    * Calls the authenticate function passed in from <Admin /> with the username and password stored in state
    */
-  authenticate() {
-    if(this.props.authenticate(this.state.username, this.state.password) === false)
-    {
-      this.setShow(true)
-    }
+  authenticate() 
+  {
+    this.props.authenticate(this.state.username, this.state.password)
   }
 
   setShow(show) {

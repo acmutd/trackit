@@ -21,7 +21,7 @@ class Admin extends React.Component {
       loginError: false,
       workshop_data: null,
       student_data: null,
-      dataLoaded: false,
+      dataLoaded: false
     };
 
     this.authenticate = this.authenticate.bind(this);
@@ -55,15 +55,17 @@ class Admin extends React.Component {
    * @param {*} password is the password of the person logging in
    */
 
-  async authenticate(username, password) {
+  authenticate(username, password) {
     this.props.database
       .auth()
       .signInWithEmailAndPassword(username, password)
       .catch((err) => {
-        console.log("Invalid Email or Password");
-        return false;
+        this.setState({
+          loginError: true
+        })
+        console.log("Invalid Email or Password" + this.state.loginError);
       });
-    await this.props.database.auth().onAuthStateChanged((user) => {
+    this.props.database.auth().onAuthStateChanged((user) => {
       // user is signed in
       if (user) {
         // get user data from Students collection to check if they are an admin
@@ -80,6 +82,9 @@ class Admin extends React.Component {
                 loggedIn: true,
               });
             } else {
+              this.setState({
+                loginError: true
+              })
               // logout non Admin user
               this.props.database
                 .auth()
@@ -94,7 +99,6 @@ class Admin extends React.Component {
           });
       }
     });
-    return false
   }
 
   readWorkshopData() {
@@ -275,7 +279,7 @@ class Admin extends React.Component {
         ) : (
           <AdminAuth
             authenticate={this.authenticate}
-            loginError={this.props.loginError}
+            loginError={this.state.loginError}
           />
         )}
       </div>
