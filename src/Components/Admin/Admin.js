@@ -169,7 +169,7 @@ class Admin extends React.Component {
 
     // I think the date field in the workshop object needs some changing for it to work
 
-    this.props.database.firestore().collection("StudentsAtWorkshop").doc(workshopID).update({
+    this.props.database.firestore().collection("Workshop").doc(workshopID).update({
       Date: workshopObject.Date,
       Level_Descriptions: workshopObject.Level_Descriptions,
       Level_Titles: workshopObject.Level_Titles,

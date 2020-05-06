@@ -28,7 +28,7 @@ class WorkshopBar extends React.Component {
     let month = null;
     let year = null;
     let day = null;
-    let temp = new Date(this.props.data.Date.seconds * 1000)
+    let temp = new Date(this.props.data.Date.seconds * 1000);
     console.log(temp)
     if (temp != null) {
       date = temp.getDate();
