@@ -1,17 +1,13 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import FormControl from "react-bootstrap/FormControl";
-import Container from "react-bootstrap/Container";
 import NavBar from "../Layout/NavBar";
+import {Button, InputGroup, Row, Col, FormControl, Container, Alert} from 'react-bootstrap';
 
 class WorkshopLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       workshopID: '',
+      loginError: false
     };
 
     this.fillWorkshop = this.fillWorkshop.bind(this);
@@ -26,7 +22,12 @@ class WorkshopLogin extends React.Component {
 
   authenticate()
   {
-      this.props.authenticate(this.state.workshopID)
+      if(this.props.authenticate(this.state.workshopID) === false)
+        {
+          this.setState({
+            loginError: true
+          })
+        }
   }
 
   render() {
@@ -35,6 +36,9 @@ class WorkshopLogin extends React.Component {
         <NavBar />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
+          {this.state.loginError ? (
+              <Alert variant="danger" onClose = {() => this.setState({loginError: false})} dismissible>Invalid Workshop ID</Alert>
+            ) : ("")}
             <Row>
               {/* Username text field */}
               <Col xs={12} sm={12} md={10}>

@@ -9,60 +9,11 @@ import { Row, Col, Container } from "react-bootstrap";
 /**
  * UI component that manages how the admin dashboard looks like
  *
- * Author: Harsha Srikara
- * Date: 4/16/20
  */
 class AdminDashboard extends React.Component {
   constructor(props) {
     super(props);
-
-    //hardcoded data below, will need to eventually read back the same information from firebase and receive it as props
-    //data here is missing date field from the database schema, needs to be added in as a field for all items in the array
-    //the following three variables represent the workshop collection on firebase
-    let first = {
-      Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
-      Level_Descriptions: [
-        "info part 1",
-        "info part 2",
-        "info part 3",
-        "info part 4",
-        "info part 5",
-      ],
-      Number_Of_Levels: 5,
-      Workshop_ID: "firebase",
-      Workshop_Name: "firebase",
-      Date: null,
-    };
-
-    let second = {
-      Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
-      Level_Descriptions: [
-        "check part 1",
-        "check part 2",
-        "check part 3",
-        "info part 4",
-        "info part 5",
-      ],
-      Number_Of_Levels: 5,
-      Workshop_ID: "azure",
-      Workshop_Name: "azure",
-      Date: null,
-    };
-
-    let third = {
-      Level_Titles: ["Part 1", "Part 2", "Part 3", "Part 4", "Part 5"],
-      Level_Descriptions: [
-        "info part 1",
-        "info part 2",
-        "info part 3",
-        "info part 4",
-        "info part 5",
-      ],
-      Number_Of_Levels: 5,
-      Workshop_ID: "aws",
-      Workshop_Name: "aws",
-      Date: null,
-    };
+    console.log("opening dash");
 
     let openDialog = () => {
       this.showHideAddEditDialog();
@@ -73,7 +24,7 @@ class AdminDashboard extends React.Component {
       title: "Admin",
       subtitle: "Administrative Tools",
       description: "Configuration tool for setting up new workshops",
-      links: ["", "", openDialog, ""],
+      links: ["", "", openDialog, ""], //functions
       linkText: [
         "Download Workshops",
         "Transfer Workshops",
@@ -86,7 +37,7 @@ class AdminDashboard extends React.Component {
       title: "Development",
       subtitle: "Development Tools",
       description: "Try out beta tools for customizing trackit",
-      links: [],
+      links: [], //functions
       linkText: [],
     };
 
@@ -94,50 +45,16 @@ class AdminDashboard extends React.Component {
       title: "Social",
       subtitle: "Media Tools",
       description: "Access resources and social media",
-      links: [],
+      links: [], //functions
       linkText: ["Github", "LinkedIn", "Instagram"],
     };
 
-    //additional hard coded data
-    //this is the main part that needs to constantly be read from the database, everything else is read one time only
-    //the represents the StudentsAtWorkshop collection on firebase
-    let wfirst = {
-      Workshop_ID: "firebase",
-      Enabled: false,
-      Level_Enabled: 1,
-      Students: ["anirudh", "harsha", "sivam", "patel", "emmadi", "srikara"],
-      Progress: [3, 2, 2, 4, 5, 5],
-    };
-
-    let wsecond = {
-      Workshop_ID: "azure",
-      Enabled: false,
-      Level_Enabled: 1,
-      Students: ["atharv", "gautam", "aashish", "jain", "sapre", "sharma"],
-      Progress: [1, 3, 4, 1, 4, 4],
-    };
-
-    let wthird = {
-      Workshop_ID: "aws",
-      Enabled: false,
-      Level_Enabled: 1,
-      Students: [
-        "sanjana",
-        "ifrit",
-        "shivani",
-        "vamika",
-        "sanjeev",
-        "penupala",
-      ],
-      Progress: [5, 4, 2, 1, 3, 4],
-    };
-
     this.state = {
-      workshops: [first, second, third], //this will eventually be passed in through props
-      cards: [cfirst, csecond, cthird], //will be " " " "
-      studentsAtWorkshop: [wfirst, wsecond, wthird], // will be  " " " "
-      viewWorkshop: false, //toggle between true or false
-      workshopView: 1, //change this number to 0 1 or 2
+      workshops: this.props.workshop_data,
+      cards: [cfirst, csecond, cthird],
+      studentsAtWorkshop: this.props.student_data,
+      viewWorkshop: false, //determines whether the expanded view is open or not
+      workshopView: 1, //this determines the index of the workshop which has the expanded view
 
       addWorkshopDialogState: false,
     };
@@ -155,6 +72,30 @@ class AdminDashboard extends React.Component {
       this
     );
     this.showHideAddEditDialog = this.showHideAddEditDialog.bind(this);
+    this.findStudentIndex = this.findStudentIndex.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.student_data !== prevProps.student_data) {
+      this.setState({
+        studentsAtWorkshop: this.props.student_data,
+      });
+    }
+
+    if (this.props.workshop_data !== prevProps.workshop_data) {
+      this.setState({
+        workshops: this.props.workshop_data,
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.progressListener) {
+      this.props.progressListener();
+    }
+    if (this.props.workshopListener) {
+      this.props.workshopListener();
+    }
   }
 
   /**
@@ -162,6 +103,7 @@ class AdminDashboard extends React.Component {
    *
    * @param {*} Workshop_ID is the name of the workshop that needs to be expanded, received from <WorkshopBar /> Component
    */
+
   openWorkshopWindow(Workshop_ID) {
     var workshopIndex = 0;
     // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
@@ -177,45 +119,35 @@ class AdminDashboard extends React.Component {
   }
 
   enableWorkshop(Workshop_ID) {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
-    let temp = this.state.studentsAtWorkshop[workshopIndex];
-    temp.Enabled = true;
-    let tempArray = this.state.studentsAtWorkshop;
-    tempArray[workshopIndex] = temp;
-    this.setState((state) => ({ studentsAtWorkshop: tempArray }));
-    console.log("test");
+    this.props.updateStatus(Workshop_ID, true);
   }
 
   disableWorkshop(Workshop_ID) {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
-    let temp = this.state.studentsAtWorkshop[workshopIndex];
-    temp.Enabled = false;
-    let tempArray = this.state.studentsAtWorkshop;
-    tempArray[workshopIndex] = temp;
-    this.setState((state) => ({ studentsAtWorkshop: tempArray }));
-    console.log("test");
+    this.props.updateStatus(Workshop_ID, false);
   }
 
   clearAllStudents(Workshop_ID) {
-    this.findWorkshopIndex(Workshop_ID);
-    console.log("test");
+    this.props.clearWorkshop(Workshop_ID);
   }
 
   deleteWorkshop(Workshop_ID) {
-    this.findWorkshopIndex(Workshop_ID);
-    console.log("test");
+    this.props.deleteWorkshop(Workshop_ID);
   }
 
   incrementLevel(Workshop_ID) {
-    this.findWorkshopIndex(Workshop_ID);
-    //write code here to push to db that the workshop level has been incremented
-    console.log("test");
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    this.props.updateLevel(
+      Workshop_ID,
+      this.state.studentsAtWorkshop[workshopIndex].Level_Enabled + 1
+    );
   }
 
   decrementLevel(Workshop_ID) {
-    this.findWorkshopIndex(Workshop_ID);
-    //write code here to push to db that the workshop level has been decremented
-    console.log("test");
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    this.props.updateLevel(
+      Workshop_ID,
+      this.state.studentsAtWorkshop[workshopIndex].Level_Enabled - 1
+    );
   }
 
   exportWorkshop(Workshop_ID) {
@@ -241,23 +173,20 @@ class AdminDashboard extends React.Component {
 
   addEditWorkshop(Workshop_Object) {
     let workshopIndex = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
+    //the slice commands below ensure that when the workshop is saved then only the correct number of levels are passed back
+    //For example if the workshop used to have 5 levels but was edited to only have 4 then the slice commands will remove the extra one
+    Workshop_Object.Level_Titles = Workshop_Object.Level_Titles.slice(
+      0,
+      Workshop_Object.Number_Of_Levels
+    );
+    Workshop_Object.Level_Descriptions = Workshop_Object.Level_Descriptions.slice(
+      0,
+      Workshop_Object.Number_Of_Levels
+    );
     if (workshopIndex === -1) {
-      let temp = this.state.workshops;
-      temp.push(Workshop_Object);
-      let tempStudentWorkshop = {
-        Workshop_ID: Workshop_Object.Workshop_ID,
-        Enabled: false,
-        Level_Enabled: 0,
-        Students: [],
-        Progress: [],
-      };
-      let tempArr = this.state.studentsAtWorkshop;
-      tempArr.push(tempStudentWorkshop);
-      this.setState({ workshops: temp, studentsAtWorkshop: tempArr });
+      this.props.createWorkshop(Workshop_Object);
     } else {
-      let temp = this.state.workshops;
-      temp[workshopIndex] = Workshop_Object;
-      this.setState({ workshops: temp });
+      this.props.updateWorkshop(Workshop_Object.Workshop_ID, Workshop_Object);
     }
     console.log("test");
   }
@@ -272,14 +201,25 @@ class AdminDashboard extends React.Component {
     }
     return workshopIndex;
   }
+  findStudentIndex(Workshop_ID) {
+    var studentIndex = -1;
+    // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
+    for (var i = 0; i < this.state.studentsAtWorkshop.length; i++) {
+      if (this.state.studentsAtWorkshop[i].Workshop_ID === Workshop_ID) {
+        studentIndex = i;
+      }
+    }
+    return studentIndex;
+  }
 
   render() {
     //maps out the array into UI components, this is for the admin page that shows all workshops which is why expandState is set to false
-    let workshopList = this.state.workshops.map((item) => (
+    let workshopList = this.state.workshops.map((item, index) => (
       <WorkshopBar
         expandState={false}
         expandWindow={this.openWorkshopWindow}
         data={item}
+        students={this.state.studentsAtWorkshop[index]}
       />
     ));
 
@@ -292,7 +232,7 @@ class AdminDashboard extends React.Component {
 
     return (
       <div>
-        <NavBar />
+        <NavBar dashboard={true} signOut={this.props.signOut} />
         <Container fluid>
           <div className="m-5">
             <Row>{tiles}</Row>
@@ -306,6 +246,7 @@ class AdminDashboard extends React.Component {
                   expandState={true}
                   expandWindow={this.openWorkshopWindow}
                   data={this.state.workshops[this.state.workshopView]}
+                  students={this.state.studentsAtWorkshop[this.state.workshopView]}
                 />
                 <Workshop
                   incrementLevel={this.incrementLevel}

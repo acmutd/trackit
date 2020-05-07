@@ -1,5 +1,5 @@
 import React from "react";
-import { Nav, Navbar } from "react-bootstrap";
+import { Nav, Navbar, Button } from "react-bootstrap";
 import {
   faGithub,
   faInstagram,
@@ -75,6 +75,9 @@ class NavBar extends React.Component {
                   size="lg"
                 />
               </Nav.Link>
+              {this.props.dashboard === true ? 
+              (<Button variant="dark" onClick = {this.props.signOut}>Sign Out</Button>
+              ) : ('')}
               {/* <Nav.Link>
                 <Avatar>H</Avatar>
               </Nav.Link> */}
