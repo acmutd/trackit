@@ -33,27 +33,25 @@ componentDidUpdate(prevProps)
             Level_Enabled: this.props.Level_Enabled
         })
     }
-}
+  }
 
-// increments current level by 1. This is not their overall progress, but the stage which they are viewing.
-nextLevel()
-{
-    this.setState(function(state, props) {
-        return {
-          currentPage: state.currentPage + 1
-        };
-      });
-}
+  // increments current level by 1. This is not their overall progress, but the stage which they are viewing.
+  nextLevel() {
+    this.setState(function (state, props) {
+      return {
+        currentPage: state.currentPage + 1,
+      };
+    });
+  }
 
-// decrements current level by 1. This is not their overall progress, but the stage which they are viewing.
-previousLevel()
-{
-    this.setState(function(state, props) {
-        return {
-            currentPage: state.currentPage - 1
-        };
-      });
-}
+  // decrements current level by 1. This is not their overall progress, but the stage which they are viewing.
+  previousLevel() {
+    this.setState(function (state, props) {
+      return {
+        currentPage: state.currentPage - 1,
+      };
+    });
+  }
 
 // marks current stage completed and sends data to database. 
 markCompleted()
@@ -102,8 +100,12 @@ markCompleted()
             }        
         }, this.state);
 
-        let workshop_level_text = this.state.workshop_data.Level_Descriptions[this.state.currentPage];
-        let workshop_level_title = this.state.workshop_data.Level_Titles[this.state.currentPage];
+    let workshop_level_text = this.state.workshop_data.Level_Descriptions[
+      this.state.currentPage
+    ];
+    let workshop_level_title = this.state.workshop_data.Level_Titles[
+      this.state.currentPage
+    ];
 
         var displayNext = (this.state.Level_Enabled > this.state.userProgress && 
             this.state.userProgress > this.state.currentPage) || (
