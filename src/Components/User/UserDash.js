@@ -1,12 +1,7 @@
 import React from "react";
 import NavBar from "../Layout/NavBar";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
-import ProgressBar from "react-bootstrap/ProgressBar";
-import Container from "react-bootstrap/Container";
 import firebase from 'firebase';
+import {Row, Col, Card, Button, ProgressBar, Container} from 'react-bootstrap';
 
 class UserDash extends React.Component {
     constructor(props) {

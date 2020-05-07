@@ -1,6 +1,6 @@
 import React from "react";
-import {Button, InputGroup, Row, Col, FormControl, Container, Alert} from 'react-bootstrap';
 import NavBar from "../Layout/NavBar";
+import {Button, InputGroup, Row, Col, FormControl, Container, Alert} from 'react-bootstrap';
 
 class WorkshopLogin extends React.Component {
   constructor(props) {
@@ -40,7 +40,7 @@ class WorkshopLogin extends React.Component {
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
           {this.state.loginError ? (
-              <Alert variant="danger" onClose = {() => this.setShow(false)} dismissible>Invalid Username or Password</Alert>
+              <Alert variant="danger" onClose = {() => this.setShow(false)} dismissible>Invalid Workshop ID</Alert>
             ) : ("")}
             <Row>
               {/* Username text field */}

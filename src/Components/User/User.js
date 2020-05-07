@@ -1,5 +1,4 @@
 import React from "react";
-import firebase from 'firebase';
 import UserAuth from './UserAuth';
 import UserDash from './UserDash';
 import WorkshopLogin from './WorkshopLogin';
