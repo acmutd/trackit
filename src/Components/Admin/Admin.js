@@ -57,6 +57,12 @@ class Admin extends React.Component {
    * @param {*} password is the password of the person logging in
    */
   authenticate(username, password) {
+    if(this.state.loginError)
+    {
+      this.setState({
+        loginError: false
+      })
+    }
     this.props.database
       .auth()
       .signInWithEmailAndPassword(username, password)

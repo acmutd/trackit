@@ -28,7 +28,6 @@ class AdminAuth extends React.Component {
     this.fillUsername = this.fillUsername.bind(this);
     this.fillPassword = this.fillPassword.bind(this);
     this.authenticate = this.authenticate.bind(this);
-    this.setShow = this.setShow.bind(this);
   }
 
   componentDidUpdate(prevProps)
@@ -71,12 +70,6 @@ class AdminAuth extends React.Component {
     this.props.authenticate(this.state.username, this.state.password)
   }
 
-  setShow(show) {
-    this.setState({
-      loginError: show
-    });
-  }
-
   render() {
 
     return (
@@ -85,7 +78,7 @@ class AdminAuth extends React.Component {
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
             {this.state.loginError ? (
-              <Alert variant="danger" onClose = {() => this.setShow(false)} dismissible>Invalid Username or Password</Alert>
+              <Alert variant="danger" onClose = {() => this.setState({loginError: false})} dismissible>Invalid Username or Password</Alert>
             ) : ("")}
             <Row>
               {/* Username text field */}

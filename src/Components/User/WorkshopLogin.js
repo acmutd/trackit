@@ -12,7 +12,6 @@ class WorkshopLogin extends React.Component {
 
     this.fillWorkshop = this.fillWorkshop.bind(this);
     this.authenticate = this.authenticate.bind(this);
-    this.setShow = this.setShow.bind(this)
   }
 
   fillWorkshop(event) {
@@ -24,13 +23,11 @@ class WorkshopLogin extends React.Component {
   authenticate()
   {
       if(this.props.authenticate(this.state.workshopID) === false)
-        this.setShow(true)
-  }
-
-  setShow(show) {
-    this.setState({
-      loginError: show
-    });
+        {
+          this.setState({
+            loginError: true
+          })
+        }
   }
 
   render() {
@@ -40,7 +37,7 @@ class WorkshopLogin extends React.Component {
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
           {this.state.loginError ? (
-              <Alert variant="danger" onClose = {() => this.setShow(false)} dismissible>Invalid Workshop ID</Alert>
+              <Alert variant="danger" onClose = {() => this.setState({loginError: false})} dismissible>Invalid Workshop ID</Alert>
             ) : ("")}
             <Row>
               {/* Username text field */}

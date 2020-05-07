@@ -22,7 +22,6 @@ class UserAuth extends React.Component {
     this.fillEmail = this.fillEmail.bind(this);
     this.fillPassword = this.fillPassword.bind(this);
     this.authenticate = this.authenticate.bind(this);
-    this.setShow = this.setShow.bind(this);
   }
 
   fillEmail(event) {
@@ -43,14 +42,10 @@ class UserAuth extends React.Component {
   authenticate() {
     if(this.props.authenticate(this.state.email, this.state.password) === false)
     {
-      this.setShow(true)
+      this.setState({
+        loginError: true
+      })
     }
-  }
-
-  setShow(show) {
-    this.setState({
-      loginError: show
-    });
   }
 
   render() {
@@ -60,7 +55,7 @@ class UserAuth extends React.Component {
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
           {this.state.loginError ? (
-              <Alert variant="danger" onClose = {() => this.setShow(false)} dismissible>Invalid Email or Password</Alert>
+              <Alert variant="danger" onClose = {() => this.setState({loginError: false})} dismissible>Invalid Email or Password</Alert>
             ) : ("")}
             <Row>
               {/* Username text field */}
@@ -87,7 +82,7 @@ class UserAuth extends React.Component {
                     <InputGroup.Text id="basic-addon1">@</InputGroup.Text>
                   </InputGroup.Prepend>
                   <FormControl
-                    placeholder="password"
+                    placeholder="Password"
                     aria-label="Password"
                     type="password"
                     aria-describedby="basic-addon1"
