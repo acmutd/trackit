@@ -105,11 +105,12 @@ markCompleted()
         let workshop_level_text = this.state.workshop_data.Level_Descriptions[this.state.currentPage];
         let workshop_level_title = this.state.workshop_data.Level_Titles[this.state.currentPage];
 
-        var displayMarkCompleted = (this.state.userProgress === this.state.currentPage && !displayNext);
-        var displayPrevious = (this.state.currentPage != 0);
         var displayNext = (this.state.Level_Enabled > this.state.userProgress && 
             this.state.userProgress > this.state.currentPage) || (
-            this.state.Level_Enabled == this.state.userProgress && this.state.currentPage < this.state.userProgress - 1)
+            this.state.Level_Enabled === this.state.userProgress && this.state.currentPage < this.state.userProgress - 1)
+        var displayPrevious = (this.state.currentPage !== 0);
+        var displayMarkCompleted = (this.state.userProgress === this.state.currentPage && !displayNext);
+
 
       return (
         <div>

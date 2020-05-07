@@ -128,7 +128,7 @@ signOutUser()
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
         {this.state.loggedIn ? (
-          ( this.state.dataLoaded == false ? (
+          ( this.state.dataLoaded === false ? (
           <WorkshopLogin authenticate = {this.authenticateWorkshop}/>
           ) : (
             <UserDash workshop_data = {this.state.workshop_data} updateUserProgress = {this.updateUserProgress} 
