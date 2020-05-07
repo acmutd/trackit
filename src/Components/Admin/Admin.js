@@ -31,6 +31,7 @@ class Admin extends React.Component {
     this.updateWorkshop = this.updateWorkshop.bind(this);
     this.createNewWorkshop = this.createNewWorkshop.bind(this);
     this.clearStudentsAtWorkshop = this.clearStudentsAtWorkshop.bind(this);
+    this.deleteWorkshop = this.deleteWorkshop.bind(this);
   }
 
   /**
