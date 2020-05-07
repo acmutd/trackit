@@ -1,12 +1,6 @@
 import React from "react";
-import Button from "react-bootstrap/Button";
-import InputGroup from "react-bootstrap/InputGroup";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import FormControl from "react-bootstrap/FormControl";
-import Container from "react-bootstrap/Container";
+import {Button, InputGroup, Row, Col, FormControl, Container, Alert} from 'react-bootstrap';
 import NavBar from "../Layout/NavBar";
-import Alert from 'react-bootstrap/Alert'
 
 class WorkshopLogin extends React.Component {
   constructor(props) {

@@ -1,12 +1,11 @@
 import React from "react";
-import { Nav, Navbar } from "react-bootstrap";
+import { Nav, Navbar, Button } from "react-bootstrap";
 import {
   faGithub,
   faInstagram,
   faCreativeCommonsBy,
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Button from 'react-bootstrap/Button'
 
 // import { Avatar, deepOrange } from "@material-ui/core"; (later use)
 
