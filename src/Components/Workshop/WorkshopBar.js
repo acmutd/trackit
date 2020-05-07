@@ -4,16 +4,23 @@ import { Nav, ProgressBar } from "react-bootstrap";
 /**
  * The is a workshop bar that shows a minimized view of the information in a workshop, quick look at the data available
  *
- * Author: Harsha Srikara
- * Date: 4/16/20
  */
 class WorkshopBar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       expandView: this.props.expandState, //if this is true then the <Workshop /> Component is also rendered on the AdminDashboard, here it only changes the "Show View" to "Hide View"
+      refresh: false,
     };
     this.switchView = this.switchView.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.students !== prevProps.students) {
+      this.setState(state => ({
+        refresh: !state.refresh,
+      }));
+    }
   }
 
   switchView() {
@@ -65,6 +72,20 @@ class WorkshopBar extends React.Component {
       day = daysOfWeek[day];
     }
 
+    //compute number of students behind and at the same level of progress as admin
+    let studentsAtLevel = 0;
+    let studentsBehindLevel = 0;
+    for(var i = 0; i < this.props.students.Progress.length; i++) {
+      if(this.props.students.Progress[i] < this.props.students.Level_Enabled) {
+        studentsBehindLevel++;
+      }
+      else {
+        studentsAtLevel++;
+      }
+    }
+    let percentAtLevel = (studentsAtLevel/this.props.students.Progress.length)*100;
+    let percentBehindLevel = (studentsBehindLevel/this.props.students.Progress.length)*100;
+
     return (
       <div>
         <div className="m-3 mt-5 p-4 floating-icon">
@@ -79,21 +100,21 @@ class WorkshopBar extends React.Component {
                   striped
                   variant="success"
                   animated
-                  now={35}
+                  now={percentAtLevel}
                   key={1}
                 />
                 <ProgressBar
                   striped
                   variant="warning"
                   animated
-                  now={20}
+                  now={percentBehindLevel}
                   key={2}
                 />
                 <ProgressBar
                   striped
                   variant="danger"
                   animated
-                  now={10}
+                  now={0} //unused
                   key={3}
                 />
               </ProgressBar>

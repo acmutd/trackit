@@ -13,8 +13,6 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  * This component displays the expanded view for a workshop when "Show View" is selected on a <WorkshopBar />
  * Contains summary information about the workshop as well as the graphs
  *
- * Author: Harsha Srikara
- * Date: 4/16/20
  */
 class Workshop extends React.Component {
   constructor(props) {

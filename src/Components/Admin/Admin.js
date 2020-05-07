@@ -7,8 +7,6 @@ import "firebase/firestore";
  * All API calls and connections to the database should take place in this component
  * This component will also handle authentication and security related contraints
  *
- * Author: Harsha Srikara
- * Date: 3/22/20
  */
 
 // Initialize Firebase
@@ -147,9 +145,6 @@ class Admin extends React.Component {
                   students.push(x)
                   progress.push(snap.data().testProgress[x])
                 }
-                console.log(students)
-                console.log(progress)
-
                 var temp = {}
                 temp.Students = students;
                 temp.Progress = progress;

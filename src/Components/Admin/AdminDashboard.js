@@ -9,8 +9,6 @@ import { Row, Col, Container } from "react-bootstrap";
 /**
  * UI component that manages how the admin dashboard looks like
  *
- * Author: Harsha Srikara
- * Date: 4/16/20
  */
 class AdminDashboard extends React.Component {
   constructor(props) {
@@ -26,7 +24,7 @@ class AdminDashboard extends React.Component {
       title: "Admin",
       subtitle: "Administrative Tools",
       description: "Configuration tool for setting up new workshops",
-      links: ["", "", openDialog, ""],
+      links: ["", "", openDialog, ""], //functions
       linkText: [
         "Download Workshops",
         "Transfer Workshops",
@@ -39,7 +37,7 @@ class AdminDashboard extends React.Component {
       title: "Development",
       subtitle: "Development Tools",
       description: "Try out beta tools for customizing trackit",
-      links: [],
+      links: [], //functions
       linkText: [],
     };
 
@@ -47,7 +45,7 @@ class AdminDashboard extends React.Component {
       title: "Social",
       subtitle: "Media Tools",
       description: "Access resources and social media",
-      links: [],
+      links: [], //functions
       linkText: ["Github", "LinkedIn", "Instagram"],
     };
 
@@ -94,6 +92,8 @@ class AdminDashboard extends React.Component {
   componentWillUnmount() {
     if (this.props.progressListener) {
       this.props.progressListener();
+    }
+    if (this.props.workshopListener) {
       this.props.workshopListener();
     }
   }
@@ -214,11 +214,12 @@ class AdminDashboard extends React.Component {
 
   render() {
     //maps out the array into UI components, this is for the admin page that shows all workshops which is why expandState is set to false
-    let workshopList = this.state.workshops.map((item) => (
+    let workshopList = this.state.workshops.map((item, index) => (
       <WorkshopBar
         expandState={false}
         expandWindow={this.openWorkshopWindow}
         data={item}
+        students={this.state.studentsAtWorkshop[index]}
       />
     ));
 
@@ -245,6 +246,7 @@ class AdminDashboard extends React.Component {
                   expandState={true}
                   expandWindow={this.openWorkshopWindow}
                   data={this.state.workshops[this.state.workshopView]}
+                  students={this.state.studentsAtWorkshop[this.state.workshopView]}
                 />
                 <Workshop
                   incrementLevel={this.incrementLevel}
