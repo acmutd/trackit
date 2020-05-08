@@ -131,7 +131,15 @@ class AdminDashboard extends React.Component {
   }
 
   deleteWorkshop(Workshop_ID) {
-    this.props.deleteWorkshop(Workshop_ID);
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+    let workshopArray = this.state.workshops;
+    workshopArray.splice(workshopIndex, 1);
+    this.setState({
+      viewWorkshop: false, //closes the respective workshop view before deletion 
+      workshops: workshopArray,
+    }, function() {
+      this.props.deleteWorkshop(Workshop_ID);
+    });
   }
 
   incrementLevel(Workshop_ID) {

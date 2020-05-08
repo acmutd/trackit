@@ -1,33 +1,43 @@
 import React from "react";
 import NavBar from "../Layout/NavBar";
-import {Button, InputGroup, Row, Col, FormControl, Container, Alert} from 'react-bootstrap';
+import {
+  Button,
+  InputGroup,
+  Row,
+  Col,
+  FormControl,
+  Container,
+  Alert,
+} from "react-bootstrap";
 
 class WorkshopLogin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      workshopID: '',
-      loginError: false
+      workshopID: "",
+      loginError: false,
     };
 
     this.fillWorkshop = this.fillWorkshop.bind(this);
     this.authenticate = this.authenticate.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.loginError !== prevProps.loginError) {
+      this.setState({
+        loginError: this.props.loginError,
+      });
+    }
+  }
+
   fillWorkshop(event) {
     this.setState({
-      workshopID: event.target.value
+      workshopID: event.target.value,
     });
   }
 
-  authenticate()
-  {
-      if(this.props.authenticate(this.state.workshopID) === false)
-        {
-          this.setState({
-            loginError: true
-          })
-        }
+  authenticate() {
+    this.props.authenticate(this.state.workshopID);
   }
 
   render() {
@@ -36,9 +46,17 @@ class WorkshopLogin extends React.Component {
         <NavBar />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
-          {this.state.loginError ? (
-              <Alert variant="danger" onClose = {() => this.setState({loginError: false})} dismissible>Invalid Workshop ID</Alert>
-            ) : ("")}
+            {this.state.loginError ? (
+              <Alert
+                variant="danger"
+                onClose={() => this.setState({ loginError: false })}
+                dismissible
+              >
+                Invalid Workshop ID
+              </Alert>
+            ) : (
+              ""
+            )}
             <Row>
               {/* Username text field */}
               <Col xs={12} sm={12} md={10}>
@@ -57,7 +75,7 @@ class WorkshopLogin extends React.Component {
                 </InputGroup>
               </Col>
               <Col xs={12} sm={12} md={2}>
-                {/* The authenticate function here is the one defined in this Component and not the one passed in from <Admin /> */}
+                {/* The authenticate function here is the one defined in this Component and not the one passed in from <User /> */}
                 <Button onClick={this.authenticate} variant="success">
                   Login
                 </Button>

@@ -13,8 +13,6 @@ import NavBar from "../Layout/NavBar";
 /**
  * UI Component that contains two text fields to enter username and password as well as a submit button
  *
- * Author: Harsha Srikara
- * Date: 4/2/20
  */
 class AdminAuth extends React.Component {
   constructor(props) {
