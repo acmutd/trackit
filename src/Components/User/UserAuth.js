@@ -24,6 +24,16 @@ class UserAuth extends React.Component {
     this.authenticate = this.authenticate.bind(this);
   }
 
+  componentDidUpdate(prevProps)
+  {
+      if(this.props.loginError !== prevProps.loginError)
+      {
+          this.setState({
+              loginError: this.props.loginError
+          })
+      }
+  }
+
   fillEmail(event) {
     this.setState({
       email: event.target.value
@@ -40,12 +50,7 @@ class UserAuth extends React.Component {
    * Calls the authenticate function passed in from <Admin /> with the username and password stored in state
    */
   authenticate() {
-    if(this.props.authenticate(this.state.email, this.state.password) === false)
-    {
-      this.setState({
-        loginError: true
-      })
-    }
+    this.props.authenticate(this.state.email, this.state.password);
   }
 
   render() {

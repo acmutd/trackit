@@ -38,11 +38,13 @@ class Admin extends React.Component {
    * If the page crashes then the user gets automatically logged out
    */
   componentWillUnmount() {
+    if(this.progressListener) this.progressListener();
+    if(this.workshopListener) this.workshopListener();
     this.props.database
       .auth()
       .signOut()
       .then(function () {
-        console.log("signed out");
+        console.log("auto signed out");
       })
       .catch(function (error) {
         console.log("error signing out");
