@@ -86,6 +86,7 @@ class Admin extends React.Component {
           .get()
           .then((doc) => {
             // login user, allow to admin dashboard if admin
+            console.log(doc);
             if (doc.data().isAdmin === true) {
               this.readWorkshopData();
               this.setState({
