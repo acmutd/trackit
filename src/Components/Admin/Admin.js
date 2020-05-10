@@ -18,7 +18,7 @@ class Admin extends React.Component {
       loginError: false,
       workshop_data: null,
       student_data: null,
-      dataLoaded: false
+      dataLoaded: false,
     };
 
     this.authenticate = this.authenticate.bind(this);
@@ -38,8 +38,8 @@ class Admin extends React.Component {
    * If the page crashes then the user gets automatically logged out
    */
   componentWillUnmount() {
-    if(this.progressListener) this.progressListener();
-    if(this.workshopListener) this.workshopListener();
+    if (this.progressListener) this.progressListener();
+    if (this.workshopListener) this.workshopListener();
     this.props.database
       .auth()
       .signOut()
@@ -51,7 +51,6 @@ class Admin extends React.Component {
       });
   }
 
-
   /**
    * This function is passed as props to the AdminAuth Component which returns the username and password entered
    * Currrently just changes the loggedIn state to true without any checks
@@ -60,26 +59,25 @@ class Admin extends React.Component {
    * @param {*} password is the password of the person logging in
    */
   authenticate(username, password) {
-    if(this.state.loginError)
-    {
+    if (this.state.loginError) {
       this.setState({
-        loginError: false
-      })
+        loginError: false,
+      });
     }
     this.props.database
       .auth()
       .signInWithEmailAndPassword(username, password)
       .catch((err) => {
         this.setState({
-          loginError: true
-        })
+          loginError: true,
+        });
         console.log("Invalid Email or Password");
       });
     this.props.database.auth().onAuthStateChanged((user) => {
       // user is signed in
       if (user) {
         // get user data from Students collection to check if they are an admin
-         this.props.database
+        this.props.database
           .firestore()
           .collection("Student")
           .doc(user.uid)
@@ -93,8 +91,8 @@ class Admin extends React.Component {
               });
             } else {
               this.setState({
-                loginError: true
-              })
+                loginError: true,
+              });
               // logout non Admin user
               this.props.database
                 .auth()
@@ -124,60 +122,60 @@ class Admin extends React.Component {
         snapshot.forEach((snap) => {
           arr.push(snap.data());
         });
+        console.log("new information")
         console.log(arr);
 
-        this.setState(
-          {
+        this.setState({
             workshop_data: arr,
           },
           this.readStudentData //callback function that will execute after the workshop data has been saved in the state
         );
       });
   }
-  
+
   /**
    * Read student data and set listener to see if any updates are being made
    */
-  readStudentData()
-  {
-    this.progressListener = this.props.database.firestore().collection('StudentsAtWorkshop')
-          .onSnapshot(snapshot =>
-          {
-            var arr = [];
-            snapshot.forEach(snap =>
-              {
-                var students = [];
-                var progress = []
-                for(var x in snap.data().testProgress)
-                {
-                  students.push(x)
-                  progress.push(snap.data().testProgress[x])
-                }
-                var temp = {}
-                temp.Students = students;
-                temp.Progress = progress;
-                temp.Enabled = snap.data().Enabled;
-                temp.Workshop_ID = snap.data().Workshop_ID;
-                temp.Level_Enabled = snap.data().Level_Enabled;
-                arr.push(temp)
-                console.log(temp)
-              })
-              console.log(arr)
+  readStudentData() {
+    this.progressListener = this.props.database
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .onSnapshot((snapshot) => {
+        var arr = [];
+        snapshot.forEach((snap) => {
+          var students = [];
+          var progress = [];
+          for (var x in snap.data().testProgress) {
+            students.push(x);
+            progress.push(snap.data().testProgress[x]);
+          }
+          var temp = {};
+          temp.Students = students;
+          temp.Progress = progress;
+          temp.Enabled = snap.data().Enabled;
+          temp.Workshop_ID = snap.data().Workshop_ID;
+          temp.Level_Enabled = snap.data().Level_Enabled;
+          arr.push(temp);
+          console.log(temp);
+        });
+        console.log(arr);
 
-              this.setState({
-                  student_data: arr,
-                  dataLoaded: true
-              })
-          })
+        this.setState({
+          student_data: arr,
+          dataLoaded: true,
+        });
+      });
   }
 
   /**
    * updates the workshop level in the db
-   * @param {*} workshopID 
-   * @param {*} level 
+   * @param {*} workshopID
+   * @param {*} level
    */
   updateWorkshopLevel(workshopID, level) {
-    console.log("setting admin level for workshop: " + workshopID + " = " + level);
+    console.log(
+      "setting admin level for workshop: " + workshopID + " = " + level
+    );
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
@@ -191,9 +189,9 @@ class Admin extends React.Component {
   }
 
   /**
-   * 
-   * @param {*} workshopID 
-   * @param {*} status 
+   *
+   * @param {*} workshopID
+   * @param {*} status
    */
   updateWorkshopStatus(workshopID, status) {
     console.log("updating status");
@@ -211,70 +209,97 @@ class Admin extends React.Component {
 
   /**
    * clears the map containing student username and progress
-   * @param {*} workshopID 
+   * @param {*} workshopID
    */
   clearStudentsAtWorkshop(workshopID) {
     console.log("remove all students from workshop");
-    this.props.database.firestore().collection("StudentsAtWorkshop").doc(workshopID).update({
-      testProgress: {},
-    }).then(() => {
-      console.log("cleared all students");
-    });
+    this.props.database
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(workshopID)
+      .update({
+        testProgress: {},
+      })
+      .then(() => {
+        console.log("cleared all students");
+      });
   }
 
   /**
    * updates all fields in a workshop by overwriting them
-   * @param {*} workshopID 
-   * @param {*} workshopObject 
+   * @param {*} workshopID
+   * @param {*} workshopObject
    */
   updateWorkshop(workshopID, workshopObject) {
     console.log("updating all fields in workshop collection");
-    this.props.database.firestore().collection("Workshop").doc(workshopID).set({
-      Date: workshopObject.Date,
-      Level_Descriptions: workshopObject.Level_Descriptions,
-      Level_Titles: workshopObject.Level_Titles,
-      Number_Of_Levels: workshopObject.Number_Of_Levels,
-      Workshop_Name: workshopObject.Workshop_Name,
-      Workshop_ID: workshopObject.Workshop_ID,
-    }).then(() => {
-      console.log("update complete");
-    });
+    this.props.database
+      .firestore()
+      .collection("Workshop")
+      .doc(workshopID)
+      .set({
+        Date: workshopObject.Date,
+        Level_Descriptions: workshopObject.Level_Descriptions,
+        Level_Titles: workshopObject.Level_Titles,
+        Number_Of_Levels: workshopObject.Number_Of_Levels,
+        Workshop_Name: workshopObject.Workshop_Name,
+        Workshop_ID: workshopObject.Workshop_ID,
+      })
+      .then(() => {
+        console.log("update complete");
+      });
 
-    this.props.database.firestore().collection("StudentsAtWorkshop").doc(workshopID).update({
-      Level_Enabled: 1,
-    }).then(() => {
-      console.log("reset level enabled for workshop to be 1");
-    })
+    this.props.database
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(workshopID)
+      .update({
+        Level_Enabled: 1,
+      })
+      .then(() => {
+        console.log("reset level enabled for workshop to be 1");
+      });
   }
 
   /**
    * creates a new workshop, should fail if a workshop already exists with the same name
-   * @param {*} workshopObject 
+   * @param {*} workshopObject
    */
   createNewWorkshop(workshopObject) {
-    console.log("creating new workshop");
-    this.props.database.firestore().collection("Workshop").doc(workshopObject.Workshop_ID).set(workshopObject).then(() => {
-      console.log("new workshop created");
-    });
 
+    console.log("creating new workshop");
     let tempStudentWorkshop = {
       Workshop_ID: workshopObject.Workshop_ID,
       Enabled: false,
       Level_Enabled: 1,
-      Students: [],
-      Progress: [],
+      testProgress: {},
     };
-    this.props.database.firestore().collection("StudentsAtWorkshop").doc(workshopObject.Workshop_ID).set(tempStudentWorkshop).then(() => {
-      console.log("empty students at workshop entry created")
-    })
+    this.props.database
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(workshopObject.Workshop_ID)
+      .set(tempStudentWorkshop)
+      .then(() => {
+        console.log("empty students at workshop entry created");
+      });
+
+    this.props.database
+      .firestore()
+      .collection("Workshop")
+      .doc(workshopObject.Workshop_ID)
+      .set(workshopObject)
+      .then(() => {
+        console.log("new workshop created");
+      });
   }
 
   /**
    * deletes a workshop from both the workshop and the studentsAtworkshop collection
-   * @param {*} workshopID 
+   * @param {*} workshopID
    */
   deleteWorkshop(workshopID) {
-    console.log("deleting workshop from both Workshop and StudentAtWorkshop collection");
+    console.log(
+      "deleting workshop from both Workshop and StudentAtWorkshop collection"
+    );
 
     this.props.database
       .firestore()
@@ -285,7 +310,7 @@ class Admin extends React.Component {
         console.log("deleted students at workshop");
       });
 
-      this.props.database
+    this.props.database
       .firestore()
       .collection("Workshop")
       .doc(workshopID)
@@ -298,18 +323,19 @@ class Admin extends React.Component {
   /**
    * signs out the user
    */
-  signOutUser()
-  {
-    console.log('signing Out');
-    this.props.database.auth().signOut().then(() =>
-    {
-      this.setState({
-        loggedIn: false
+  signOutUser() {
+    console.log("signing Out");
+    this.props.database
+      .auth()
+      .signOut()
+      .then(() => {
+        this.setState({
+          loggedIn: false,
+        });
       })
-    }).catch(err =>
-      {
-        console.log("error signing user out")
-      })
+      .catch((err) => {
+        console.log("error signing user out");
+      });
   }
 
   /**
@@ -330,9 +356,9 @@ class Admin extends React.Component {
             deleteWorkshop={this.deleteWorkshop}
             updateStatus={this.updateWorkshopStatus}
             clearWorkshop={this.clearStudentsAtWorkshop}
-            progressListener = {this.progressListener}
+            progressListener={this.progressListener}
             workshopListener={this.workshopListener}
-            signOut = {this.signOutUser}
+            signOut={this.signOutUser}
           />
         ) : (
           <AdminAuth
