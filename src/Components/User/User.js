@@ -14,6 +14,7 @@ class User extends React.Component {
       dataLoaded: false,
       Enabled: false,
       loginError: false,
+      initialProgress: 0,
     };
 
     this.authenticate = this.authenticate.bind(this);
@@ -76,12 +77,11 @@ class User extends React.Component {
       .doc(workshop)
       .get()
       .then((doc) => {
-        if (!doc.exists){
+        if (!doc.exists) {
           this.setState({
             loginError: true,
           });
-        }
-        else {
+        } else {
           this.setState(
             {
               workshop_data: doc.data(),
@@ -98,29 +98,54 @@ class User extends React.Component {
   }
 
   getProgressData() {
+    let email = this.props.database.auth().currentUser.email.substring(
+      0,
+      this.props.database.auth().currentUser.email.lastIndexOf("@")
+    );
     this.progressListener = this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
       .onSnapshot((snapshot) => {
-        console.log(snapshot.data());
+        //console.log("snapshot data being logged here");
+        //console.log("testProgress(email)"+snapshot.data().testProgress[email]);
         this.setState({
           Level_Enabled: snapshot.data().Level_Enabled,
           Enabled: snapshot.data().Enabled,
+          initialProgress: snapshot
+            .data()
+            .testProgress[email], //will either be the actual number or undefined
           dataLoaded: true,
+        }, function() {
+          if(this.state.initialProgress === undefined || this.state.initialProgress === null) {
+            console.log("it was undefined or null");
+            this.setState({
+              initialProgress: 0,
+            });
+          }
+          else {
+
+          } 
         });
       });
+
   }
 
   updateUserProgress(progress) {
     // BELOW IS CODE TO UPDATE IF PROGRESS STORES IN A MAP
+
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
       .update({
         ["testProgress." +
-        this.props.database.auth().currentUser.uid]: progress,
+        this.props.database
+          .auth()
+          .currentUser.email.substring(
+            0,
+            this.props.database.auth().currentUser.email.lastIndexOf("@")
+          )]: progress,
       })
       .then(() => {
         console.log("updated");
@@ -163,6 +188,7 @@ class User extends React.Component {
               progressListener={this.progressListener}
               Level_Enabled={this.state.Level_Enabled}
               signOut={this.signOutUser}
+              savedProgress={this.state.initialProgress}
             />
           )
         ) : (
