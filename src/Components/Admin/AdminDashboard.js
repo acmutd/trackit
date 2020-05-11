@@ -4,7 +4,7 @@ import NavBar from "../Layout/NavBar";
 import Workshop from "../Workshop/Workshop";
 import WorkshopEdit from "../Workshop/WorkshopEdit";
 import CardTile from "../Workshop/CardTile";
-import { Row, Col, Container } from "react-bootstrap";
+import { Row, Col, Container, Spinner } from "react-bootstrap";
 
 /**
  * UI component that manages how the admin dashboard looks like
@@ -50,9 +50,10 @@ class AdminDashboard extends React.Component {
     };
 
     this.state = {
-      workshops: this.props.workshop_data,
+      workshops: [],
+      dataLoaded: false,
       cards: [cfirst, csecond, cthird],
-      studentsAtWorkshop: this.props.student_data,
+      studentsAtWorkshop: [],
       viewWorkshop: false, //determines whether the expanded view is open or not
       workshopView: 1, //this determines the index of the workshop which has the expanded view
 
@@ -87,6 +88,19 @@ class AdminDashboard extends React.Component {
         workshops: this.props.workshop_data,
       });
     }
+    if(this.props.dataLoaded !== prevProps.dataLoaded)
+    {
+      this.setState({
+        dataLoaded: this.props.dataLoaded
+      })
+    }
+  }
+
+
+  componentDidMount()
+  {
+    this.props.readWorkshopData();
+    this.props.readStudentData();
   }
 
   componentWillUnmount() {
@@ -221,6 +235,7 @@ class AdminDashboard extends React.Component {
   }
 
   render() {
+  
     //maps out the array into UI components, this is for the admin page that shows all workshops which is why expandState is set to false
     let workshopList = this.state.workshops.map((item, index) => (
       <WorkshopBar
@@ -242,8 +257,15 @@ class AdminDashboard extends React.Component {
       <div>
         <NavBar dashboard={true} signOut={this.props.signOut} />
         <Container fluid>
+          {!this.state.dataLoaded ? (
+            <div style = {{position: 'absolute', top: '50%', right:'50%'}}>
+          <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+            </div>
+          ) : ( <>
           <div className="m-5">
-            <Row>{tiles}</Row>
+            <Row>{tiles}</Row> 
           </div>
 
           <div className="m-5">
@@ -280,6 +302,7 @@ class AdminDashboard extends React.Component {
             submit={this.receiveAddEditWorkshopInformationFromDialog}
             newWorkshop={true}
           />
+          </> )}
         </Container>
       </div>
     );

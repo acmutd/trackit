@@ -40,15 +40,45 @@ class Admin extends React.Component {
   componentWillUnmount() {
     if (this.progressListener) this.progressListener();
     if (this.workshopListener) this.workshopListener();
-    this.props.database
-      .auth()
-      .signOut()
-      .then(function () {
-        console.log("auto signed out");
-      })
-      .catch(function (error) {
-        console.log("error signing out");
-      });
+  }
+
+  componentDidMount()
+  {
+    this.props.database.auth().onAuthStateChanged((user) => {
+      // user is signed in
+      if (user) {
+        // get user data from Students collection to check if they are an admin
+        this.props.database
+          .firestore()
+          .collection("Student")
+          .doc(user.uid)
+          .get()
+          .then((doc) => {
+            // login user, allow to admin dashboard if admin
+            console.log(doc.data() + ' datat from isADmin');
+            if (doc.data().isAdmin === true) {
+              console.log('logging user in')
+              this.setState({
+                loggedIn: true,
+              }); 
+            } else {
+              this.setState({
+                loginError: true,
+              });
+              // logout non Admin user
+              this.props.database
+                .auth()
+                .signOut()
+                .then(() => {
+                  console.log("successfully logged out non admin ");
+                })
+                .catch((err) => {
+                  console.log("error logging out non admin user");
+                });
+            }
+          });
+      }
+    });
   }
 
   /**
@@ -73,41 +103,6 @@ class Admin extends React.Component {
         });
         console.log("Invalid Email or Password");
       });
-    this.props.database.auth().onAuthStateChanged((user) => {
-      // user is signed in
-      if (user) {
-        // get user data from Students collection to check if they are an admin
-        this.props.database
-          .firestore()
-          .collection("Student")
-          .doc(user.uid)
-          .get()
-          .then((doc) => {
-            // login user, allow to admin dashboard if admin
-            console.log(doc);
-            if (doc.data().isAdmin === true) {
-              this.readWorkshopData();
-              this.setState({
-                loggedIn: true,
-              });
-            } else {
-              this.setState({
-                loginError: true,
-              });
-              // logout non Admin user
-              this.props.database
-                .auth()
-                .signOut()
-                .then(() => {
-                  console.log("successfully logged out non admin ");
-                })
-                .catch((err) => {
-                  console.log("error logging out non admin user");
-                });
-            }
-          });
-      }
-    });
   }
 
   /**
@@ -128,9 +123,7 @@ class Admin extends React.Component {
 
         this.setState({
             workshop_data: arr,
-          },
-          this.readStudentData //callback function that will execute after the workshop data has been saved in the state
-        );
+          });
       });
   }
 
@@ -165,7 +158,7 @@ class Admin extends React.Component {
           student_data: arr,
           dataLoaded: true,
         });
-      });
+      }); 
   }
 
   /**
@@ -332,6 +325,10 @@ class Admin extends React.Component {
       .then(() => {
         this.setState({
           loggedIn: false,
+          loginError: false,
+          workshop_data: null,
+          student_data: null,
+          dataLoaded: false
         });
       })
       .catch((err) => {
@@ -347,10 +344,12 @@ class Admin extends React.Component {
       <div>
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
-        {this.state.loggedIn && this.state.dataLoaded ? (
+        {this.state.loggedIn  ? (
           <AdminDashboard
             workshop_data={this.state.workshop_data}
             student_data={this.state.student_data}
+            readStudentData={this.readStudentData}
+            readWorkshopData={this.readWorkshopData}
             updateWorkshop={this.updateWorkshop}
             updateLevel={this.updateWorkshopLevel}
             createWorkshop={this.createNewWorkshop}
@@ -360,6 +359,7 @@ class Admin extends React.Component {
             progressListener={this.progressListener}
             workshopListener={this.workshopListener}
             signOut={this.signOutUser}
+            dataLoaded = {this.state.workshop_data && this.state.student_data}
           />
         ) : (
           <AdminAuth
