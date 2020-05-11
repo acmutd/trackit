@@ -12,72 +12,67 @@ import NavBar from "../Layout/NavBar";
 
 /**
  * UI Component that contains two text fields to enter username and password as well as a submit button
- *
  */
 class AdminAuth extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: "", //stores username
-      password: "", //stores password
-      loginError: false
-    };
+  state = {
+    username: "", //stores username
+    password: "", //stores password
+    loginError: false,
+  };
 
-    this.fillUsername = this.fillUsername.bind(this);
-    this.fillPassword = this.fillPassword.bind(this);
-    this.authenticate = this.authenticate.bind(this);
-  }
-
-  componentDidUpdate(prevProps)
-  {
-      if(this.props.loginError !== prevProps.loginError)
-      {
-          this.setState({
-              loginError: this.props.loginError
-          })
-      }
+  // checks if error occurred in authentication and if so updates the state
+  componentDidUpdate(prevProps) {
+    if (this.props.loginError !== prevProps.loginError) {
+      this.setState({
+        loginError: this.props.loginError,
+      });
+    }
   }
 
   /**
    * Saves username to the component state
-   *
    * @param {*} event contains target value from the username text field
    */
-  fillUsername(event) {
+  fillUsername = (event) => {
     this.setState({
       username: event.target.value,
     });
-  }
+  };
 
   /**
    * Saves password to the component state
-   *
    * @param {*} event contains target value from the password text field
    */
-  fillPassword(event) {
+  fillPassword = (event) => {
     this.setState({
       password: event.target.value,
     });
-  }
+  };
 
   /**
    * Calls the authenticate function passed in from <Admin /> with the username and password stored in state
    */
-  authenticate() 
-  {
-    this.props.authenticate(this.state.username, this.state.password)
-  }
+  authenticate = () => {
+    this.props.authenticate(this.state.username, this.state.password);
+  };
 
   render() {
-
     return (
       <div>
-        <NavBar/>
+        <NavBar />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
             {this.state.loginError ? (
-              <Alert variant="danger" onClose = {() => this.setState({loginError: false})} dismissible>Invalid Username or Password</Alert>
-            ) : ("")}
+              <Alert
+                variant="danger"
+                onClose={() => this.setState({ loginError: false })}
+                dismissible
+              >
+                Invalid Username or Password
+              </Alert>
+            ) : (
+              ""
+            )}
             <Row>
               {/* Username text field */}
               <Col xs={12} sm={12} md={5}>

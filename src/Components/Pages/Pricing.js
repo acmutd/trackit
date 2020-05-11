@@ -9,6 +9,9 @@ import {
   ListGroupItem,
 } from "react-bootstrap";
 
+/**
+ * Displayes a grid of pricing options for the product
+ */
 export class Pricing extends Component {
   constructor(props) {
     super(props);
@@ -46,8 +49,8 @@ export class Pricing extends Component {
   }
 
   render() {
-    let tierCards = this.state.tiers.map((item) => (
-      <Card style={{ width: "18rem" }}>
+    let tierCards = this.state.tiers.map((item, index) => (
+      <Card key={index} style={{ width: "18rem" }} className="floating-icon">
         <Card.Img variant="top" />
         <Card.Body>
           <Card.Title>{item.name}</Card.Title>

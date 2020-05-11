@@ -7,22 +7,17 @@ import RemoveIcon from "@material-ui/icons/Remove";
 /**
  * Administrative toolbar to control workshop settings such as enabling a workshop, disabling a workshop, clearing all students to reset a workshop
  * Also contains a slider to enable workshop levels
- *
  */
 class WorkshopLevelBar extends React.Component {
-  constructor(props) {
-    super(props);
+  state = {
+    workshopLevel: this.props.Workshop_Level,
+    enabled: this.props.enabled,
+  };
 
-    this.state = {
-      workshopLevel: this.props.Workshop_Level,
-      enabled: this.props.enabled,
-    };
-
-    this.incrementLevel = this.incrementLevel.bind(this);
-    this.decrementLevel = this.decrementLevel.bind(this);
-    this.enableWorkshop = this.enableWorkshop.bind(this);
-    this.disableWorkshop = this.disableWorkshop.bind(this);
-  }
+  /**
+   * Updates if there's a change to the props passed in
+   * @param {*} prevProps 
+   */
   componentDidUpdate(prevProps) {
     if (this.props.Workshop_Level !== prevProps.Workshop_Level) {
       this.setState({
@@ -32,25 +27,38 @@ class WorkshopLevelBar extends React.Component {
     }
   }
 
-  incrementLevel() {
+  /**
+   * Calls function passed in from props
+   */
+  incrementLevel = () => {
     if (this.state.workshopLevel < this.props.maxLevel) {
-      this.setState((state) => ({ workshopLevel: state.workshopLevel + 1 }));
+      this.setState(state => ({ workshopLevel: state.workshopLevel + 1 }));
       this.props.incrementLevel();
     }
   }
-  decrementLevel() {
+
+  /**
+   * Calls function passed in from props
+   */
+  decrementLevel = () => {
     if (this.state.workshopLevel > 1) {
-      this.setState((state) => ({ workshopLevel: state.workshopLevel - 1 }));
+      this.setState(state => ({ workshopLevel: state.workshopLevel - 1 }));
       this.props.decrementLevel();
     }
   }
 
-  enableWorkshop() {
+  /**
+   * Calls function passed in from props
+   */
+  enableWorkshop = () => {
     this.setState({ enabled: true });
     this.props.enableWorkshop();
   }
 
-  disableWorkshop() {
+  /**
+   * Calls function passed in from props
+   */
+  disableWorkshop = () => {
     this.setState({ enabled: false });
     this.props.disableWorkshop();
   }

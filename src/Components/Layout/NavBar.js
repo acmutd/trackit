@@ -11,28 +11,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
  * This is the <NavBar /> used at the top, uses the bootstrap components but extracted it to a separate component
- * Eventually we can customize it to show the username displayed at the top or something like that
  */
 class NavBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      Navlink: [
-        {
-          name: "Home",
-          link: "/",
-        },
-        {
-          name: "Admin",
-          link: "/admin",
-        },
-        {
-          name: "Pricing",
-          link: "/pricing",
-        },
-      ],
-    };
-  }
+  state = {
+    Navlink: [
+      {
+        name: "Home",
+        link: "/",
+      },
+      {
+        name: "Admin",
+        link: "/admin",
+      },
+      {
+        name: "Pricing",
+        link: "/pricing",
+      },
+    ],
+  };
 
   render() {
     // maps the links to be displayed at the top, eventually one of them can be like "Hello " + this.props.studentUsername
@@ -75,12 +71,13 @@ class NavBar extends React.Component {
                   size="lg"
                 />
               </Nav.Link>
-              {this.props.dashboard === true ? 
-              (<Button variant="dark" onClick = {this.props.signOut}>Sign Out</Button>
-              ) : ('')}
-              {/* <Nav.Link>
-                <Avatar>H</Avatar>
-              </Nav.Link> */}
+              {this.props.dashboard === true ? (
+                <Button variant="dark" onClick={this.props.signOut}>
+                  Sign Out
+                </Button>
+              ) : (
+                ""
+              )}
             </Nav>
           </Navbar.Collapse>
         </Navbar>

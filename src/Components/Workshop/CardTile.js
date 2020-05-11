@@ -5,8 +5,6 @@ import { Button, Card } from "react-bootstrap";
  * This component represents a singular tile in the interface. It has support to hold several buttons and have custom functionality for them.
  * The card also has the abillity to take in a variable number of arguments (the buttons and their text) so it can be multipurpose
  *
- * Author: Harsha Srikara
- * Date: 4/6/20
  */
 class CardTile extends React.Component {
   render() {
@@ -22,8 +20,10 @@ class CardTile extends React.Component {
       "light",
     ];
 
+    // create a button with the text passed in from props
+    // the onclick will be a function defined in props and passed in
     let cardLinks = linkTexts.map((item, i) => (
-      <Card.Link>
+      <Card.Link key={i}>
         <Button onClick={links[i]} variant={variants[i]}>
           {item}
         </Button>
