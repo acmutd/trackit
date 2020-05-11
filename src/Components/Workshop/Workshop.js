@@ -43,7 +43,6 @@ class Workshop extends React.Component {
 
     this.state = {
       dataArray: dps,
-
       confirmationDialog: false, //this is whether or not to show a confirmation dialog
       addEditWorkshopDialog: false, //this is whether or not to show the editing dialog
     };
@@ -67,7 +66,9 @@ class Workshop extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.properties !== prevProps.properties) {
+    if (this.props.data !== prevProps.data) {
+      console.log('updating inside workshop, updating the graph values')
+
       var dps = [];
 
       var xValues = [];
@@ -82,6 +83,7 @@ class Workshop extends React.Component {
       for (var k = 0; k < this.props.data.Progress.length; k++) {
         yValues[this.props.data.Progress[k] - 1] += 1;
       }
+      console.log(yValues)
 
       for (var j = 0; j < xValues.length; j++) {
         dps.push({
@@ -94,6 +96,8 @@ class Workshop extends React.Component {
       });
 
       //redraw the chart somehow here
+
+
     }
   }
 
@@ -182,7 +186,7 @@ class Workshop extends React.Component {
     ));
 
     //options for the CanvasJS graph, configuration basically
-    const options = {
+    var options = {
       animationEnabled: true,
       exportEnabled: true,
       theme: "light2", //"light1", "dark1", "dark2"
