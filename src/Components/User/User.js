@@ -99,36 +99,38 @@ class User extends React.Component {
   }
 
   getProgressData() {
-    let email = encodeURIComponent(this.props.database.auth().currentUser).replace(/\./g, '%2E')
+    let email = encodeURIComponent(this.props.database.auth().currentUser.email).replace(/\./g, '%2E')
+    console.log(email)
     this.progressListener = this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
       .onSnapshot((snapshot) => {
+        console.log('new values from listener')
+        console.log(snapshot.data().testProgress[email])
         this.setState({
           Level_Enabled: snapshot.data().Level_Enabled,
           Enabled: snapshot.data().Enabled,
-          initialProgress: snapshot
-            .data()
-            .testProgress[email], //will either be the actual number or undefined
-          dataLoaded: true,
-        }, function() {
-          if(this.state.initialProgress === undefined || this.state.initialProgress === null) {
-            console.log("it was undefined or null");
-            this.setState({
-              initialProgress: 0,
-            });
-          }
-          else {
-
-          } 
         });
+        if(snapshot.data().testProgress[email])
+        {
+          this.setState({
+            initialProgress: snapshot.data().testProgress[email],
+            dataLoaded: true
+          })
+        }
+        else
+        {
+          this.setState({
+            initialProgress: 0,
+            dataLoaded: true
+          })
+        }
       });
-
   }
 
   updateUserProgress(progress) {
-    var result = encodeURIComponent(this.props.database.auth().currentUser).replace(/\./g, '%2E')
+    var result = encodeURIComponent(this.props.database.auth().currentUser.email).replace(/\./g, '%2E')
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
@@ -179,6 +181,7 @@ class User extends React.Component {
               Level_Enabled={this.state.Level_Enabled}
               signOut={this.signOutUser}
               savedProgress={this.state.initialProgress}
+              dataLoaded={this.state.dataLoaded}
             />
           )
         ) : (

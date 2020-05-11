@@ -18,9 +18,9 @@ class UserDash extends React.Component {
       user: "",
       workshop_data: this.props.workshop_data,
       userProgress: this.props.savedProgress,
-      currentPage: this.props.savedProgress - 1,
+      currentPage: this.props.savedProgress,
       Level_Enabled: this.props.Level_Enabled,
-      dataLoaded: false
+      dataLoaded: this.props.dataLoaded
     };
     this.previousLevel = this.previousLevel.bind(this);
     this.nextLevel = this.nextLevel.bind(this);
@@ -38,12 +38,24 @@ class UserDash extends React.Component {
 
   // lifecycle method that is invoked anytime the component props are updated
   componentDidUpdate(prevProps) {
-    if (this.props !== prevProps) {
+    console.log('inside component  update')
+    if (this.props.savedProgress !== prevProps.savedProgress)
+    {
       this.setState({
-        userProgress: this.props.savedProgress,
-        currentPage: this.props.savedProgress - 1,
-        Level_Enabled: this.props.Level_Enabled,
-      });
+        userProgress: this.props.savedProgress
+      })
+    }
+    if (this.props.Level_Enabled !== prevProps.Level_Enabled)
+    {
+      this.setState({
+        Level_Enabled: this.props.Level_Enabled
+      })
+    }
+    if (this.props.dataLoaded !== prevProps.dataLoaded)
+    {
+      this.setState({
+        dataLoaded: this.props.dataLoaded
+      })
     }
   }
 
@@ -67,7 +79,7 @@ class UserDash extends React.Component {
 
   // marks current stage completed and sends data to database.
   markCompleted() {
-    console.log(this.state.userProgress + " " + this.state.currentPage);
+    console.log('in mark completed : ' + this.state.userProgress + " " + this.state.currentPage);
     // update database on current user progress
     this.setState(function (state, props) {
       return {
@@ -84,7 +96,7 @@ class UserDash extends React.Component {
       if (this.currentPage === index) {
         return (
           <Col key={index}>
-            <Card className="floating-icon" bg="success">
+            <Card className="floating-icon" bg="primary">
               <Card.Header>{item}</Card.Header>
             </Card>
           </Col>
@@ -129,7 +141,7 @@ class UserDash extends React.Component {
       <div>
         <NavBar dashboard={true} signOut={this.props.signOut} />
         <Container fluid className="text-center p-3">
-          {this.state.userProgress === undefined ? (
+          {!this.state.dataLoaded ? (
             <div style = {{position: 'absolute', top: '50%', right:'50%'}}>
               <Spinner animation="border" role="status">
                 <span className="sr-only">Loading...</span>
