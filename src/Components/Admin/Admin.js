@@ -40,11 +40,12 @@ class Admin extends React.Component {
   componentWillUnmount() {
     if (this.progressListener) this.progressListener();
     if (this.workshopListener) this.workshopListener();
+    if (this.loginListener)  this.loginListener();
   }
 
   componentDidMount()
   {
-    this.props.database.auth().onAuthStateChanged((user) => {
+    this.loginListener = this.props.database.auth().onAuthStateChanged((user) => {
       // user is signed in
       if (user) {
         // get user data from Students collection to check if they are an admin
@@ -140,7 +141,8 @@ class Admin extends React.Component {
           var students = [];
           var progress = [];
           for (var x in snap.data().testProgress) {
-            students.push(x);
+            var user = decodeURIComponent(x).replace('%2E', '.')
+            students.push(user);
             progress.push(snap.data().testProgress[x]);
           }
           var temp = {};

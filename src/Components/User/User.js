@@ -27,15 +27,26 @@ class User extends React.Component {
 
   componentWillUnmount() {
     if (this.progressListener) this.progressListener();
-    this.props.database
-      .auth()
-      .signOut()
-      .then(function () {
-        console.log("auto signed out");
-      })
-      .catch(function (error) {
-        console.log("error signing out");
-      });
+    if (this.loginListener) this.loginListener();
+  }
+
+  componentDidMount()
+  {
+    this.loginListener = this.props.database.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log('logging in user')
+        // user is signed in
+        this.setState({
+          loggedIn: true,
+        });
+      }
+      else
+      {
+        this.setState({
+          loggedIn: false
+        })
+      }
+    });
   }
 
   // contacts firestore and authenticates the user. Sets user data if user login works.
@@ -54,15 +65,6 @@ class User extends React.Component {
         });
         console.log("Invalid Email or Password");
       });
-    this.props.database.auth().onAuthStateChanged((user) => {
-      if (user) {
-        // user is signed in
-        this.setState({
-          loggedIn: true,
-        });
-      }
-    });
-    return this.props.database.currentUser !== undefined;
   }
 
   authenticateWorkshop(workshop) {
@@ -86,8 +88,7 @@ class User extends React.Component {
             {
               workshop_data: doc.data(),
               workshopID: workshop,
-            },
-            this.getProgressData
+            }
           );
         }
       });
@@ -98,17 +99,12 @@ class User extends React.Component {
   }
 
   getProgressData() {
-    let email = this.props.database.auth().currentUser.email.substring(
-      0,
-      this.props.database.auth().currentUser.email.lastIndexOf("@")
-    );
+    let email = encodeURIComponent(this.props.database.auth().currentUser).replace(/\./g, '%2E')
     this.progressListener = this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
       .onSnapshot((snapshot) => {
-        //console.log("snapshot data being logged here");
-        //console.log("testProgress(email)"+snapshot.data().testProgress[email]);
         this.setState({
           Level_Enabled: snapshot.data().Level_Enabled,
           Enabled: snapshot.data().Enabled,
@@ -132,20 +128,13 @@ class User extends React.Component {
   }
 
   updateUserProgress(progress) {
-    // BELOW IS CODE TO UPDATE IF PROGRESS STORES IN A MAP
-
+    var result = encodeURIComponent(this.props.database.auth().currentUser).replace(/\./g, '%2E')
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
-      .update({
-        ["testProgress." +
-        this.props.database
-          .auth()
-          .currentUser.email.substring(
-            0,
-            this.props.database.auth().currentUser.email.lastIndexOf("@")
-          )]: progress,
+      .update({ 
+        ['testProgress.' + result] : progress,
       })
       .then(() => {
         console.log("updated");
@@ -176,7 +165,7 @@ class User extends React.Component {
     return (
       <div>
         {this.state.loggedIn ? (
-          this.state.dataLoaded === false ? (
+          !this.state.workshop_data ? (
             <WorkshopLogin
               authenticate={this.authenticateWorkshop}
               loginError={this.state.loginError}
@@ -184,6 +173,7 @@ class User extends React.Component {
           ) : (
             <UserDash
               workshop_data={this.state.workshop_data}
+              getProgressData={this.getProgressData}
               updateUserProgress={this.updateUserProgress}
               progressListener={this.progressListener}
               Level_Enabled={this.state.Level_Enabled}

@@ -7,6 +7,7 @@ import {
   Button,
   ProgressBar,
   Container,
+  Spinner
 } from "react-bootstrap";
 
 class UserDash extends React.Component {
@@ -19,6 +20,7 @@ class UserDash extends React.Component {
       userProgress: this.props.savedProgress,
       currentPage: this.props.savedProgress - 1,
       Level_Enabled: this.props.Level_Enabled,
+      dataLoaded: false
     };
     this.previousLevel = this.previousLevel.bind(this);
     this.nextLevel = this.nextLevel.bind(this);
@@ -27,6 +29,11 @@ class UserDash extends React.Component {
 
   componentWillUnmount() {
     if (this.props.progressListener) this.props.progressListener();
+  }
+  
+  componentDidMount()
+  {
+    this.props.getProgressData();
   }
 
   // lifecycle method that is invoked anytime the component props are updated
@@ -122,6 +129,14 @@ class UserDash extends React.Component {
       <div>
         <NavBar dashboard={true} signOut={this.props.signOut} />
         <Container fluid className="text-center p-3">
+          {this.state.userProgress === undefined ? (
+            <div style = {{position: 'absolute', top: '50%', right:'50%'}}>
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            </div>
+          ) : (
+            <>
           <Row className="m-3 mb-5">{workshop_levels}</Row>
           <ProgressBar className="mb-4">
             <ProgressBar
@@ -206,6 +221,7 @@ class UserDash extends React.Component {
               </Col>
             </Row>
           </Card>
+          </>)}
         </Container>
       </div>
     );
