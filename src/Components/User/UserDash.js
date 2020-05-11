@@ -9,22 +9,21 @@ import {
   Container,
 } from "react-bootstrap";
 
+/**
+ * UI for the user dashboard
+ */
 class UserDash extends React.Component {
-  constructor(props) {
-    super(props);
-    console.log("intial progress: " + this.props.savedProgress);
-    this.state = {
-      user: "",
-      workshop_data: this.props.workshop_data,
-      userProgress: this.props.savedProgress,
-      currentPage: this.props.savedProgress - 1,
-      Level_Enabled: this.props.Level_Enabled,
-    };
-    this.previousLevel = this.previousLevel.bind(this);
-    this.nextLevel = this.nextLevel.bind(this);
-    this.markCompleted = this.markCompleted.bind(this);
-  }
+  state = {
+    user: "",
+    workshop_data: this.props.workshop_data,
+    userProgress: this.props.savedProgress,
+    currentPage: this.props.savedProgress - 1,
+    Level_Enabled: this.props.Level_Enabled,
+  };
 
+  /**
+   * Remove progress listener if the page crashes
+   */
   componentWillUnmount() {
     if (this.props.progressListener) this.props.progressListener();
   }
@@ -41,39 +40,32 @@ class UserDash extends React.Component {
   }
 
   // increments current level by 1. This is not their overall progress, but the stage which they are viewing.
-  nextLevel() {
-    this.setState(function (state, props) {
-      return {
+  nextLevel = () => {
+    this.setState(state => ({
         currentPage: state.currentPage + 1,
-      };
-    });
+    }));
   }
 
   // decrements current level by 1. This is not their overall progress, but the stage which they are viewing.
-  previousLevel() {
-    this.setState(function (state, props) {
-      return {
+  previousLevel = () => {
+    this.setState(state => ({
         currentPage: state.currentPage - 1,
-      };
-    });
+    }));
   }
 
   // marks current stage completed and sends data to database.
-  markCompleted() {
+  markCompleted = () => {
     console.log(this.state.userProgress + " " + this.state.currentPage);
     // update database on current user progress
-    this.setState(function (state, props) {
-      return {
+    this.setState(state => ({
         userProgress: state.userProgress + 1,
-      };
-    }, this.props.updateUserProgress(this.state.userProgress + 1));
+      }),
+      this.props.updateUserProgress(this.state.userProgress + 1)
+    );
   }
 
   render() {
-    let workshop_levels = this.state.workshop_data.Level_Titles.map(function (
-      item,
-      index
-    ) {
+    let workshop_levels = this.state.workshop_data.Level_Titles.map((item, index) => {
       if (this.currentPage === index) {
         return (
           <Col key={index}>

@@ -8,36 +8,34 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 
+/**
+ * This component represents a modal which pops up when needing to confirm deletion, no other button uses this component yet
+ */
 class ConfirmationDialog extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-
-    this.handleDeny = this.handleDeny.bind(this);
-    this.handleAccept = this.handleAccept.bind(this);
-  }
-
   /**
    * This function will get executed when the dialog is closed in any possible way except clicking the agree button
    */
-  handleDeny() {
+  handleDeny = () => {
     this.props.handleDialogResponse(false);
-  }
+  };
 
   /**
    * Person clicks confirm
    */
-  handleAccept() {
+  handleAccept = () => {
     this.props.handleDialogResponse(true);
-  }
+  };
 
+  /**
+   * The text for what appears in the confirmation dialog gets passed in as props
+   * This dialog is all material-ui
+   */
   render() {
     return (
       <div>
         <Dialog
           open={this.props.isOpen}
-          onClose={this.handleDeny}
+          onClose={this.handleDeny} //clicking outside the modal closes it
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
