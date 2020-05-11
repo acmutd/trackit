@@ -144,16 +144,16 @@ class UserDash extends React.Component {
         <div>
           <NavBar dashboard={true} signOut={this.props.signOut} />
           <Container fluid>
-            <Jumbotron>
+            <Jumbotron className = "px-4 mx-2 my-3">
               <h1>
                 Welcome to {this.state.workshop_data.Workshop_Name} {this.state.user}
               </h1>
+              <br/>
               <p>
-                Thank you for joining
-              </p>
-              <p>
+                Thank you for joining.
                 To get started, click on the button below.
               </p>
+              <br/>
               <Button
                     variant="primary"
                     onClick={() => {this.markCompleted()}}
