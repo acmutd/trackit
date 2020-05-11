@@ -7,7 +7,8 @@ import {
   Button,
   ProgressBar,
   Container,
-  Spinner
+  Spinner,
+  Jumbotron
 } from "react-bootstrap";
 
 class UserDash extends React.Component {
@@ -15,7 +16,7 @@ class UserDash extends React.Component {
     super(props);
     console.log("intial progress: " + this.props.savedProgress);
     this.state = {
-      user: "",
+      user: this.props.user,
       workshop_data: this.props.workshop_data,
       userProgress: this.props.savedProgress,
       currentPage: this.props.savedProgress,
@@ -61,7 +62,7 @@ class UserDash extends React.Component {
 
   // increments current level by 1. This is not their overall progress, but the stage which they are viewing.
   nextLevel() {
-    this.setState(function (state, props) {
+    this.setState(function (state) {
       return {
         currentPage: state.currentPage + 1,
       };
@@ -70,7 +71,7 @@ class UserDash extends React.Component {
 
   // decrements current level by 1. This is not their overall progress, but the stage which they are viewing.
   previousLevel() {
-    this.setState(function (state, props) {
+    this.setState(function (state) {
       return {
         currentPage: state.currentPage - 1,
       };
@@ -136,6 +137,34 @@ class UserDash extends React.Component {
     var displayPrevious = this.state.currentPage !== 0;
     var displayMarkCompleted =
       this.state.userProgress === this.state.currentPage && !displayNext;
+
+    if(this.state.userProgress === -1)
+    {
+      return (
+        <div>
+          <NavBar dashboard={true} signOut={this.props.signOut} />
+          <Container fluid>
+            <Jumbotron>
+              <h1>
+                Welcome to {this.state.workshop_data.Workshop_Name} {this.state.user}
+              </h1>
+              <p>
+                Thank you for joining
+              </p>
+              <p>
+                To get started, click on the button below.
+              </p>
+              <Button
+                    variant="primary"
+                    onClick={() => {this.markCompleted()}}
+                  >
+                    Get Started
+                  </Button>
+            </Jumbotron>
+          </Container>
+        </div>
+      )
+    }
 
     return (
       <div>

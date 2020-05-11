@@ -122,7 +122,7 @@ class User extends React.Component {
         else
         {
           this.setState({
-            initialProgress: 0,
+            initialProgress: -1,
             dataLoaded: true
           })
         }
@@ -182,6 +182,7 @@ class User extends React.Component {
               signOut={this.signOutUser}
               savedProgress={this.state.initialProgress}
               dataLoaded={this.state.dataLoaded}
+              user={this.props.database.auth().currentUser.email}
             />
           )
         ) : (
