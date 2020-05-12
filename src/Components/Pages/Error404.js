@@ -3,6 +3,9 @@ import Navbar from "../Layout/NavBar";
 import { Container } from "react-bootstrap";
 import error404 from "../../assets/404.png";
 
+/**
+ * 404 error page, will get rendered on any path that is not defined
+ */
 export class Error404 extends Component {
   render() {
     return (
@@ -13,7 +16,7 @@ export class Error404 extends Component {
             <h1>Whoops...</h1>
             <p>
               Beep boop, looks like we ran into an error. The{" "}
-              <emphasis>infamous</emphasis> <strong>Error 404.</strong>
+              <strong>infamous Error 404.</strong>
             </p>
             <img src={error404} alt="404 Error"></img>
           </div>

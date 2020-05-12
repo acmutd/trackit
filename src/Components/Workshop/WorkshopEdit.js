@@ -19,49 +19,30 @@ import DatePicker from "react-datepicker";
  * The same dialog will be used for both when a new workshop needs to be added and for when a workshop needs to be edited
  * Intially the state is set to null and only gets updated when the textFields are changed
  * If a workshop is being edited then that workshop information is passed in as props
- *
- * Author: Harsha Srikara
- * Date: 4/16/20
  */
 class WorkshopEdit extends React.Component {
-  constructor(props) {
-    super(props);
-
-    // all set to null just for readability to see which fields will get filled out
-    this.state = {
-      Workshop: {
-        Workshop_ID: null,
-        Workshop_Name: null,
-        Level_Titles: [null],
-        Level_Descriptions: [null],
-        Number_Of_Levels: 1,
-        Date: null,
-      },
-    };
-    this.initializeState = this.initializeState.bind(this);
-    this.cancel = this.cancel.bind(this);
-    this.submit = this.submit.bind(this);
-    this.incrementLevel = this.incrementLevel.bind(this);
-    this.decrementLevel = this.decrementLevel.bind(this);
-    this.setWorkshopName = this.setWorkshopName.bind(this);
-    this.setWorkshopLevelName = this.setWorkshopLevelName.bind(this);
-    this.setWorkshopLevelDescription = this.setWorkshopLevelDescription.bind(
-      this
-    );
-    this.setWorkshopDate = this.setWorkshopDate.bind(this);
-    this.callPropsSubmit = this.callPropsSubmit.bind(this);
-  }
+  state = {
+    Workshop: {
+      Workshop_ID: null,
+      Workshop_Name: null,
+      Level_Titles: [null],
+      Level_Descriptions: [null],
+      Number_Of_Levels: 1,
+      Date: null,
+    },
+  };
 
   /**
-   * A temporary copy is created because the object is being passed by reference. We want to clone it to ensure that changes here are not always directly saved
-   * The JSON.parse(JSON.stringify()) will create a deep copy of the object
+   * A temporary copy is created because the object is being passed by reference
+   * We want to clone it to ensure that changes here are not always directly saved
+   * Called by the dialog
    */
-  initializeState() {
+  initializeState = () => {
     //if it is null then a new workshop is being created else an existing  one is being updated
     if (this.props.workshop != null) {
       let temp = new Date(this.props.workshop.Date.seconds * 1000);
       let tempX = { 
-      ...this.props.workshop,
+      ...this.props.workshop, //creates deep copy
       Date: temp };
       this.setState({
         Workshop: tempX,
@@ -73,7 +54,7 @@ class WorkshopEdit extends React.Component {
    * This gets called when someone clicks cancel or outside the dialog box
    * Returns an empty workshop object and false for whether the submit button was pressed
    */
-  cancel() {
+  cancel = () => {
     this.setState({
       Workshop: {
         Workshop_ID: null,
@@ -90,7 +71,7 @@ class WorkshopEdit extends React.Component {
   /**
    * This gets called when the submit button is pressed to save changes made to a workshop or save a new workshop
    */
-  submit() {
+  submit = () => {
     this.props.submit(this.state.Workshop, true);
     //sets to null to prepare for the next time the component may get used
     this.setState({
@@ -105,17 +86,26 @@ class WorkshopEdit extends React.Component {
     });
   }
 
-  callPropsSubmit() {
+  /**
+   * Links button to function passed in as props
+   */
+  callPropsSubmit = () => {
     this.props.submit(this.state.Workshop, true);
   }
 
-  incrementLevel() {
+  /**
+   * Updates state with additional level
+   */
+  incrementLevel = () => {
     let workshop = this.state.Workshop;
     workshop.Number_Of_Levels = workshop.Number_Of_Levels + 1;
     this.setState({ Workshop: workshop });
   }
 
-  decrementLevel() {
+  /**
+   * Updates state with reduced level
+   */
+  decrementLevel = () => {
     if (this.state.Workshop.Number_Of_Levels > 1) {
       let workshop = this.state.Workshop;
       workshop.Number_Of_Levels = workshop.Number_Of_Levels - 1;
@@ -127,7 +117,7 @@ class WorkshopEdit extends React.Component {
    * Event handler for workshop name, note: workshop name is a primary key and changing it is not allowed if a workshop has already been created
    * @param {*} event
    */
-  setWorkshopName(event) {
+  setWorkshopName = (event) => {
     let temp = event.target.value;
     this.setState((state) => ({
       Workshop: {
@@ -142,7 +132,7 @@ class WorkshopEdit extends React.Component {
    * Event handler for the level name, was tricky using the same event handler for all level names but it works like a charm
    * @param {*} event
    */
-  setWorkshopLevelName(event) {
+  setWorkshopLevelName = (event) => {
     let temp = event.target.id;
     let tempArray = this.state.Workshop.Level_Titles;
     for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
@@ -163,7 +153,7 @@ class WorkshopEdit extends React.Component {
    * Event handler for the level description
    * @param {*} event
    */
-  setWorkshopLevelDescription(event) {
+  setWorkshopLevelDescription = (event) => {
     let temp = event.target.id; //used to identify the correct description to edit
     let tempArray = this.state.Workshop.Level_Descriptions;
     for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
@@ -172,7 +162,7 @@ class WorkshopEdit extends React.Component {
       }
     }
 
-    this.setState((state) => ({
+    this.setState(state => ({
       Workshop: {
         ...state.Workshop,
         Level_Descriptions: tempArray,
@@ -180,13 +170,12 @@ class WorkshopEdit extends React.Component {
     }));
   }
 
-  setWorkshopDate(date) {
-    console.log(date);
+  /**
+   * Event listener
+   */
+  setWorkshopDate = (date) => {
     let d = new Date(date);
-    // console.log(d.getDate());
-    // console.log(d.getMonth() + 1);
-    // console.log(d.getFullYear());
-    this.setState((state) => ({
+    this.setState(state => ({
       Workshop: {
         ...state.Workshop,
         Date: d,
@@ -205,7 +194,7 @@ class WorkshopEdit extends React.Component {
       lvlDesc.push(i + "-level");
     }
     let lvlTitleFields = lvlTitl.map((item, i) => (
-      <DialogContent>
+      <DialogContent key={i}>
         <form>
           <TextField
             required

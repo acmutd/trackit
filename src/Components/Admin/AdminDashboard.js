@@ -14,18 +14,20 @@ import { Row, Col, Container } from "react-bootstrap";
 class AdminDashboard extends React.Component {
   constructor(props) {
     super(props);
-    console.log("opening dash");
-
     let openDialog = () => {
       this.showHideAddEditDialog();
     };
 
-    //more hard coded data here, this is for the texts present in the cards present on the dashboard
+    let placeholderFunction = () => {
+      console.log("placeholder function triggered");
+    }
+
+    //contains the text and functions for the <CardTile />
     let cfirst = {
       title: "Admin",
       subtitle: "Administrative Tools",
       description: "Configuration tool for setting up new workshops",
-      links: ["", "", openDialog, ""], //functions
+      links: [placeholderFunction, placeholderFunction, openDialog, placeholderFunction], //functions
       linkText: [
         "Download Workshops",
         "Transfer Workshops",
@@ -46,7 +48,7 @@ class AdminDashboard extends React.Component {
       title: "Social",
       subtitle: "Media Tools",
       description: "Access resources and social media",
-      links: [], //functions
+      links: [placeholderFunction, placeholderFunction, placeholderFunction], //functions
       linkText: ["Github", "LinkedIn", "Instagram"],
     };
 
@@ -57,26 +59,11 @@ class AdminDashboard extends React.Component {
       studentsAtWorkshop: [],
       viewWorkshop: false, //determines whether the expanded view is open or not
       workshopView: 1, //this determines the index of the workshop which has the expanded view
-
-      addWorkshopDialogState: false,
+      addWorkshopDialogState: false, //determines whether the editing dialog is open or not
     };
-    this.openWorkshopWindow = this.openWorkshopWindow.bind(this);
-    this.incrementLevel = this.incrementLevel.bind(this);
-    this.decrementLevel = this.decrementLevel.bind(this);
-    this.enableWorkshop = this.enableWorkshop.bind(this);
-    this.disableWorkshop = this.disableWorkshop.bind(this);
-    this.clearAllStudents = this.clearAllStudents.bind(this);
-    this.deleteWorkshop = this.deleteWorkshop.bind(this);
-    this.addEditWorkshop = this.addEditWorkshop.bind(this);
-    this.exportWorkshop = this.exportWorkshop.bind(this);
-    this.findWorkshopIndex = this.findWorkshopIndex.bind(this);
-    this.receiveAddEditWorkshopInformationFromDialog = this.receiveAddEditWorkshopInformationFromDialog.bind(
-      this
-    );
-    this.showHideAddEditDialog = this.showHideAddEditDialog.bind(this);
-    this.findStudentIndex = this.findStudentIndex.bind(this);
   }
 
+  // if the data updates due to the listeners on the Workshop and StudentsAtWorkshop collection this gets called
   componentDidUpdate(prevProps) {
     if (this.props.student_data !== prevProps.student_data) {
       this.setState({
@@ -104,6 +91,7 @@ class AdminDashboard extends React.Component {
     this.props.readStudentData();
   }
 
+  // remove the progress listeners if the page crashes or the user signs out
   componentWillUnmount() {
     if (this.props.progressListener) {
       this.props.progressListener();
@@ -119,7 +107,7 @@ class AdminDashboard extends React.Component {
    * @param {*} Workshop_ID is the name of the workshop that needs to be expanded, received from <WorkshopBar /> Component
    */
 
-  openWorkshopWindow(Workshop_ID) {
+  openWorkshopWindow = (Workshop_ID) => {
     var workshopIndex = 0;
     // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
     for (var i = 0; i < this.state.workshops.length; i++) {
@@ -127,27 +115,45 @@ class AdminDashboard extends React.Component {
         workshopIndex = i;
       }
     }
-    this.setState((state) => ({
+    this.setState(state => ({
       viewWorkshop: !state.viewWorkshop,
       workshopView: workshopIndex,
     }));
   }
 
-  enableWorkshop(Workshop_ID) {
+  /**
+   * Call function to access firestore from props
+   * @param {*} Workshop_ID 
+   */
+  enableWorkshop = (Workshop_ID) => {
     this.props.updateStatus(Workshop_ID, true);
   }
 
-  disableWorkshop(Workshop_ID) {
+  /**
+   * Call function to access firestore from props
+   * @param {*} Workshop_ID 
+   */
+  disableWorkshop = (Workshop_ID) => {
     this.props.updateStatus(Workshop_ID, false);
   }
 
-  clearAllStudents(Workshop_ID) {
+  /**
+   * Call function to access firestore from props
+   * @param {*} Workshop_ID 
+   */
+  clearAllStudents = (Workshop_ID) => {
     this.props.clearWorkshop(Workshop_ID);
   }
 
-  deleteWorkshop(Workshop_ID) {
+  /**
+   * Call function to access firestore from props
+   * @param {*} Workshop_ID 
+   */
+  deleteWorkshop = (Workshop_ID) => {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
     let workshopArray = this.state.workshops;
+    //removes the one workshop element from the array locally before removing from db
+    //avoids unexpected read errors due to progress listeners
     workshopArray.splice(workshopIndex, 1);
     this.setState({
       viewWorkshop: false, //closes the respective workshop view before deletion 
@@ -157,7 +163,11 @@ class AdminDashboard extends React.Component {
     });
   }
 
-  incrementLevel(Workshop_ID) {
+  /**
+   * Call function to access firestore from props
+   * @param {*} Workshop_ID 
+   */
+  incrementLevel = (Workshop_ID) => {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
     this.props.updateLevel(
       Workshop_ID,
@@ -165,7 +175,11 @@ class AdminDashboard extends React.Component {
     );
   }
 
-  decrementLevel(Workshop_ID) {
+  /**
+   * Call function to access firestore from props
+   * @param {*} Workshop_ID 
+   */
+  decrementLevel = (Workshop_ID) => {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
     this.props.updateLevel(
       Workshop_ID,
@@ -173,28 +187,46 @@ class AdminDashboard extends React.Component {
     );
   }
 
-  exportWorkshop(Workshop_ID) {
+  /**
+   * Call function to access firestore from props
+   * @param {*} Workshop_ID 
+   */
+  exportWorkshop = (Workshop_ID) => {
     this.findWorkshopIndex(Workshop_ID);
     console.log("test");
   }
 
-  showHideAddEditDialog() {
-    this.setState((state) => ({
+  /**
+   * Opens or closes the workshop editing dialog
+   */
+  showHideAddEditDialog = () => {
+    this.setState(state => ({
       addWorkshopDialogState: !state.addWorkshopDialogState,
     }));
   }
 
-  receiveAddEditWorkshopInformationFromDialog(
+  /**
+   * Receives the response from the editing dialog
+   * If the submit button was pressed then it calls the function to modify db, else it just closes the dialog
+   * @param {*} Workshop_Object 
+   * @param {*} wasSubmitPressed 
+   */
+  receiveAddEditWorkshopInformationFromDialog =(
     Workshop_Object,
     wasSubmitPressed
-  ) {
+  ) => {
     this.showHideAddEditDialog();
     if (wasSubmitPressed) {
       this.addEditWorkshop(Workshop_Object);
     }
   }
 
-  addEditWorkshop(Workshop_Object) {
+  /**
+   * When submit is clicked on the workshop editing dialog this function gets called
+   * Will perform some modifications to the data before calling the parent functions from props to update/create in firestore
+   * @param {*} Workshop_Object 
+   */
+  addEditWorkshop = (Workshop_Object) => {
     let workshopIndex = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
     //the slice commands below ensure that when the workshop is saved then only the correct number of levels are passed back
     //For example if the workshop used to have 5 levels but was edited to only have 4 then the slice commands will remove the extra one
@@ -206,16 +238,20 @@ class AdminDashboard extends React.Component {
       0,
       Workshop_Object.Number_Of_Levels
     );
+    // if the workshop does not exist then create it else update it
     if (workshopIndex === -1) {
       this.props.createWorkshop(Workshop_Object);
     } else {
       this.props.updateWorkshop(Workshop_Object.Workshop_ID, Workshop_Object);
     }
-    console.log("test");
   }
 
-  findWorkshopIndex(Workshop_ID) {
-    var workshopIndex = -1;
+  /**
+   * Loop through array to find the index of the workshop
+   * @param {*} Workshop_ID 
+   */
+  findWorkshopIndex = (Workshop_ID) => {
+    let workshopIndex = -1;
     // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
     for (var i = 0; i < this.state.workshops.length; i++) {
       if (this.state.workshops[i].Workshop_ID === Workshop_ID) {
@@ -224,9 +260,13 @@ class AdminDashboard extends React.Component {
     }
     return workshopIndex;
   }
-  findStudentIndex(Workshop_ID) {
+
+  /**
+   * loops through the student array to find the index of a specific student
+   * @param {*} Workshop_ID 
+   */
+  findStudentIndex = (Workshop_ID) => {
     var studentIndex = -1;
-    // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
     for (var i = 0; i < this.state.studentsAtWorkshop.length; i++) {
       if (this.state.studentsAtWorkshop[i].Workshop_ID === Workshop_ID) {
         studentIndex = i;
@@ -292,6 +332,7 @@ class AdminDashboard extends React.Component {
               workshopList
             )}
           </div>
+          {/* This componenet does not actually get rendered initially since the dialogState is false, its just here as a placeholder */}
           <WorkshopEdit
             isOpen={this.state.addWorkshopDialogState}
             titleText="Workshop Panel"
