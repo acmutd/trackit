@@ -43,31 +43,17 @@ class Workshop extends React.Component {
 
     this.state = {
       dataArray: dps,
-
       confirmationDialog: false, //this is whether or not to show a confirmation dialog
       addEditWorkshopDialog: false, //this is whether or not to show the editing dialog
     };
-    this.parseDataPoints = this.parseDataPoints.bind(this);
-    this.incrementLevel = this.incrementLevel.bind(this);
-    this.decrementLevel = this.decrementLevel.bind(this);
-    this.enableWorkshop = this.enableWorkshop.bind(this);
-    this.disableWorkshop = this.disableWorkshop.bind(this);
-    this.clearAllStudents = this.clearAllStudents.bind(this);
-    this.deleteWorkshop = this.deleteWorkshop.bind(this);
-    this.addEditWorkshop = this.addEditWorkshop.bind(this);
-    this.exportWorkshop = this.exportWorkshop.bind(this);
-    this.showHideDeleteConfirmation = this.showHideDeleteConfirmation.bind(
-      this
-    );
-    this.showHideAddEditDialog = this.showHideAddEditDialog.bind(this);
-    this.receiveAddEditWorkshopInformationFromDialog = this.receiveAddEditWorkshopInformationFromDialog.bind(
-      this
-    );
-    this.getDialogResponse = this.getDialogResponse.bind(this);
   }
 
+  /**
+   * Refreshes all the information displayed when the props change
+   * @param {*} prevProps 
+   */
   componentDidUpdate(prevProps) {
-    if (this.props.properties !== prevProps.properties) {
+    if (this.props.data !== prevProps.data) {
       var dps = [];
 
       var xValues = [];
@@ -92,15 +78,13 @@ class Workshop extends React.Component {
       this.setState({
         dataArray: dps,
       });
-
-      //redraw the chart somehow here
     }
   }
 
   //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph
   //code for parsing and adding dynamic data from here --> http://jsfiddle.net/canvasjs/acf0dx6d/
   //this function does not actually get called
-  parseDataPoints() {
+  parseDataPoints = () => {
     var dps = [];
     for (var i = dps.length; i < this.props.data.Students.length; i++)
       dps.push({
@@ -111,60 +95,98 @@ class Workshop extends React.Component {
     this.setState({ dataArray: dps });
   }
 
-  enableWorkshop() {
+  /**
+   * Link button to function passed in as props
+   */
+  enableWorkshop = () => {
     this.props.enableWorkshop(this.props.data.Workshop_ID);
   }
 
-  disableWorkshop() {
+  /**
+   * Link button to function passed in as props
+   */
+  disableWorkshop = () => {
     this.props.disableWorkshop(this.props.data.Workshop_ID);
   }
 
-  clearAllStudents() {
+  /**
+   * Link button to function passed in as props
+   */
+  clearAllStudents = () => {
     this.props.clearAllStudents(this.props.data.Workshop_ID);
   }
 
-  deleteWorkshop() {
+  /**
+   * Link button to function passed in as props
+   */
+  deleteWorkshop = () => {
     this.showHideDeleteConfirmation();
-    //the below function gets called if confirm is clicked
-    //this.props.deleteWorkshop(this.props.data.Workshop_ID);
   }
 
-  incrementLevel() {
+  /**
+   * Link button to function passed in as props
+   */
+  incrementLevel = () => {
     this.props.incrementLevel(this.props.data.Workshop_ID);
   }
 
-  decrementLevel() {
+  /**
+   * Link button to function passed in as props
+   */
+  decrementLevel = () => {
     this.props.decrementLevel(this.props.data.Workshop_ID);
   }
-  addEditWorkshop() {
+
+  /**
+   * Link button to function passed in as props
+   */
+  addEditWorkshop = () => {
     this.showHideAddEditDialog();
   }
 
-  receiveAddEditWorkshopInformationFromDialog(
+  /**
+   * Link button to function passed in as props
+   * Only called if submit was pressed
+   */
+  receiveAddEditWorkshopInformationFromDialog = (
     Workshop_Object,
     wasSubmitPressed
-  ) {
+  ) => {
     this.showHideAddEditDialog();
     if (wasSubmitPressed) {
       this.props.addEditWorkshop(Workshop_Object);
     }
   }
-  exportWorkshop() {
+
+  /**
+   * Link button to function passed in as props
+   */
+  exportWorkshop = () => {
     this.props.exportWorkshop(this.props.data.Workshop_ID);
   }
 
-  showHideDeleteConfirmation() {
-    this.setState((state) => ({
+  /**
+   * Open up the confirmation dialog for deletion
+   */
+  showHideDeleteConfirmation = () => {
+    this.setState(state => ({
       confirmationDialog: !state.confirmationDialog,
     }));
   }
-  showHideAddEditDialog() {
-    this.setState((state) => ({
+
+  /**
+   * Open up the workshop editing dialog
+   */
+  showHideAddEditDialog = () => {
+    this.setState(state => ({
       addEditWorkshopDialog: !state.addEditWorkshopDialog,
     }));
   }
 
-  getDialogResponse(bool) {
+  /**
+   * Get response from the confirmation dialog on whether to delete the workshop
+   */
+  getDialogResponse = (bool) => {
     this.showHideDeleteConfirmation();
     if (bool) {
       this.props.deleteWorkshop(this.props.data.Workshop_ID);
@@ -178,6 +200,7 @@ class Workshop extends React.Component {
         TotalProgress={this.props.properties.Number_Of_Levels}
         Progress={this.props.data.Progress[i]}
         Student_Name={item}
+        key={i}
       />
     ));
 

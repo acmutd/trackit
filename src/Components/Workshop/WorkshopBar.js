@@ -2,19 +2,19 @@ import React from "react";
 import { Nav, ProgressBar } from "react-bootstrap";
 
 /**
- * The is a workshop bar that shows a minimized view of the information in a workshop, quick look at the data available
- *
+ * The is a workshop bar that shows a minimized view of the information in a workshop
+ * Quick look at the data available
  */
 class WorkshopBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      expandView: this.props.expandState, //if this is true then the <Workshop /> Component is also rendered on the AdminDashboard, here it only changes the "Show View" to "Hide View"
-      refresh: false,
-    };
-    this.switchView = this.switchView.bind(this);
-  }
+  state = {
+    expandView: this.props.expandState, //if this is true then the <Workshop /> Component is also rendered on the AdminDashboard, here it only changes the "Show View" to "Hide View"
+    refresh: false,
+  };
 
+  /**
+   * Updates the workshop state if the props change
+   * @param {*} prevProps 
+   */
   componentDidUpdate(prevProps) {
     if (this.props.students !== prevProps.students) {
       this.setState(state => ({
@@ -23,9 +23,10 @@ class WorkshopBar extends React.Component {
     }
   }
 
-  switchView() {
-    // the code line below is commented becuz it would only be required if the same component was being used, however a different <WorkshopBar /> Component gets rendered when the expandView state changes
-    // this.setState(state => ({ expandView: !state.expandView }));
+  /**
+   * Toggles whether the expanded view is open or not
+   */
+  switchView = () => {
     this.props.expandWindow(this.props.data.Workshop_ID);
   }
 

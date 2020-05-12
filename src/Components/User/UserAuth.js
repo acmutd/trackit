@@ -6,52 +6,56 @@ import {
   Col,
   FormControl,
   Container,
-  Alert
+  Alert,
 } from "react-bootstrap";
 import NavBar from "../Layout/NavBar";
 
+/**
+ * Same UI as admin auth
+ */
 class UserAuth extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: "", // stores name of user
-      password: "",
-      loginError: false
-    };
+  state = {
+    email: "", // stores name of user
+    password: "",
+    loginError: false,
+  };
 
-    this.fillEmail = this.fillEmail.bind(this);
-    this.fillPassword = this.fillPassword.bind(this);
-    this.authenticate = this.authenticate.bind(this);
-  }
-
-  componentDidUpdate(prevProps)
-  {
-      if(this.props.loginError !== prevProps.loginError)
-      {
-          this.setState({
-              loginError: this.props.loginError
-          })
-      }
-  }
-
-  fillEmail(event) {
-    this.setState({
-      email: event.target.value
-    });
-  }
-
-  fillPassword(event) {
-    this.setState({
-      password: event.target.value
-    });
+  /**
+   * If an error occurred in authentication this will update
+   * @param {*} prevProps 
+   */
+  componentDidUpdate(prevProps) {
+    if (this.props.loginError !== prevProps.loginError) {
+      this.setState({
+        loginError: this.props.loginError,
+      });
+    }
   }
 
   /**
-   * Calls the authenticate function passed in from <Admin /> with the username and password stored in state
+   * Listener
    */
-  authenticate() {
+  fillEmail = (event) => {
+    this.setState({
+      email: event.target.value,
+    });
+  };
+
+  /**
+   * Listener
+   */
+  fillPassword = (event) => {
+    this.setState({
+      password: event.target.value,
+    });
+  };
+
+  /**
+   * Calls the authenticate function passed in from <User /> with the username and password stored in state
+   */
+  authenticate = () => {
     this.props.authenticate(this.state.email, this.state.password);
-  }
+  };
 
   render() {
     return (
@@ -59,9 +63,17 @@ class UserAuth extends React.Component {
         <NavBar />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
-          {this.state.loginError ? (
-              <Alert variant="danger" onClose = {() => this.setState({loginError: false})} dismissible>Invalid Email or Password</Alert>
-            ) : ("")}
+            {this.state.loginError ? (
+              <Alert
+                variant="danger"
+                onClose={() => this.setState({ loginError: false })}
+                dismissible
+              >
+                Invalid Email or Password
+              </Alert>
+            ) : (
+              ""
+            )}
             <Row>
               {/* Username text field */}
               <Col xs={12} sm={12} md={5}>
@@ -97,7 +109,7 @@ class UserAuth extends React.Component {
                 </InputGroup>
               </Col>
               <Col xs={12} sm={12} md={2}>
-                {/* The authenticate function here is the one defined in this Component and not the one passed in from <Admin /> */}
+                {/* The authenticate function here is the one defined in this Component and not the one passed in from <User /> */}
                 <Button onClick={this.authenticate} variant="success">
                   Login
                 </Button>
