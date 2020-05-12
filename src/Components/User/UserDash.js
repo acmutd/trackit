@@ -77,7 +77,7 @@ class UserDash extends React.Component {
   render() {
     let workshop_levels = this.state.workshop_data.Level_Titles.map(
       (item, index) => {
-        if (this.currentPage === index) {
+        if (this.state.currentPage === index) {
           return (
             <Col key={index}>
               <Card className="floating-icon" bg="primary">
@@ -85,7 +85,7 @@ class UserDash extends React.Component {
               </Card>
             </Col>
           );
-        } else if (this.userProgress > index) {
+        } else if (this.state.userProgress > index) {
           return (
             <Col key={index}>
               <Card bg="success">
@@ -127,7 +127,7 @@ class UserDash extends React.Component {
         this.state.userProgress > this.state.currentPage) ||
       (this.state.Level_Enabled === this.state.userProgress &&
         this.state.currentPage < this.state.userProgress - 1);
-    var displayPrevious = this.state.currentPage !== 0;
+    var displayPrevious = this.state.currentPage > 0;
     var displayMarkCompleted =
       this.state.userProgress === this.state.currentPage && !displayNext;
 

@@ -33,21 +33,21 @@ class AdminDashboard extends React.Component {
       title: "Admin",
       subtitle: "Administrative Tools",
       description: "Configuration tool for setting up new workshops",
-      links: [downloadAllWorkshops, placeholderFunction, openDialog, placeholderFunction], //functions
+      links: [downloadAllWorkshops, openDialog], //functions
       linkText: [
         "Download Workshops",
-        "Transfer Workshops",
         "Add Workshop",
-        "Delete Workshops",
       ],
+      disabled: false,
     };
 
     let csecond = {
       title: "Development",
       subtitle: "Development Tools",
       description: "Try out beta tools for customizing trackit",
-      links: [], //functions
-      linkText: [],
+      links: [placeholderFunction, placeholderFunction], //functions
+      linkText: ["Documentation", "Donate"],
+      disabled: true,
     };
 
     let cthird = {
@@ -56,6 +56,7 @@ class AdminDashboard extends React.Component {
       description: "Access resources and social media",
       links: [placeholderFunction, placeholderFunction, placeholderFunction], //functions
       linkText: ["Github", "LinkedIn", "Instagram"],
+      disabled: true,
     };
 
     this.state = {
@@ -231,14 +232,14 @@ class AdminDashboard extends React.Component {
    */
   downloadAllWorkshops = () => {
     let big_data = [];
-    let student_data = [];
 
     // Loop through workshops
     for (let i = 0; i < this.state.workshops.length; i++) {
       let data = {...this.state.workshops[i]};
 
+      let student_data = [];
       // Convert parallel arrays from state to objects for neater export
-      for (let k = 0; k < this.state.studentsAtWorkshop[k].Students.length; k++) {
+      for (let k = 0; k < this.state.studentsAtWorkshop[i].Students.length; k++) {
         let student = this.state.studentsAtWorkshop[i].Students[k];
         let progress = this.state.studentsAtWorkshop[i].Progress[k];
         student_data.push({
