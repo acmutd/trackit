@@ -196,7 +196,7 @@ class AdminDashboard extends React.Component {
    */
   exportWorkshop = (Workshop_ID) => {
     const index = this.findWorkshopIndex(Workshop_ID);
-    let data = this.state.workshops[index];
+    let data = {...this.state.workshops[index]};
 
     // Convert parallel arrays from state to objects for neater export
     let student_data = [];
@@ -235,7 +235,7 @@ class AdminDashboard extends React.Component {
 
     // Loop through workshops
     for (let i = 0; i < this.state.workshops.length; i++) {
-      let data = this.state.workshops[i];
+      let data = {...this.state.workshops[i]};
 
       // Convert parallel arrays from state to objects for neater export
       for (let k = 0; k < this.state.studentsAtWorkshop[k].Students.length; k++) {
