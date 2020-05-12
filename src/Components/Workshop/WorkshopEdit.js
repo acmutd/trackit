@@ -12,6 +12,7 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import DatePicker from "react-datepicker";
+import WorksdopEditor from "../Layout/WorkshopEditor"
 
 /**
  * Opens up a dialog modal for the workshop data to be edited or a new workshop informatin to be added
@@ -28,8 +29,10 @@ class WorkshopEdit extends React.Component {
       Level_Titles: [null],
       Level_Descriptions: [null],
       Number_Of_Levels: 1,
-      Date: null,
+      Date: null
     },
+    editWindow: false,
+    editDescription: null
   };
 
   /**
@@ -154,20 +157,24 @@ class WorkshopEdit extends React.Component {
    * @param {*} event
    */
   setWorkshopLevelDescription = (event) => {
-    let temp = event.target.id; //used to identify the correct description to edit
-    let tempArray = this.state.Workshop.Level_Descriptions;
-    for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
-      if (temp === i + "-level") {
-        tempArray[i] = event.target.value;
-      }
-    }
+    // let temp = event.target.id; //used to identify the correct description to edit
+    // let tempArray = this.state.Workshop.Level_Descriptions;
+    // for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
+    //   if (temp === i + "-level") {
+    //     tempArray[i] = event.target.value;
+    //   }
+    // }
 
-    this.setState(state => ({
-      Workshop: {
-        ...state.Workshop,
-        Level_Descriptions: tempArray,
-      },
-    }));
+    // this.setState(state => ({
+    //   Workshop: {
+    //     ...state.Workshop,
+    //     Level_Descriptions: tempArray,
+    //   },
+    // }));
+    console.log('inside set workshop level descp')
+    this.setState({
+      editWindow: true
+    })
   }
 
   /**
@@ -183,7 +190,31 @@ class WorkshopEdit extends React.Component {
     }));
   }
 
+  closeWorkshopEdit = () =>
+  {
+    this.setState((state) => ({
+      editWindow: false
+    }))
+  }
+
   render() {
+    if(this.state.editWindow)
+    {
+      return(
+        <Dialog
+          open={this.props.isOpen}
+          onClose={this.cancel}
+          onEnter={this.initializeState}
+          maxWidth="xl"
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+        <DialogContent key={i}>
+          <WorksdopEditor closeWindow = {this.closeWorkshopEdit}/>
+        </DialogContent>
+      </Dialog>
+      )
+    }
     //the following code generates the appropriate number of textFields to be filled in based on Number_Of_Levels
     //level text fields have the id set to 0,1,2,3... etc which is used by the event handler to decide what to modify
     //level description fields have the id set to 0-level,1-level,2-level... etc which is used by the event handler
@@ -206,17 +237,12 @@ class WorkshopEdit extends React.Component {
             onChange={this.setWorkshopLevelName}
             value={this.state.Workshop.Level_Titles[i] || ""}
           />
-          <TextField
-            id={lvlDesc[i]}
+          <Button
+            type="button"
             label="Level Description"
-            multiline
-            rowsMax="4"
-            helperText="Enter Description of Level"
-            placeholder="Level Description"
             className="mr-5"
-            onChange={this.setWorkshopLevelDescription}
-            value={this.state.Workshop.Level_Descriptions[i] || ""}
-          />
+            onClick={this.setWorkshopLevelDescription}
+          >Open Editor</Button>
         </form>
       </DialogContent>
     ));
