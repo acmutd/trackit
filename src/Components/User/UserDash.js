@@ -3,20 +3,14 @@ import NavBar from "../Layout/NavBar";
 import UserWelcome from "./UserWelcome";
 import Loading from "../Layout/Loading";
 import UserProgressBar from "./UserProgressBar";
-import {
-  Row,
-  Col,
-  Card,
-  Button,
-  Container,
-} from "react-bootstrap";
+import { Row, Col, Card, Button, Container } from "react-bootstrap";
 
 /**
  * UI for the user dashboard
  */
 class UserDash extends React.Component {
   state = {
-    user: "",
+    user: this.props.user,
     workshop_data: this.props.workshop_data,
     userProgress: this.props.savedProgress,
     currentPage: this.props.savedProgress - 1,
@@ -57,57 +51,60 @@ class UserDash extends React.Component {
 
   // increments current level by 1. This is not their overall progress, but the stage which they are viewing.
   nextLevel = () => {
-    this.setState(state => ({
-        currentPage: state.currentPage + 1,
+    this.setState((state) => ({
+      currentPage: state.currentPage + 1,
     }));
-  }
+  };
 
   // decrements current level by 1. This is not their overall progress, but the stage which they are viewing.
   previousLevel = () => {
-    this.setState(state => ({
-        currentPage: state.currentPage - 1,
+    this.setState((state) => ({
+      currentPage: state.currentPage - 1,
     }));
-  }
+  };
 
   // marks current stage completed and sends data to database.
   markCompleted = () => {
     // update database on current user progress
-    this.setState(state => ({
+    this.setState(
+      (state) => ({
         userProgress: state.userProgress + 1,
       }),
       this.props.updateUserProgress(this.state.userProgress + 1)
     );
-  }
+  };
 
   render() {
-    let workshop_levels = this.state.workshop_data.Level_Titles.map((item, index) => {
-      if (this.currentPage === index) {
-        return (
-          <Col key={index}>
-            <Card className="floating-icon" bg="primary">
-              <Card.Header>{item}</Card.Header>
-            </Card>
-          </Col>
-        );
-      } else if (this.userProgress > index) {
-        return (
-          <Col key={index}>
-            <Card bg="success">
-              <Card.Header>{item}</Card.Header>
-            </Card>
-          </Col>
-        );
-      } else {
-        return (
-          <Col key={index}>
-            <Card>
-              <Card.Header>{item}</Card.Header>
-            </Card>
-          </Col>
-        );
-      }
-    },
-    this.state);
+    let workshop_levels = this.state.workshop_data.Level_Titles.map(
+      (item, index) => {
+        if (this.currentPage === index) {
+          return (
+            <Col key={index}>
+              <Card className="floating-icon" bg="primary">
+                <Card.Header>{item}</Card.Header>
+              </Card>
+            </Col>
+          );
+        } else if (this.userProgress > index) {
+          return (
+            <Col key={index}>
+              <Card bg="success">
+                <Card.Header>{item}</Card.Header>
+              </Card>
+            </Col>
+          );
+        } else {
+          return (
+            <Col key={index}>
+              <Card>
+                <Card.Header>{item}</Card.Header>
+              </Card>
+            </Col>
+          );
+        }
+      },
+      this.state
+    );
 
     let workshop_level_text = this.state.workshop_data.Level_Descriptions[
       this.state.currentPage
@@ -127,14 +124,12 @@ class UserDash extends React.Component {
 
     if (this.state.userProgress === -1) {
       return (
-        <div>
           <UserWelcome
             signOut={this.props.signOut}
             Workshop_Name={this.state.workshop_data.Workshop_Name}
             user={this.state.user}
             markCompleted={this.markCompleted}
           />
-        </div>
       );
     }
 

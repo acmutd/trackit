@@ -215,10 +215,12 @@ class User extends React.Component {
               signOut={this.signOutUser}
               savedProgress={this.state.initialProgress}
               dataLoaded={this.state.dataLoaded}
-              user={this.props.database.auth().currentUser.email.substring(
-                0,
-                this.props.database.auth().currentUser.email.lastIndexOf("@")
-              )}
+              user={this.props.database
+                .auth()
+                .currentUser.email.substring(
+                  0,
+                  this.props.database.auth().currentUser.email.lastIndexOf("@")
+                )}
             />
           )
         ) : (
