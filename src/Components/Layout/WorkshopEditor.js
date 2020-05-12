@@ -1,6 +1,6 @@
 import React from "react";
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, convertFromHTML, ContentState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {
@@ -18,9 +18,15 @@ class WorkshopEditor extends React.Component {
     {
         super(props)
         var defaultState;
+        console.log(this.props.content)
         if(this.props.content)
         {
-            defaultState = EditorState.createWithContent(this.props.content)
+            const blocksFromHTML = convertFromHTML(this.props.content);
+                const state = ContentState.createFromBlockArray(
+                    blocksFromHTML.contentBlocks,
+                    blocksFromHTML.entityMap,
+                );
+            defaultState = EditorState.createWithContent(state)
         }
         else defaultState = EditorState.createEmpty();
 

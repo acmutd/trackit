@@ -216,7 +216,7 @@ class WorkshopEdit extends React.Component {
           aria-describedby="alert-dialog-description"
         >
         <DialogContent key={i}>
-          <WorksdopEditor closeWindow = {this.closeWorkshopEdit}/>
+          <WorksdopEditor closeWindow = {this.closeWorkshopEdit} content={this.state.Workshop.Level_Descriptions[this.state.currLevel]}/>
         </DialogContent>
       </Dialog>
       )
