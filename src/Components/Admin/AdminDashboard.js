@@ -208,13 +208,14 @@ class AdminDashboard extends React.Component {
         progress,
       });
     }
+    data.Date = (new Date(data.Date.seconds * 1000)).toDateString();
 
     // Merging both workshop data and student data into one json object
     let export_data = {
       workshop_data: data,
       student_data: student_data,
     };
-    export_data = JSON.stringify(export_data);
+    export_data = JSON.stringify(export_data, null, 4);
 
     // Create a blob with data
     const jsonBlob = new Blob([export_data], {
@@ -245,6 +246,7 @@ class AdminDashboard extends React.Component {
           progress,
         });
       }
+      data.Date = (new Date(data.Date.seconds * 1000)).toDateString();
 
       // Merging both workshop data and student data into one json object that is pushed to the main object
       big_data.push({
@@ -252,7 +254,7 @@ class AdminDashboard extends React.Component {
         student_data: student_data,
       });
     }
-    big_data = JSON.stringify(big_data);
+    big_data = JSON.stringify(big_data, null, 4);
 
     // Create a blob with data
     const jsonBlob = new Blob([big_data], {
@@ -351,12 +353,13 @@ class AdminDashboard extends React.Component {
         expandWindow={this.openWorkshopWindow}
         data={item}
         students={this.state.studentsAtWorkshop[index]}
+        key={index}
       />
     ));
 
     //maps out the array into UI components to be displayed in the tiles at the top
-    let tiles = this.state.cards.map((item) => (
-      <Col>
+    let tiles = this.state.cards.map((item, index) => (
+      <Col key={index}>
         <CardTile data={item} />
       </Col>
     ));
