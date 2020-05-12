@@ -232,14 +232,14 @@ class AdminDashboard extends React.Component {
    */
   downloadAllWorkshops = () => {
     let big_data = [];
-    let student_data = [];
 
     // Loop through workshops
     for (let i = 0; i < this.state.workshops.length; i++) {
       let data = {...this.state.workshops[i]};
 
+      let student_data = [];
       // Convert parallel arrays from state to objects for neater export
-      for (let k = 0; k < this.state.studentsAtWorkshop[k].Students.length; k++) {
+      for (let k = 0; k < this.state.studentsAtWorkshop[i].Students.length; k++) {
         let student = this.state.studentsAtWorkshop[i].Students[k];
         let progress = this.state.studentsAtWorkshop[i].Progress[k];
         student_data.push({
