@@ -31,10 +31,10 @@ class UserDash extends React.Component {
 
   // lifecycle method that is invoked anytime the component props are updated
   componentDidUpdate(prevProps) {
-    console.log("inside component  update");
     if (this.props.savedProgress !== prevProps.savedProgress) {
       this.setState({
         userProgress: this.props.savedProgress,
+        currentPage: this.props.savedProgress - 1,
       });
     }
     if (this.props.Level_Enabled !== prevProps.Level_Enabled) {
@@ -51,14 +51,14 @@ class UserDash extends React.Component {
 
   // increments current level by 1. This is not their overall progress, but the stage which they are viewing.
   nextLevel = () => {
-    this.setState((state) => ({
+    this.setState(state => ({
       currentPage: state.currentPage + 1,
     }));
   };
 
   // decrements current level by 1. This is not their overall progress, but the stage which they are viewing.
   previousLevel = () => {
-    this.setState((state) => ({
+    this.setState(state => ({
       currentPage: state.currentPage - 1,
     }));
   };
@@ -66,8 +66,7 @@ class UserDash extends React.Component {
   // marks current stage completed and sends data to database.
   markCompleted = () => {
     // update database on current user progress
-    this.setState(
-      (state) => ({
+    this.setState(state => ({
         userProgress: state.userProgress + 1,
       }),
       this.props.updateUserProgress(this.state.userProgress + 1)
