@@ -26,12 +26,11 @@ class WorkshopEditor extends React.Component {
 
         this.state = {
             editorState: defaultState,
+            savedState: null
         }
         this.onEditorStateChange = this.onEditorStateChange.bind(this)
         this.saveCurrentContent = this.saveCurrentContent.bind(this)
         this.closeWindow = this.closeWindow.bind(this)
-        //this.sendContent = this.sendContent.bind(this)
-        //this.onContentStateChange = this.onContentStateChange.bind(this)
     }   
 
 
@@ -56,15 +55,17 @@ class WorkshopEditor extends React.Component {
         var markup = draftToHtml(
             rawContentState,  
           );
+          this.setState({
+              savedState: markup
+          })
           console.log('marukup: ')
           console.log(markup)
-        //this.props.savedText(markup)
     }
 
     closeWindow()
     {
         console.log('closing window')
-        this.props.closeWindow();
+        this.props.closeWindow(this.state.savedState);
     }
 
     render()

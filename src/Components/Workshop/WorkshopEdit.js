@@ -32,7 +32,7 @@ class WorkshopEdit extends React.Component {
       Date: null
     },
     editWindow: false,
-    editDescription: null
+    currLevel: -1
   };
 
   /**
@@ -156,24 +156,26 @@ class WorkshopEdit extends React.Component {
    * Event handler for the level description
    * @param {*} event
    */
-  setWorkshopLevelDescription = (event) => {
-    // let temp = event.target.id; //used to identify the correct description to edit
-    // let tempArray = this.state.Workshop.Level_Descriptions;
-    // for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
-    //   if (temp === i + "-level") {
-    //     tempArray[i] = event.target.value;
-    //   }
-    // }
+  setWorkshopLevelDescription = (newText) => {
+    let tempArray = this.state.Workshop.Level_Descriptions;
+    tempArray[this.state.currLevel]=newText;
 
-    // this.setState(state => ({
-    //   Workshop: {
-    //     ...state.Workshop,
-    //     Level_Descriptions: tempArray,
-    //   },
-    // }));
+    this.setState(state => ({
+      Workshop: {
+        ...state.Workshop,
+        Level_Descriptions: tempArray,
+      },
+    }));
+  }
+
+  openWorkshopEdit = (level) =>
+  {
+    console.log('level: ' + level)
+    console.log(level)
     console.log('inside set workshop level descp')
     this.setState({
-      editWindow: true
+      editWindow: true,
+      currLevel: level
     })
   }
 
@@ -190,11 +192,15 @@ class WorkshopEdit extends React.Component {
     }));
   }
 
-  closeWorkshopEdit = () =>
+  closeWorkshopEdit = (newText) =>
   {
-    this.setState((state) => ({
+    console.log('closing edit window')
+    if(newText)
+      this.setWorkshopLevelDescription(newText)
+    this.setState({
       editWindow: false
-    }))
+    })
+
   }
 
   render() {
@@ -241,8 +247,10 @@ class WorkshopEdit extends React.Component {
             type="button"
             label="Level Description"
             className="mr-5"
-            onClick={this.setWorkshopLevelDescription}
-          >Open Editor</Button>
+            onClick={()=>{this.openWorkshopEdit(i)}}
+          >
+            Edit Level Info
+          </Button>
         </form>
       </DialogContent>
     ));
