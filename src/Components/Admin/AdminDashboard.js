@@ -4,7 +4,8 @@ import NavBar from "../Layout/NavBar";
 import Workshop from "../Workshop/Workshop";
 import WorkshopEdit from "../Workshop/WorkshopEdit";
 import CardTile from "../Workshop/CardTile";
-import { Row, Col, Container, Spinner } from "react-bootstrap";
+import Loading from "../Layout/Loading";
+import { Row, Col, Container } from "react-bootstrap";
 
 /**
  * UI component that manages how the admin dashboard looks like
@@ -258,11 +259,7 @@ class AdminDashboard extends React.Component {
         <NavBar dashboard={true} signOut={this.props.signOut} />
         <Container fluid>
           {!this.state.dataLoaded ? (
-            <div style = {{position: 'absolute', top: '50%', right:'50%'}}>
-          <Spinner animation="border" role="status">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
-            </div>
+            <Loading />
           ) : ( <>
           <div className="m-5">
             <Row>{tiles}</Row> 

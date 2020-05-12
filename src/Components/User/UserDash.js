@@ -1,14 +1,14 @@
 import React from "react";
 import NavBar from "../Layout/NavBar";
+import UserWelcome from "./UserWelcome";
+import Loading from "../Layout/Loading";
+import UserProgressBar from "./UserProgressBar";
 import {
   Row,
   Col,
   Card,
   Button,
-  ProgressBar,
   Container,
-  Spinner,
-  Jumbotron
 } from "react-bootstrap";
 
 class UserDash extends React.Component {
@@ -21,7 +21,7 @@ class UserDash extends React.Component {
       userProgress: this.props.savedProgress,
       currentPage: this.props.savedProgress,
       Level_Enabled: this.props.Level_Enabled,
-      dataLoaded: this.props.dataLoaded
+      dataLoaded: this.props.dataLoaded,
     };
     this.previousLevel = this.previousLevel.bind(this);
     this.nextLevel = this.nextLevel.bind(this);
@@ -31,32 +31,28 @@ class UserDash extends React.Component {
   componentWillUnmount() {
     if (this.props.progressListener) this.props.progressListener();
   }
-  
-  componentDidMount()
-  {
+
+  componentDidMount() {
     this.props.getProgressData();
   }
 
   // lifecycle method that is invoked anytime the component props are updated
   componentDidUpdate(prevProps) {
-    console.log('inside component  update')
-    if (this.props.savedProgress !== prevProps.savedProgress)
-    {
+    console.log("inside component  update");
+    if (this.props.savedProgress !== prevProps.savedProgress) {
       this.setState({
-        userProgress: this.props.savedProgress
-      })
+        userProgress: this.props.savedProgress,
+      });
     }
-    if (this.props.Level_Enabled !== prevProps.Level_Enabled)
-    {
+    if (this.props.Level_Enabled !== prevProps.Level_Enabled) {
       this.setState({
-        Level_Enabled: this.props.Level_Enabled
-      })
+        Level_Enabled: this.props.Level_Enabled,
+      });
     }
-    if (this.props.dataLoaded !== prevProps.dataLoaded)
-    {
+    if (this.props.dataLoaded !== prevProps.dataLoaded) {
       this.setState({
-        dataLoaded: this.props.dataLoaded
-      })
+        dataLoaded: this.props.dataLoaded,
+      });
     }
   }
 
@@ -80,7 +76,12 @@ class UserDash extends React.Component {
 
   // marks current stage completed and sends data to database.
   markCompleted() {
-    console.log('in mark completed : ' + this.state.userProgress + " " + this.state.currentPage);
+    console.log(
+      "in mark completed : " +
+        this.state.userProgress +
+        " " +
+        this.state.currentPage
+    );
     // update database on current user progress
     this.setState(function (state, props) {
       return {
@@ -138,32 +139,17 @@ class UserDash extends React.Component {
     var displayMarkCompleted =
       this.state.userProgress === this.state.currentPage && !displayNext;
 
-    if(this.state.userProgress === -1)
-    {
+    if (this.state.userProgress === -1) {
       return (
         <div>
-          <NavBar dashboard={true} signOut={this.props.signOut} />
-          <Container fluid>
-            <Jumbotron className = "px-4 mx-3 my-3">
-              <h1>
-                Welcome to {this.state.workshop_data.Workshop_Name} {this.state.user}
-              </h1>
-              <br/>
-              <p>
-                Thank you for joining.
-                To get started, click on the button below.
-              </p>
-              <br/>
-              <Button
-                    variant="primary"
-                    onClick={() => {this.markCompleted()}}
-                  >
-                    Get Started
-                  </Button>
-            </Jumbotron>
-          </Container>
+          <UserWelcome
+            signOut={this.props.signOut}
+            Workshop_Name={this.state.workshop_data.Workshop_Name}
+            user={this.state.user}
+            markCompleted={this.markCompleted}
+          />
         </div>
-      )
+      );
     }
 
     return (
@@ -171,98 +157,69 @@ class UserDash extends React.Component {
         <NavBar dashboard={true} signOut={this.props.signOut} />
         <Container fluid className="text-center p-3">
           {!this.state.dataLoaded ? (
-            <div style = {{position: 'absolute', top: '50%', right:'50%'}}>
-              <Spinner animation="border" role="status">
-                <span className="sr-only">Loading...</span>
-              </Spinner>
-            </div>
+            <Loading />
           ) : (
             <>
-          <Row className="m-3 mb-5">{workshop_levels}</Row>
-          <ProgressBar className="mb-4">
-            <ProgressBar
-              variant="success"
-              animated
-              now={
-                (this.state.userProgress * 100) /
-                this.state.workshop_data.Number_Of_Levels
-              }
-              key={1}
-            />
-            <ProgressBar
-              variant="warning"
-              animated
-              now={
-                ((this.state.Level_Enabled - this.state.userProgress) * 100) /
-                this.state.workshop_data.Number_Of_Levels
-              }
-              key={2}
-            />
-            <ProgressBar
-              variant="danger"
-              animated
-              now={
-                ((this.state.workshop_data.Number_Of_Levels -
-                  this.state.Level_Enabled) *
-                  100) /
-                this.state.workshop_data.Number_Of_Levels
-              }
-              key={3}
-            />
-          </ProgressBar>
-          <Card className="mt-4 floating-icon">
-            <Card.Header className="text-left p-3 mt-2">
-              {this.state.currentPage ===
-              this.state.workshop_data.Number_Of_Levels
-                ? "Workshop Complete!"
-                : workshop_level_title}
-            </Card.Header>
-            <Card.Body className="text-left px-3 mb-3">
-              {workshop_level_text}
-            </Card.Body>
-            <Row>
-              <Col className="">
-                {displayPrevious ? (
-                  <Button
-                    className="float-left m-3"
-                    variant="primary"
-                    onClick={this.previousLevel}
-                  >
-                    Previous
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </Col>
-              <Col>
-                {displayMarkCompleted ? (
-                  <Button
-                    className="m-3 float-center"
-                    variant="primary"
-                    onClick={this.markCompleted}
-                  >
-                    Mark as Completed
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </Col>
-              <Col className="mx-1 mr-0">
-                {displayNext ? (
-                  <Button
-                    className="m-3 float-right"
-                    variant="primary"
-                    onClick={this.nextLevel}
-                  >
-                    Next
-                  </Button>
-                ) : (
-                  ""
-                )}
-              </Col>
-            </Row>
-          </Card>
-          </>)}
+              <Row className="m-3 mb-5">{workshop_levels}</Row>
+              <UserProgressBar
+                userProgress={this.state.userProgress}
+                Number_Of_Levels={this.state.workshop_data.Number_Of_Levels}
+                Level_Enabled={this.state.Level_Enabled}
+              />
+              <Card className="mt-4 floating-icon">
+                <Card.Header className="text-left p-3 mt-2">
+                  {this.state.currentPage ===
+                  this.state.workshop_data.Number_Of_Levels
+                    ? "Workshop Complete!"
+                    : workshop_level_title}
+                </Card.Header>
+                <Card.Body className="text-left px-3 mb-3">
+                  {workshop_level_text}
+                </Card.Body>
+                <Row>
+                  <Col className="">
+                    {displayPrevious ? (
+                      <Button
+                        className="float-left m-3"
+                        variant="primary"
+                        onClick={this.previousLevel}
+                      >
+                        Previous
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+                  </Col>
+                  <Col>
+                    {displayMarkCompleted ? (
+                      <Button
+                        className="m-3 float-center"
+                        variant="primary"
+                        onClick={this.markCompleted}
+                      >
+                        Mark as Completed
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+                  </Col>
+                  <Col className="mx-1 mr-0">
+                    {displayNext ? (
+                      <Button
+                        className="m-3 float-right"
+                        variant="primary"
+                        onClick={this.nextLevel}
+                      >
+                        Next
+                      </Button>
+                    ) : (
+                      ""
+                    )}
+                  </Col>
+                </Row>
+              </Card>
+            </>
+          )}
         </Container>
       </div>
     );
