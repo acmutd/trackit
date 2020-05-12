@@ -1,7 +1,5 @@
 import React from "react";
-import { Row, Col } from "react-bootstrap";
 import CanvasJSReact from "../../assets/canvasjs.react";
-import CardTile from "./CardTile";
 import StudentBar from "./StudentBar";
 import WorkshopLevelBar from "./WorkshopLevelBar";
 import ConfirmationDialog from "../Layout/ConfirmationDialog";
@@ -226,37 +224,6 @@ class Workshop extends React.Component {
       ],
     };
 
-    //information for the summary report tile
-    let summaryInfo = {
-      title: "Summary Report",
-      subtitle: this.props.data.Workshop_ID,
-      description: "Number of students: " + this.props.data.Students.length,
-      links: [],
-      linkText: ["Download Workshop Summary", "Download Raw Student Data"],
-    };
-
-    //this is the description for the workshop information tile, the newline thing doesnt work for some reason
-    var tag = "";
-    for (var i = 0; i < this.props.properties.Number_Of_Levels; i++) {
-      tag +=
-        "Level: " +
-        i +
-        "\nTitle: " +
-        this.props.properties.Level_Titles[i] +
-        "\nDescription: " +
-        this.props.properties.Level_Descriptions[i] +
-        "\n";
-    }
-
-    //information for the workshop information tile
-    let workshopInfo = {
-      title: "Workshop Information",
-      subtitle: this.props.properties.Workshop_ID,
-      description: tag,
-      links: [],
-      linkText: ["Download Workshop Content", "Access Workshop Resources"],
-    };
-
     //confirmation dialog setup
     let titleText = "Confirmation";
     let messageText =
@@ -264,17 +231,6 @@ class Workshop extends React.Component {
 
     return (
       <div>
-        <div className="mt-5">
-          {/* display two cards followed by a graph */}
-          <Row>
-            <Col>
-              <CardTile data={summaryInfo} />
-            </Col>
-            <Col>
-              <CardTile data={workshopInfo} />
-            </Col>
-          </Row>
-        </div>
         <WorkshopLevelBar
           incrementLevel={this.incrementLevel}
           decrementLevel={this.decrementLevel}

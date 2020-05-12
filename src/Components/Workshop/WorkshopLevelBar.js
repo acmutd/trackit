@@ -19,7 +19,7 @@ class WorkshopLevelBar extends React.Component {
    * @param {*} prevProps 
    */
   componentDidUpdate(prevProps) {
-    if (this.props.Workshop_Level !== prevProps.Workshop_Level) {
+    if (this.props !== prevProps) {
       this.setState({
         workshopLevel: this.props.Workshop_Level,
         enabled: this.props.enabled,

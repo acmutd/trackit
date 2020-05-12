@@ -33,21 +33,21 @@ class AdminDashboard extends React.Component {
       title: "Admin",
       subtitle: "Administrative Tools",
       description: "Configuration tool for setting up new workshops",
-      links: [downloadAllWorkshops, placeholderFunction, openDialog, placeholderFunction], //functions
+      links: [downloadAllWorkshops, openDialog], //functions
       linkText: [
         "Download Workshops",
-        "Transfer Workshops",
         "Add Workshop",
-        "Delete Workshops",
       ],
+      disabled: false,
     };
 
     let csecond = {
       title: "Development",
       subtitle: "Development Tools",
       description: "Try out beta tools for customizing trackit",
-      links: [], //functions
-      linkText: [],
+      links: [placeholderFunction, placeholderFunction], //functions
+      linkText: ["Documentation", "Donate"],
+      disabled: true,
     };
 
     let cthird = {
@@ -56,6 +56,7 @@ class AdminDashboard extends React.Component {
       description: "Access resources and social media",
       links: [placeholderFunction, placeholderFunction, placeholderFunction], //functions
       linkText: ["Github", "LinkedIn", "Instagram"],
+      disabled: true,
     };
 
     this.state = {
