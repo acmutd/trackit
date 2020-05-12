@@ -6,6 +6,7 @@ import WorkshopEdit from "../Workshop/WorkshopEdit";
 import CardTile from "../Workshop/CardTile";
 import Loading from "../Layout/Loading";
 import { Row, Col, Container } from "react-bootstrap";
+import FileSaver from "file-saver";
 
 /**
  * UI component that manages how the admin dashboard looks like
@@ -17,7 +18,12 @@ class AdminDashboard extends React.Component {
     let openDialog = () => {
       this.showHideAddEditDialog();
     };
+    
+    let downloadAllWorkshops = () => {
+      this.downloadAllWorkshops();
+    };
 
+    //more hard coded data here, this is for the texts present in the cards present on the dashboard
     let placeholderFunction = () => {
       console.log("placeholder function triggered");
     }
@@ -27,7 +33,7 @@ class AdminDashboard extends React.Component {
       title: "Admin",
       subtitle: "Administrative Tools",
       description: "Configuration tool for setting up new workshops",
-      links: [placeholderFunction, placeholderFunction, openDialog, placeholderFunction], //functions
+      links: [downloadAllWorkshops, placeholderFunction, openDialog, placeholderFunction], //functions
       linkText: [
         "Download Workshops",
         "Transfer Workshops",
@@ -108,13 +114,7 @@ class AdminDashboard extends React.Component {
    */
 
   openWorkshopWindow = (Workshop_ID) => {
-    var workshopIndex = 0;
-    // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
-    for (var i = 0; i < this.state.workshops.length; i++) {
-      if (this.state.workshops[i].Workshop_ID === Workshop_ID) {
-        workshopIndex = i;
-      }
-    }
+    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
     this.setState(state => ({
       viewWorkshop: !state.viewWorkshop,
       workshopView: workshopIndex,
@@ -155,12 +155,15 @@ class AdminDashboard extends React.Component {
     //removes the one workshop element from the array locally before removing from db
     //avoids unexpected read errors due to progress listeners
     workshopArray.splice(workshopIndex, 1);
-    this.setState({
-      viewWorkshop: false, //closes the respective workshop view before deletion 
-      workshops: workshopArray,
-    }, function() {
-      this.props.deleteWorkshop(Workshop_ID);
-    });
+    this.setState(
+      {
+        viewWorkshop: false, //closes the respective workshop view before deletion
+        workshops: workshopArray,
+      },
+      function () {
+        this.props.deleteWorkshop(Workshop_ID);
+      }
+    );
   }
 
   /**
@@ -186,16 +189,82 @@ class AdminDashboard extends React.Component {
       this.state.studentsAtWorkshop[workshopIndex].Level_Enabled - 1
     );
   }
-
+  
   /**
    * Call function to access firestore from props
    * @param {*} Workshop_ID 
    */
   exportWorkshop = (Workshop_ID) => {
-    this.findWorkshopIndex(Workshop_ID);
-    console.log("test");
-  }
+    const index = this.findWorkshopIndex(Workshop_ID);
+    let data = {...this.state.workshops[index]};
 
+    // Convert parallel arrays from state to objects for neater export
+    let student_data = [];
+    for (let i = 0; i < this.state.studentsAtWorkshop[index].Students.length; i++) {
+      let student = this.state.studentsAtWorkshop[index].Students[i];
+      let progress = this.state.studentsAtWorkshop[index].Progress[i];
+      student_data.push({
+        student,
+        progress,
+      });
+    }
+    data.Date = (new Date(data.Date.seconds * 1000)).toDateString();
+
+    // Merging both workshop data and student data into one json object
+    let export_data = {
+      workshop_data: data,
+      student_data: student_data,
+    };
+    export_data = JSON.stringify(export_data, null, 4);
+
+    // Create a blob with data
+    const jsonBlob = new Blob([export_data], {
+      type: "application/json;charset=utf-8;",
+    });
+
+    // Send to user for download
+    FileSaver.saveAs(jsonBlob, `${Workshop_ID}.json`);
+  }
+  
+  /**
+   * Call function to download all workshop data
+   */
+  downloadAllWorkshops = () => {
+    let big_data = [];
+    let student_data = [];
+
+    // Loop through workshops
+    for (let i = 0; i < this.state.workshops.length; i++) {
+      let data = {...this.state.workshops[i]};
+
+      // Convert parallel arrays from state to objects for neater export
+      for (let k = 0; k < this.state.studentsAtWorkshop[k].Students.length; k++) {
+        let student = this.state.studentsAtWorkshop[i].Students[k];
+        let progress = this.state.studentsAtWorkshop[i].Progress[k];
+        student_data.push({
+          student,
+          progress,
+        });
+      }
+      data.Date = (new Date(data.Date.seconds * 1000)).toDateString();
+
+      // Merging both workshop data and student data into one json object that is pushed to the main object
+      big_data.push({
+        workshop_data: data,
+        student_data: student_data,
+      });
+    }
+    big_data = JSON.stringify(big_data, null, 4);
+
+    // Create a blob with data
+    const jsonBlob = new Blob([big_data], {
+      type: "application/json;charset=utf-8;",
+    });
+
+    // Send to user for download
+    FileSaver.saveAs(jsonBlob, `Workshops.json`);
+  }
+  
   /**
    * Opens or closes the workshop editing dialog
    */
@@ -284,12 +353,13 @@ class AdminDashboard extends React.Component {
         expandWindow={this.openWorkshopWindow}
         data={item}
         students={this.state.studentsAtWorkshop[index]}
+        key={index}
       />
     ));
 
     //maps out the array into UI components to be displayed in the tiles at the top
-    let tiles = this.state.cards.map((item) => (
-      <Col>
+    let tiles = this.state.cards.map((item, index) => (
+      <Col key={index}>
         <CardTile data={item} />
       </Col>
     ));
@@ -313,7 +383,9 @@ class AdminDashboard extends React.Component {
                   expandState={true}
                   expandWindow={this.openWorkshopWindow}
                   data={this.state.workshops[this.state.workshopView]}
-                  students={this.state.studentsAtWorkshop[this.state.workshopView]}
+                  students={
+                    this.state.studentsAtWorkshop[this.state.workshopView]
+                  }
                 />
                 <Workshop
                   incrementLevel={this.incrementLevel}

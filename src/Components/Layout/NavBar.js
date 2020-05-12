@@ -32,8 +32,8 @@ class NavBar extends React.Component {
 
   render() {
     // maps the links to be displayed at the top, eventually one of them can be like "Hello " + this.props.studentUsername
-    let navlinks = this.state.Navlink.map((item) => (
-      <Nav.Link href={item.link}>{item.name}</Nav.Link>
+    let navlinks = this.state.Navlink.map((item, index) => (
+      <Nav.Link href={item.link} key={index}>{item.name}</Nav.Link>
     ));
     return (
       <div>
