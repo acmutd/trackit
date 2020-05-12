@@ -67,8 +67,6 @@ class Workshop extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
-      console.log('updating inside workshop, updating the graph values')
-
       var dps = [];
 
       var xValues = [];
@@ -83,7 +81,6 @@ class Workshop extends React.Component {
       for (var k = 0; k < this.props.data.Progress.length; k++) {
         yValues[this.props.data.Progress[k] - 1] += 1;
       }
-      console.log(yValues)
 
       for (var j = 0; j < xValues.length; j++) {
         dps.push({
@@ -94,10 +91,6 @@ class Workshop extends React.Component {
       this.setState({
         dataArray: dps,
       });
-
-      //redraw the chart somehow here
-
-
     }
   }
 
@@ -186,7 +179,7 @@ class Workshop extends React.Component {
     ));
 
     //options for the CanvasJS graph, configuration basically
-    var options = {
+    const options = {
       animationEnabled: true,
       exportEnabled: true,
       theme: "light2", //"light1", "dark1", "dark2"
