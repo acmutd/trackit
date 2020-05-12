@@ -23,32 +23,64 @@ class Admin extends React.Component {
   componentWillUnmount() {
     if (this.progressListener) this.progressListener();
     if (this.workshopListener) this.workshopListener();
-    this.props.database
+    if (this.loginListener) this.loginListener();
+  }
+
+  componentDidMount() {
+    this.loginListener = this.props.database
       .auth()
-      .signOut()
-      .then(() => {
-        console.log("sign out occurred on page unmount");
-      })
-      .catch(error => {
-        console.log(error + "sign out failed on page unmount");
+      .onAuthStateChanged((user) => {
+        // user is signed in
+        if (user) {
+          // get user data from Students collection to check if they are an admin
+          this.props.database
+            .firestore()
+            .collection("Student")
+            .doc(user.uid)
+            .get()
+            .then((doc) => {
+              // if the user has admin acess then set loggedIn to true
+              if (doc.data().isAdmin === true) {
+                console.log("logging user in");
+                this.setState({
+                  loggedIn: true,
+                });
+              } else {
+                this.setState({
+                  loginError: true,
+                });
+                // if the user had a valid login but was not an admin log them out
+                this.props.database
+                  .auth()
+                  .signOut()
+                  .then(() => {
+                    console.log("successfully logged out non admin ");
+                  })
+                  .catch((err) => {
+                    console.log("error logging out non admin user");
+                  });
+              }
+            })
+            .catch((error) => {
+              console.log(error + " error occurred in login process");
+            });
+        }
       });
   }
 
   /**
-   * This function is passed as props to the AdminAuth Component which returns the username and password entered
+   * This function is passed as props to the <AdminAuth /> Component which returns the username and password entered
+   * Currrently just changes the loggedIn state to true without any checks
    *
    * @param {*} username is the username of the person logging in
    * @param {*} password is the password of the person logging in
    */
   authenticate = (username, password) => {
-    //resets the state of login error to be false before attempting to log in
     if (this.state.loginError) {
       this.setState({
         loginError: false,
       });
     }
-
-    //sign in through firebase authentication
     this.props.database
       .auth()
       .signInWithEmailAndPassword(username, password)
@@ -58,45 +90,6 @@ class Admin extends React.Component {
         });
         console.log("Invalid Email or Password");
       });
-
-    //listen to check if firebase authenticated user
-    this.props.database.auth().onAuthStateChanged((user) => {
-      // if user is signed in
-      if (user) {
-        // get user data from Students collection to check if they are an admin
-        this.props.database
-          .firestore()
-          .collection("Student")
-          .doc(user.uid)
-          .get()
-          .then((doc) => {
-            // if the user has admin acess then set loggedIn to true
-            if (doc.data().isAdmin === true) {
-              this.readWorkshopData();
-              this.setState({
-                loggedIn: true,
-              });
-            } else {
-              this.setState({
-                loginError: true,
-              });
-              // if the user had a valid login but was not an admin log them out
-              this.props.database
-                .auth()
-                .signOut()
-                .then(() => {
-                  console.log("successfully logged out non admin ");
-                })
-                .catch((err) => {
-                  console.log("error logging out non admin user");
-                });
-            }
-          })
-          .catch((error) => {
-            console.log(error + " error occurred in login process");
-          });
-      }
-    });
   };
 
   /**
@@ -116,12 +109,9 @@ class Admin extends React.Component {
           arr.push(snap.data());
         });
         //save array in state
-        this.setState(
-          {
-            workshop_data: arr,
-          },
-          this.readStudentData //callback function that will execute after the workshop data has been saved in the state
-        );
+        this.setState({
+          workshop_data: arr,
+        });
       });
   };
 
@@ -140,7 +130,8 @@ class Admin extends React.Component {
           let students = [];
           let progress = [];
           for (var x in snap.data().testProgress) {
-            students.push(x);
+            var user = decodeURIComponent(x).replace("%2E", ".");
+            students.push(user);
             progress.push(snap.data().testProgress[x]);
           }
           let temp = {};
@@ -348,6 +339,10 @@ class Admin extends React.Component {
       .then(() => {
         this.setState({
           loggedIn: false,
+          loginError: false,
+          workshop_data: null,
+          student_data: null,
+          dataLoaded: false,
         });
       })
       .catch((err) => {
@@ -363,10 +358,12 @@ class Admin extends React.Component {
       <div>
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
-        {this.state.loggedIn && this.state.dataLoaded ? (
+        {this.state.loggedIn ? (
           <AdminDashboard
             workshop_data={this.state.workshop_data}
             student_data={this.state.student_data}
+            readStudentData={this.readStudentData}
+            readWorkshopData={this.readWorkshopData}
             updateWorkshop={this.updateWorkshop}
             updateLevel={this.updateWorkshopLevel}
             createWorkshop={this.createNewWorkshop}
@@ -376,6 +373,7 @@ class Admin extends React.Component {
             progressListener={this.progressListener}
             workshopListener={this.workshopListener}
             signOut={this.signOutUser}
+            dataLoaded={this.state.workshop_data && this.state.student_data}
           />
         ) : (
           <AdminAuth

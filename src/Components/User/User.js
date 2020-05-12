@@ -21,14 +21,24 @@ class User extends React.Component {
   componentWillUnmount() {
     //remove progress listener
     if (this.progressListener) this.progressListener();
-    this.props.database
+    if (this.loginListener) this.loginListener();
+  }
+
+  componentDidMount() {
+    this.loginListener = this.props.database
       .auth()
-      .signOut()
-      .then(() => {
-        console.log("sign out occurred on page unmount");
-      })
-      .catch((error) => {
-        console.log(error + "sign out failed on page unmount");
+      .onAuthStateChanged((user) => {
+        if (user) {
+          console.log("logging in user");
+          // user is signed in
+          this.setState({
+            loggedIn: true,
+          });
+        } else {
+          this.setState({
+            loggedIn: false,
+          });
+        }
       });
   }
 
@@ -50,28 +60,18 @@ class User extends React.Component {
     this.props.database
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .catch(err => {
+      .catch((err) => {
         this.setState({
           loginError: true,
         });
         console.log(err + " Invalid Email or Password");
       });
-
-    //listener to check if the user got successfully signed in
-    this.props.database.auth().onAuthStateChanged(user => {
-      if (user) {
-        // user is signed in
-        this.setState({
-          loggedIn: true,
-        });
-      }
-    });
-  }
+  };
 
   /**
    * Once the user is signed in they will enter the workshop_ID
    * This will validate that said workshop exists, is enabled and if so will open up the user dashboard
-   * @param {*} workshop 
+   * @param {*} workshop
    */
   authenticateWorkshop = (workshop) => {
     //reset the login error if any occurred during authentication
@@ -88,88 +88,89 @@ class User extends React.Component {
       .collection("Workshop")
       .doc(workshop)
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (!doc.exists) {
           this.setState({
             loginError: true,
           });
         } else {
-          this.setState(
-            {
-              workshop_data: doc.data(),
-              workshopID: workshop,
-            },
-            this.getProgressData //call back function to read progress information
-          );
+          this.setState({
+            workshop_data: doc.data(),
+            workshopID: workshop,
+          });
         }
-      }).catch(error => {
-        console.log(error + " error occurred in reading back workshop information");
+      })
+      .catch((error) => {
+        console.log(
+          error + " error occurred in reading back workshop information"
+        );
       });
-  }
+  };
+
+  signInWorkshop = () => {
+    if (this.state.Enabled) this.updateUserProgress(0);
+  };
 
   /**
-   * Read back how much progress the student had previously completed
-   * Also check to see if the workshop is enabled or not
+   * Read the progress of the current student from the StudentsAtWorkshop collection on firestore
+   * Additionally read whether a workshop is enabled or not and the progress of the admin
    */
   getProgressData = () => {
-    //splices the email to get just the part before the @ sign
-    let email = this.props.database
-      .auth()
-      .currentUser.email.substring(
-        0,
-        this.props.database.auth().currentUser.email.lastIndexOf("@")
-      );
-    
-    //sets a progress listener on the collection to monitor for when the Level_Enabled or Enabled variables change state
+    //convert .,@ and other weird symbols in emails to be of a proper format
+    let email = encodeURIComponent(
+      this.props.database.auth().currentUser.email
+    ).replace(/\./g, "%2E");
+
+    //set listener on firestore
     this.progressListener = this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
-      .onSnapshot(snapshot => {
-        this.setState(
-          {
-            Level_Enabled: snapshot.data().Level_Enabled,
-            Enabled: snapshot.data().Enabled,
-            initialProgress: snapshot.data().testProgress[email], //will either be the actual number or undefined
+      .onSnapshot((snapshot) => {
+        console.log("new values from listener");
+        console.log(snapshot.data().testProgress[email]);
+        this.setState({
+          Level_Enabled: snapshot.data().Level_Enabled,
+          Enabled: snapshot.data().Enabled,
+        });
+        if (snapshot.data().testProgress[email]) {
+          //if the user is logging back onto a workshop
+          this.setState({
+            initialProgress: snapshot.data().testProgress[email],
             dataLoaded: true,
-          },
-          //callback function
-          function () { 
-            if (
-              this.state.initialProgress === undefined ||
-              this.state.initialProgress === null
-            ) {
-              this.setState({
-                initialProgress: 0, //if the user is logging in the first time
-              });
-            }
-          }
-        );
+          });
+        } else {
+          //if a user is logging onto a workshop for the first time
+          this.setState({
+            initialProgress: -1,
+            dataLoaded: true,
+          });
+        }
       });
-  }
+  };
 
-  //update the student progress in firestore if the user clicks mark completed for a given level
+  /**
+   * Update the progress in firestore for a given student when they click markCompleted in the UI
+   * @param {*} progress
+   */
   updateUserProgress = (progress) => {
+    var result = encodeURIComponent(
+      this.props.database.auth().currentUser.email
+    ).replace(/\./g, "%2E");
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
       .update({
-        ["testProgress." +
-        this.props.database
-          .auth()
-          //splices the email to be just stuff before the @ sign
-          .currentUser.email.substring(
-            0,
-            this.props.database.auth().currentUser.email.lastIndexOf("@")
-          )]: progress,
+        ["testProgress." + result]: progress,
       })
       .then(() => {
         console.log("user progress updated");
-      }).catch(error => {
+      })
+      .catch((error) => {
         console.log(error + "error occurred in updating user progress");
       });
-  }
+  };
 
   /**
    * Sign out the user when they click sign out
@@ -179,7 +180,8 @@ class User extends React.Component {
     this.props.database
       .auth()
       .signOut()
-      .then(() => { //reset the state
+      .then(() => {
+        //reset the state
         this.setState({
           loggedIn: false,
           workshopID: null,
@@ -189,16 +191,16 @@ class User extends React.Component {
           Enabled: false,
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error + " error signing user out");
       });
-  }
+  };
 
   render() {
     return (
       <div>
         {this.state.loggedIn ? (
-          this.state.dataLoaded === false ? (
+          !this.state.workshop_data ? (
             <WorkshopLogin
               authenticate={this.authenticateWorkshop}
               loginError={this.state.loginError}
@@ -206,11 +208,19 @@ class User extends React.Component {
           ) : (
             <UserDash
               workshop_data={this.state.workshop_data}
+              getProgressData={this.getProgressData}
               updateUserProgress={this.updateUserProgress}
               progressListener={this.progressListener}
               Level_Enabled={this.state.Level_Enabled}
               signOut={this.signOutUser}
               savedProgress={this.state.initialProgress}
+              dataLoaded={this.state.dataLoaded}
+              user={this.props.database
+                .auth()
+                .currentUser.email.substring(
+                  0,
+                  this.props.database.auth().currentUser.email.lastIndexOf("@")
+                )}
             />
           )
         ) : (

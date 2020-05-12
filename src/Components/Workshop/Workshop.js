@@ -43,7 +43,6 @@ class Workshop extends React.Component {
 
     this.state = {
       dataArray: dps,
-
       confirmationDialog: false, //this is whether or not to show a confirmation dialog
       addEditWorkshopDialog: false, //this is whether or not to show the editing dialog
     };
@@ -54,7 +53,7 @@ class Workshop extends React.Component {
    * @param {*} prevProps 
    */
   componentDidUpdate(prevProps) {
-    if (this.props.properties !== prevProps.properties) {
+    if (this.props.data !== prevProps.data) {
       var dps = [];
 
       var xValues = [];
@@ -79,8 +78,6 @@ class Workshop extends React.Component {
       this.setState({
         dataArray: dps,
       });
-
-      //redraw the chart somehow here
     }
   }
 
