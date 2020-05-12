@@ -106,9 +106,18 @@ class UserDash extends React.Component {
       this.state
     );
 
-    let workshop_level_text = this.state.workshop_data.Level_Descriptions[
+      // display workshop level descriptions with HTML formatting
+    let workshop_level_text = 
+    (<div dangerouslySetInnerHTML={{ __html: this.state.workshop_data.Level_Descriptions[
       this.state.currentPage
-    ];
+    ] }} />)
+
+    // OLD WAY OF READING TEXT, WITHOUT HTML FORMATTING
+    // let workshop_level_text = this.state.workshop_data.Level_Descriptions[
+    //   this.state.currentPage
+    // ];
+
+
     let workshop_level_title = this.state.workshop_data.Level_Titles[
       this.state.currentPage
     ];
@@ -132,6 +141,9 @@ class UserDash extends React.Component {
           />
       );
     }
+    console.log('workshop text')
+      console.log(this.state.workshop_data.Level_Descriptions[
+        this.state.currentPage])
 
     return (
       <div>
@@ -154,9 +166,9 @@ class UserDash extends React.Component {
                     ? "Workshop Complete!"
                     : workshop_level_title}
                 </Card.Header>
-                <Card.Body className="text-left px-3 mb-3">
-                  {workshop_level_text}
-                </Card.Body>
+
+                {workshop_level_text}
+                  
                 <Row>
                   <Col className="">
                     {displayPrevious ? (
