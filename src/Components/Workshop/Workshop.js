@@ -197,7 +197,10 @@ class Workshop extends React.Component {
       <StudentBar
         TotalProgress={this.props.properties.Number_Of_Levels}
         Progress={this.props.data.Progress[i]}
-        Student_Name={item}
+        Student_Name={item.substring(
+          0,
+          item.lastIndexOf("@")
+        )}
         key={i}
       />
     ));
@@ -244,7 +247,7 @@ class Workshop extends React.Component {
           enabled={this.props.data.Enabled}
           maxLevel={this.props.properties.Number_Of_Levels}
         />
-        <div className="floating-icon m-3 mt-5 p-3">
+        <div className="floating-icon m-2 m-lg-3 mt-3 mt-lg-5 p-3">
           <CanvasJSChart options={options} />
         </div>
         {student_progress}
