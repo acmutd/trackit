@@ -372,11 +372,11 @@ class AdminDashboard extends React.Component {
           {!this.state.dataLoaded ? (
             <Loading />
           ) : ( <>
-          <div className="m-5">
+          <div className="m-1 mt-3 m-lg-5">
             <Row>{tiles}</Row> 
           </div>
 
-          <div className="m-5">
+          <div className="m-1 mb-4 m-lg-5">
             {/* If the admin dashbaord should be displaying the expanded view of a workshop then it displays the <WorkshopBar /> at the top followed by the <Workshop />, else it displays a list of all the <WorkshopBar /> */}
             {this.state.viewWorkshop ? (
               <div>
