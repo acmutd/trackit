@@ -1,0 +1,6 @@
+div.DraftEditor-root {
+    min-height: 5rem;
+  }
+  div.public-DraftEditor-content {
+    height: 25rem;
+  }

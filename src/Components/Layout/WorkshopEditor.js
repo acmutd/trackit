@@ -13,6 +13,8 @@ import {
     Fab,
   } from "@material-ui/core";
 
+import './test.css'
+
 class WorkshopEditor extends React.Component {
     constructor(props) 
     {
@@ -49,23 +51,22 @@ class WorkshopEditor extends React.Component {
 
     saveCurrentContent()
     {
-        console.log('in save curr content')
-        
-        var text = this.state.editorState.getCurrentContent().getBlocksAsArray();
-        var finalText;
-        text.map((item) => {
-        finalText = item.getText() + finalText});
-        console.log(finalText)
+        // var text = this.state.editorState.getCurrentContent().getBlocksAsArray();
+        // var finalText;
+        // text.map((item) => {
+        // finalText = item.getText() + finalText});
+        // console.log(finalText)
 
         var rawContentState = convertToRaw(this.state.editorState.getCurrentContent());
         var markup = draftToHtml(
             rawContentState,  
           );
-          this.setState({
-              savedState: markup
-          })
           console.log('marukup: ')
           console.log(markup)
+          this.setState({
+              savedState: markup
+          }, this.closeWindow)
+        
     }
 
     closeWindow()
@@ -79,13 +80,13 @@ class WorkshopEditor extends React.Component {
         
         const { editorState } = this.state;
         return(
-            <div>
+            <div >
             <Editor
-                editorState={this.state.editorState}
+                editorState={editorState}
                 //initialContentState={this.state.contentState}
-                toolbarClassName="toolbarClassName"
-                wrapperClassName="wrapperClassName"
-                editorClassName="editorClassName"
+                //toolbarClassName="toolbarClassName"
+                wrapperClassName="demo-wrapper"
+                editorClassName="demo-editor"
                 placeholder="Start typing here"
                 onEditorStateChange={this.onEditorStateChange}
                 //onContentStateChange={this.onContentStateChange}
