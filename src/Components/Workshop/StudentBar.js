@@ -26,8 +26,8 @@ class StudentBar extends React.Component {
 
     return (
       <div>
-        <div className="m-3 mt-5 p-4 floating-icon">
-          <Nav justify>
+        <div className="m-2 m-lg-3 mt-3 mt-lg-5 p-4 floating-icon">
+          <Nav justify className="flex-column flex-lg-row d-flex">
             <Nav.Item>
               <h1>{this.props.Student_Name}</h1>
             </Nav.Item>

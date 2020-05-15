@@ -1,6 +1,6 @@
 import React from "react";
 import { Slider, Fab } from "@material-ui/core";
-import { Nav, Button } from "react-bootstrap";
+import { Nav, Button, Row, Col } from "react-bootstrap";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 
@@ -16,7 +16,7 @@ class WorkshopLevelBar extends React.Component {
 
   /**
    * Updates if there's a change to the props passed in
-   * @param {*} prevProps 
+   * @param {*} prevProps
    */
   componentDidUpdate(prevProps) {
     if (this.props !== prevProps) {
@@ -32,20 +32,20 @@ class WorkshopLevelBar extends React.Component {
    */
   incrementLevel = () => {
     if (this.state.workshopLevel < this.props.maxLevel) {
-      this.setState(state => ({ workshopLevel: state.workshopLevel + 1 }));
+      this.setState((state) => ({ workshopLevel: state.workshopLevel + 1 }));
       this.props.incrementLevel();
     }
-  }
+  };
 
   /**
    * Calls function passed in from props
    */
   decrementLevel = () => {
     if (this.state.workshopLevel > 1) {
-      this.setState(state => ({ workshopLevel: state.workshopLevel - 1 }));
+      this.setState((state) => ({ workshopLevel: state.workshopLevel - 1 }));
       this.props.decrementLevel();
     }
-  }
+  };
 
   /**
    * Calls function passed in from props
@@ -53,7 +53,7 @@ class WorkshopLevelBar extends React.Component {
   enableWorkshop = () => {
     this.setState({ enabled: true });
     this.props.enableWorkshop();
-  }
+  };
 
   /**
    * Calls function passed in from props
@@ -61,7 +61,7 @@ class WorkshopLevelBar extends React.Component {
   disableWorkshop = () => {
     this.setState({ enabled: false });
     this.props.disableWorkshop();
-  }
+  };
 
   render() {
     function valuetext(value) {
@@ -70,82 +70,124 @@ class WorkshopLevelBar extends React.Component {
 
     return (
       <div>
-        <div className="m-3 mt-5 p-4 floating-icon">
-          <Nav justify>
+        <div className="m-2 mt-3 m-lg-3 mt-lg-5 p-4 floating-icon">
+          <Nav justify className="flex-column flex-lg-row d-flex">
             <Nav.Item>
-              <h1><div dangerouslySetInnerHTML={{ __html: "Manage&nbspWorkshop" }} /></h1>
+              <h1>
+                <div
+                  dangerouslySetInnerHTML={{ __html: "Manage&nbspWorkshop" }}
+                />
+              </h1>
             </Nav.Item>
-            <Nav.Item>
-              <Nav.Link>
-                <Button
-                  onClick={this.enableWorkshop}
-                  variant="success"
-                  size="lg"
-                  disabled={this.state.enabled}
-                >
-                  <div dangerouslySetInnerHTML={{ __html: "Enable&nbspWorkshop" }} />
-                </Button>
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link>
-                <Button
-                  onClick={this.disableWorkshop}
-                  variant="warning"
-                  size="lg"
-                  disabled={!this.state.enabled}
-                >
-                  <div dangerouslySetInnerHTML={{ __html: "Disable&nbspWorkshop" }} />
-                </Button>
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link>
-                <Button
-                  onClick={this.props.addEditWorkshop}
-                  variant="primary"
-                  size="lg"
-                >
-                  <div dangerouslySetInnerHTML={{ __html: "Edit&nbspWorkshop" }} />
-                </Button>
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link>
-                <Button
-                  onClick={this.props.exportWorkshop}
-                  variant="secondary"
-                  size="lg"
-                >
-                  <div dangerouslySetInnerHTML={{ __html: "Export&nbspWorkshop" }} />
-                </Button>
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link>
-                <Button
-                  onClick={this.props.clearAllStudents}
-                  variant="dark"
-                  size="lg"
-                >
-                  <div dangerouslySetInnerHTML={{ __html: "Clear&nbspAll&nbspStudents" }} />
-                </Button>
-              </Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Nav.Link>
-                <Button
-                  onClick={this.props.deleteWorkshop}
-                  variant="danger"
-                  size="lg"
-                >
-                  <div dangerouslySetInnerHTML={{ __html: "Delete&nbspWorkshop" }} />
-                </Button>
-              </Nav.Link>
-            </Nav.Item>
+            <Row>
+              <Col xs={12} sm={6} md={4} lg={2}>
+                <Nav.Item>
+                  <Nav.Link>
+                    <Button
+                      onClick={this.enableWorkshop}
+                      variant="success"
+                      size="lg"
+                      disabled={this.state.enabled}
+                    >
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: "Enable&nbspWorkshop",
+                        }}
+                      />
+                    </Button>
+                  </Nav.Link>
+                </Nav.Item>
+              </Col>
+              <Col xs={12} sm={6} md={4} lg={2}>
+                <Nav.Item>
+                  <Nav.Link>
+                    <Button
+                      onClick={this.disableWorkshop}
+                      variant="warning"
+                      size="lg"
+                      disabled={!this.state.enabled}
+                    >
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: "Disable&nbspWorkshop",
+                        }}
+                      />
+                    </Button>
+                  </Nav.Link>
+                </Nav.Item>
+              </Col>
+              <Col xs={12} sm={6} md={4} lg={2}>
+                <Nav.Item>
+                  <Nav.Link>
+                    <Button
+                      onClick={this.props.addEditWorkshop}
+                      variant="primary"
+                      size="lg"
+                    >
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: "Edit&nbspWorkshop",
+                        }}
+                      />
+                    </Button>
+                  </Nav.Link>
+                </Nav.Item>
+              </Col>
+              <Col xs={12} sm={6} md={4} lg={2}>
+                <Nav.Item>
+                  <Nav.Link>
+                    <Button
+                      onClick={this.props.exportWorkshop}
+                      variant="secondary"
+                      size="lg"
+                    >
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: "Export&nbspWorkshop",
+                        }}
+                      />
+                    </Button>
+                  </Nav.Link>
+                </Nav.Item>
+              </Col>
+              <Col xs={12} sm={6} md={4} lg={2}>
+                <Nav.Item>
+                  <Nav.Link>
+                    <Button
+                      onClick={this.props.clearAllStudents}
+                      variant="dark"
+                      size="lg"
+                    >
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: "Clear&nbspAll&nbspStudents",
+                        }}
+                      />
+                    </Button>
+                  </Nav.Link>
+                </Nav.Item>
+              </Col>
+              <Col xs={12} sm={6} md={4} lg={2}>
+                <Nav.Item>
+                  <Nav.Link>
+                    <Button
+                      onClick={this.props.deleteWorkshop}
+                      variant="danger"
+                      size="lg"
+                    >
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: "Delete&nbspWorkshop",
+                        }}
+                      />
+                    </Button>
+                  </Nav.Link>
+                </Nav.Item>
+              </Col>
+            </Row>
           </Nav>
           <hr />
-          <Nav justify>
+          <Nav justify className="flex-column flex-md-row d-flex">
             <Nav.Item>
               <div className="mt-2">
                 <h3>Workshop Level: {this.state.workshopLevel}</h3>
