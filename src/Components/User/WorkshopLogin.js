@@ -52,7 +52,7 @@ class WorkshopLogin extends React.Component {
       <div>
         <NavBar />
         <Container fluid>
-          <div className="m-5 p-5 floating-icon">
+          <div className="m-1 mt-3 m-lg-5 mt-lg-5 p-5 floating-icon">
             {this.state.loginError ? (
               <Alert
                 variant="danger"
@@ -84,7 +84,7 @@ class WorkshopLogin extends React.Component {
               <Col xs={12} sm={12} md={2}>
                 {/* The authenticate function here is the one defined in this Component and not the one passed in from <User /> */}
                 <Button onClick={this.authenticate} variant="success">
-                  Login
+                  Go
                 </Button>
               </Col>
             </Row>
