@@ -116,11 +116,6 @@ class UserDash extends React.Component {
       />
     );
 
-    // OLD WAY OF READING TEXT, WITHOUT HTML FORMATTING
-    // let workshop_level_text = this.state.workshop_data.Level_Descriptions[
-    //   this.state.currentPage
-    // ];
-
     let workshop_level_title = this.state.workshop_data.Level_Titles[
       this.state.currentPage
     ];
