@@ -73,7 +73,7 @@ class WorkshopLevelBar extends React.Component {
         <div className="m-3 mt-5 p-4 floating-icon">
           <Nav justify>
             <Nav.Item>
-              <h1>Manage Workshop</h1>
+              <h1><div dangerouslySetInnerHTML={{ __html: "Manage&nbspWorkshop" }} /></h1>
             </Nav.Item>
             <Nav.Item>
               <Nav.Link>
@@ -83,7 +83,7 @@ class WorkshopLevelBar extends React.Component {
                   size="lg"
                   disabled={this.state.enabled}
                 >
-                  Enable Workshop
+                  <div dangerouslySetInnerHTML={{ __html: "Enable&nbspWorkshop" }} />
                 </Button>
               </Nav.Link>
             </Nav.Item>
@@ -95,7 +95,7 @@ class WorkshopLevelBar extends React.Component {
                   size="lg"
                   disabled={!this.state.enabled}
                 >
-                  Disable Workshop
+                  <div dangerouslySetInnerHTML={{ __html: "Disable&nbspWorkshop" }} />
                 </Button>
               </Nav.Link>
             </Nav.Item>
@@ -106,7 +106,7 @@ class WorkshopLevelBar extends React.Component {
                   variant="primary"
                   size="lg"
                 >
-                  Edit Workshop
+                  <div dangerouslySetInnerHTML={{ __html: "Edit&nbspWorkshop" }} />
                 </Button>
               </Nav.Link>
             </Nav.Item>
@@ -117,7 +117,7 @@ class WorkshopLevelBar extends React.Component {
                   variant="secondary"
                   size="lg"
                 >
-                  Export Workshop
+                  <div dangerouslySetInnerHTML={{ __html: "Export&nbspWorkshop" }} />
                 </Button>
               </Nav.Link>
             </Nav.Item>
@@ -128,7 +128,7 @@ class WorkshopLevelBar extends React.Component {
                   variant="dark"
                   size="lg"
                 >
-                  Clear All Students
+                  <div dangerouslySetInnerHTML={{ __html: "Clear&nbspAll&nbspStudents" }} />
                 </Button>
               </Nav.Link>
             </Nav.Item>
@@ -139,7 +139,7 @@ class WorkshopLevelBar extends React.Component {
                   variant="danger"
                   size="lg"
                 >
-                  Delete Workshop
+                  <div dangerouslySetInnerHTML={{ __html: "Delete&nbspWorkshop" }} />
                 </Button>
               </Nav.Link>
             </Nav.Item>

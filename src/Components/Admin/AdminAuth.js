@@ -61,7 +61,7 @@ class AdminAuth extends React.Component {
       <div>
         <NavBar />
         <Container fluid>
-          <div className="m-5 p-5 floating-icon">
+          <div className="m-1 mt-3 m-lg-5 mt-lg-5 p-5 floating-icon">
             {this.state.loginError ? (
               <Alert
                 variant="danger"

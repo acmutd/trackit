@@ -106,17 +106,21 @@ class UserDash extends React.Component {
       this.state
     );
 
-      // display workshop level descriptions with HTML formatting
-    let workshop_level_text = 
-    (<div dangerouslySetInnerHTML={{ __html: this.state.workshop_data.Level_Descriptions[
-      this.state.currentPage
-    ] }} />)
+    // display workshop level descriptions with HTML formatting
+    let workshop_level_text = (
+      <div
+        dangerouslySetInnerHTML={{
+          __html: this.state.workshop_data.Level_Descriptions[
+            this.state.currentPage
+          ],
+        }}
+      />
+    );
 
     // OLD WAY OF READING TEXT, WITHOUT HTML FORMATTING
     // let workshop_level_text = this.state.workshop_data.Level_Descriptions[
     //   this.state.currentPage
     // ];
-
 
     let workshop_level_title = this.state.workshop_data.Level_Titles[
       this.state.currentPage
@@ -133,17 +137,18 @@ class UserDash extends React.Component {
 
     if (this.state.userProgress === -1) {
       return (
-          <UserWelcome
-            signOut={this.props.signOut}
-            Workshop_Name={this.state.workshop_data.Workshop_Name}
-            user={this.state.user}
-            markCompleted={this.markCompleted}
-          />
+        <UserWelcome
+          signOut={this.props.signOut}
+          Workshop_Name={this.state.workshop_data.Workshop_Name}
+          user={this.state.user}
+          markCompleted={this.markCompleted}
+        />
       );
     }
-    console.log('workshop text')
-      console.log(this.state.workshop_data.Level_Descriptions[
-        this.state.currentPage])
+    console.log("workshop text");
+    console.log(
+      this.state.workshop_data.Level_Descriptions[this.state.currentPage]
+    );
 
     return (
       <div>
@@ -167,8 +172,7 @@ class UserDash extends React.Component {
                     : workshop_level_title}
                 </Card.Header>
 
-                {workshop_level_text}
-                  
+                <Card.Body>{workshop_level_text}</Card.Body>
                 <Row>
                   <Col className="">
                     {displayPrevious ? (
