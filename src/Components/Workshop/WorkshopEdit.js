@@ -53,8 +53,6 @@ class WorkshopEdit extends React.Component {
       };
       this.setState({
         Workshop: tempX,
-        hasBeenEdited: false,
-        alertText: "Workshop has been modified, submit to save changes",
       });
     }
   };
@@ -95,6 +93,7 @@ class WorkshopEdit extends React.Component {
       });
     }
     else {
+      console.log(this.state.Workshop);
     this.props.submit(this.state.Workshop, true);
     //sets to null to prepare for the next time the component may get used
     this.setState({
@@ -196,6 +195,7 @@ class WorkshopEdit extends React.Component {
     this.setState({
       editWindow: true,
       currLevel: level,
+      hasBeenEdited: true,
     });
   };
 
@@ -217,6 +217,7 @@ class WorkshopEdit extends React.Component {
     if (newText) this.setWorkshopLevelDescription(newText);
     this.setState({
       editWindow: false,
+      hasBeenEdited: true,
     });
   };
 
