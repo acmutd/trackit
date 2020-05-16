@@ -13,7 +13,7 @@ import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import DatePicker from "react-datepicker";
 import WorksdopEditor from "../Layout/WorkshopEditor";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Alert } from "react-bootstrap";
 
 /**
  * Opens up a dialog modal for the workshop data to be edited or a new workshop informatin to be added
@@ -34,6 +34,8 @@ class WorkshopEdit extends React.Component {
     },
     editWindow: false,
     currLevel: -1,
+    hasBeenEdited: false,
+    alertText: "Workshop has been modified, submit to save changes",
   };
 
   /**
@@ -51,6 +53,8 @@ class WorkshopEdit extends React.Component {
       };
       this.setState({
         Workshop: tempX,
+        hasBeenEdited: false,
+        alertText: "Workshop has been modified, submit to save changes",
       });
     }
   };
@@ -69,6 +73,7 @@ class WorkshopEdit extends React.Component {
         Number_Of_Levels: 1,
         Date: null,
       },
+      hasBeenEdited: false,
     });
     this.props.submit(this.state.Workshop, false);
   };
@@ -77,6 +82,19 @@ class WorkshopEdit extends React.Component {
    * This gets called when the submit button is pressed to save changes made to a workshop or save a new workshop
    */
   submit = () => {
+    if(this.state.Workshop.Date === null) {
+      this.setState({
+        hasBeenEdited: true,
+        alertText: "Date field cannot be null",
+      });
+    }
+    else if(this.state.Workshop.Workshop_ID === null) {
+      this.setState({
+        hasBeenEdited: true,
+        alertText: "Workshop title cannot be null",
+      });
+    }
+    else {
     this.props.submit(this.state.Workshop, true);
     //sets to null to prepare for the next time the component may get used
     this.setState({
@@ -89,6 +107,7 @@ class WorkshopEdit extends React.Component {
         Date: null,
       },
     });
+  }
   };
 
   /**
@@ -104,7 +123,7 @@ class WorkshopEdit extends React.Component {
   incrementLevel = () => {
     let workshop = this.state.Workshop;
     workshop.Number_Of_Levels = workshop.Number_Of_Levels + 1;
-    this.setState({ Workshop: workshop });
+    this.setState({ Workshop: workshop, hasBeenEdited: true });
   };
 
   /**
@@ -114,7 +133,7 @@ class WorkshopEdit extends React.Component {
     if (this.state.Workshop.Number_Of_Levels > 1) {
       let workshop = this.state.Workshop;
       workshop.Number_Of_Levels = workshop.Number_Of_Levels - 1;
-      this.setState({ Workshop: workshop });
+      this.setState({ Workshop: workshop, hasBeenEdited: true });
     }
   };
 
@@ -130,6 +149,7 @@ class WorkshopEdit extends React.Component {
         Workshop_ID: temp,
         Workshop_Name: temp,
       },
+      hasBeenEdited: true,
     }));
   };
 
@@ -151,6 +171,7 @@ class WorkshopEdit extends React.Component {
         ...state.Workshop,
         Level_Titles: tempArray,
       },
+      hasBeenEdited: true,
     }));
   };
 
@@ -167,13 +188,11 @@ class WorkshopEdit extends React.Component {
         ...state.Workshop,
         Level_Descriptions: tempArray,
       },
+      hasBeenEdited: true,
     }));
   };
 
   openWorkshopEdit = (level) => {
-    console.log("level: " + level);
-    console.log(level);
-    console.log("inside set workshop level descp");
     this.setState({
       editWindow: true,
       currLevel: level,
@@ -190,11 +209,11 @@ class WorkshopEdit extends React.Component {
         ...state.Workshop,
         Date: d,
       },
+      hasBeenEdited: true,
     }));
   };
 
   closeWorkshopEdit = (newText) => {
-    console.log("closing edit window");
     if (newText) this.setWorkshopLevelDescription(newText);
     this.setState({
       editWindow: false,
@@ -275,6 +294,16 @@ class WorkshopEdit extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
+          <DialogContent>
+            {this.state.hasBeenEdited ? (
+              <Alert
+                variant="danger"
+                onClose={() => this.setState({ hasBeenEdited: false })}
+            >{this.state.alertText}</Alert>
+            ) : (
+              ""
+            )}
+          </DialogContent>
           <DialogTitle id="alert-dialog-title">
             {this.props.titleText}
           </DialogTitle>
@@ -292,16 +321,16 @@ class WorkshopEdit extends React.Component {
                 helperText="Enter title of Workshop"
                 placeholder="Workshop Name"
                 className="mr-5"
-                onChange={this.setWorkshopName}
+                onChange={() => this.setWorkshopName()}
                 value={this.state.Workshop.Workshop_Name || ""}
                 disabled={!this.props.newWorkshop}
               />
               {"Workshop_Levels:" + this.state.Workshop.Number_Of_Levels}
               <Fab color="primary" aria-label="remove" className="ml-5 mr-2">
-                <RemoveIcon onClick={this.decrementLevel} />
+                <RemoveIcon onClick={() => this.decrementLevel()} />
               </Fab>
               <Fab color="primary" aria-label="add" className="ml-2 mr-2">
-                <AddIcon onClick={this.incrementLevel} />
+                <AddIcon onClick={() => this.incrementLevel()} />
               </Fab>
             </form>
           </DialogContent>
@@ -314,7 +343,7 @@ class WorkshopEdit extends React.Component {
               <p>Workshop Date: </p>
               <DatePicker
                 selected={this.state.Workshop.Date}
-                onChange={this.setWorkshopDate}
+                onChange={(date) => this.setWorkshopDate(date)}
                 name="startDate"
                 dateFormat="MM/dd/yyyy"
                 placeholderText="Select Date"
