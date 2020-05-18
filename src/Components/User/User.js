@@ -13,6 +13,9 @@ class User extends React.Component {
     Enabled: false,
     loginError: false,
     initialProgress: 0,
+
+    alert: false,
+    alertText: "Unknown error occurred",
   };
 
   /**
@@ -101,6 +104,10 @@ class User extends React.Component {
         }
       })
       .catch((error) => {
+        this.setState({
+          alert: true,
+          alertText: "Error occurred in reading back workshop information",
+        });
         console.log(
           error + " error occurred in reading back workshop information"
         );
@@ -168,6 +175,10 @@ class User extends React.Component {
         console.log("user progress updated");
       })
       .catch((error) => {
+        this.setState({
+          alert: true,
+          alertText: "Error occurred in updating user progress",
+        });
         console.log(error + "error occurred in updating user progress");
       });
   };
@@ -192,9 +203,20 @@ class User extends React.Component {
         });
       })
       .catch((error) => {
+        this.setState({
+          alert: true,
+          alertText: "Error occurred in signing out the user",
+        });
         console.log(error + " error signing user out");
       });
   };
+
+  resetAlertStatus = () => {
+    this.setState({
+      alert: false,
+      alertText: "Unknown error occurred",
+    })
+  }
 
   render() {
     return (
@@ -221,6 +243,9 @@ class User extends React.Component {
                   0,
                   this.props.database.auth().currentUser.email.lastIndexOf("@")
                 )}
+              alert={this.state.alert}
+              alertText={this.state.alertText}
+              resetAlertStatus={this.resetAlertStatus}
             />
           )
         ) : (

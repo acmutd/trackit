@@ -21,7 +21,7 @@ class WorkshopLogin extends React.Component {
 
   /**
    * Update and display alert if there does not exist a workshop with the given name
-   * @param {*} prevProps 
+   * @param {*} prevProps
    */
   componentDidUpdate(prevProps) {
     if (this.props.loginError !== prevProps.loginError) {
@@ -38,14 +38,20 @@ class WorkshopLogin extends React.Component {
     this.setState({
       workshopID: event.target.value,
     });
-  }
+  };
 
   /**
    * call method from props to verify if workshop ID exists
    */
   authenticate = () => {
-    this.props.authenticate(this.state.workshopID);
-  }
+    if (this.state.workshopID === "") {
+      this.setState({
+        loginError: true,
+      });
+    } else {
+      this.props.authenticate(this.state.workshopID);
+    }
+  };
 
   render() {
     return (
