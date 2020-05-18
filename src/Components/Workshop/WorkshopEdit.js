@@ -105,6 +105,7 @@ class WorkshopEdit extends React.Component {
         Number_Of_Levels: 1,
         Date: null,
       },
+      hasBeenEdited: false,
     });
   }
   };
@@ -264,7 +265,7 @@ class WorkshopEdit extends React.Component {
                 helperText="Enter Level Name"
                 placeholder="Level Name"
                 className="mr-5"
-                onChange={this.setWorkshopLevelName}
+                onChange={(event) => this.setWorkshopLevelName(event)}
                 value={this.state.Workshop.Level_Titles[i] || ""}
               />
             </Col>
@@ -322,7 +323,7 @@ class WorkshopEdit extends React.Component {
                 helperText="Enter title of Workshop"
                 placeholder="Workshop Name"
                 className="mr-5"
-                onChange={() => this.setWorkshopName()}
+                onChange={(event) => this.setWorkshopName(event)}
                 value={this.state.Workshop.Workshop_Name || ""}
                 disabled={!this.props.newWorkshop}
               />
