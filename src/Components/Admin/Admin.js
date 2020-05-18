@@ -66,7 +66,7 @@ class Admin extends React.Component {
             .catch((error) => {
               this.setState({
                 alert: true,
-                alertText: "Error occurred in login process",
+                alertText: error + " Error occurred in login process",
               });
               console.log(error + " error occurred in login process");
             });
@@ -176,7 +176,7 @@ class Admin extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in updating workshop level",
+          alertText: error + " Error occurred in updating workshop level",
         });
         console.log(error + " error occurred in updating workshop level");
       });
@@ -202,7 +202,7 @@ class Admin extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in updating workshop status",
+          alertText: error + " Error occurred in updating workshop status",
         });
         console.log(error + " error occurred in updating workshop status");
       });
@@ -227,7 +227,7 @@ class Admin extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in erasing student progress",
+          alertText: error + " Error occurred in erasing student progress",
         });
         console.log(error + " error occured in erasing student progress");
       });
@@ -257,7 +257,7 @@ class Admin extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in updating workshop",
+          alertText: error + " Error occurred in updating workshop",
         });
         console.log(error + " error occurred in updating workshop");
       });
@@ -276,7 +276,7 @@ class Admin extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in reseting workshop level to 1",
+          alertText: error + " Error occurred in reseting workshop level to 1",
         });
         console.log(error + " error occurred in reseting workshop level to 1");
       });
@@ -307,7 +307,7 @@ class Admin extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in adding empty students at workshop object",
+          alertText: error + " Error occurred in adding empty students at workshop object",
         });
         console.log(
           error + " error occured in adding empty sudents at workshop object"
@@ -326,7 +326,7 @@ class Admin extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in creating new workshop",
+          alertText: error + " Error occurred in creating new workshop",
         });
         console.log(error + " error occurred in creating new workshop");
       });
@@ -348,7 +348,7 @@ class Admin extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in deleting students at workshop",
+          alertText: error + " Error occurred in deleting students at workshop",
         });
         console.log(error + " error occurred in deleting students at workshop");
       });
@@ -364,7 +364,7 @@ class Admin extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in deleting workshop",
+          alertText: error + " Error occurred in deleting workshop",
         });
         console.log(error + " error occurred in deleting workshop");
       });
@@ -390,7 +390,7 @@ class Admin extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in signing out the user",
+          alertText: error + " Error occurred in signing out the user",
         });
         console.log(error + " error signing user out");
       });

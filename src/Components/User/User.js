@@ -63,11 +63,11 @@ class User extends React.Component {
     this.props.database
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .catch((err) => {
+      .catch((error) => {
         this.setState({
           loginError: true,
         });
-        console.log(err + " Invalid Email or Password");
+        console.log(error + " Invalid Email or Password");
       });
   };
 
@@ -106,7 +106,7 @@ class User extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in reading back workshop information",
+          alertText: error + " Error occurred in reading back workshop information",
         });
         console.log(
           error + " error occurred in reading back workshop information"
@@ -177,7 +177,7 @@ class User extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in updating user progress",
+          alertText: error + " Error occurred in updating user progress",
         });
         console.log(error + "error occurred in updating user progress");
       });
@@ -205,7 +205,7 @@ class User extends React.Component {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: "Error occurred in signing out the user",
+          alertText: error + " Error occurred in signing out the user",
         });
         console.log(error + " error signing user out");
       });
