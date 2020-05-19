@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import NavBar from "../Layout/NavBar";
 import { Container, Card, Button, Image } from "react-bootstrap";
 

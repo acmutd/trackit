@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from 'react';
 import Navbar from "../Layout/NavBar";
 import {
   Button,
@@ -12,7 +12,7 @@ import {
 /**
  * Displayes a grid of pricing options for the product
  */
-export class Pricing extends Component {
+class Pricing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

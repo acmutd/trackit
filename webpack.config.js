@@ -1,7 +1,7 @@
 module.exports = {
     // change to .tsx if necessary
     entry: './src/index.js',
-    mode: 'production',
+    mode: 'development',
     output: {
       filename: './dist/bundle.js'
     },
