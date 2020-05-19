@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import Admin from "./Components/Admin/Admin";
 import User from "./Components/User/User";
 import Pricing from "./Components/Pages/Pricing";

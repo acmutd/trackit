@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import CanvasJSReact from "../../assets/canvasjs.react";
 import StudentBar from "./StudentBar";
 import WorkshopLevelBar from "./WorkshopLevelBar";

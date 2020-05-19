@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";

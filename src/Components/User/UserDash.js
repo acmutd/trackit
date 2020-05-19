@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import NavBar from "../Layout/NavBar";
 import UserWelcome from "./UserWelcome";
 import Loading from "../Layout/Loading";

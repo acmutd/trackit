@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { Slider, Fab } from "@material-ui/core";
 import { Nav, Button, Row, Col } from "react-bootstrap";
 import AddIcon from "@material-ui/icons/Add";
