@@ -15,9 +15,8 @@ class Admin extends React.Component {
     workshop_data: null,
     student_data: null,
     dataLoaded: false,
-
     alert: false,
-    alertText: "Unknown error occured",
+    alertText: "Unknown error occured"
   };
 
   /**
