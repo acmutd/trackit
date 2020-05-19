@@ -12,9 +12,16 @@ Developer version: checkout [dev](https://github.com/acmutd/TrackIT/tree/dev)
 
 #### Development
 
+###### JS Development on dev
+
 - `npm install`
 - `npm run dev`
 - [optional] `npm test`
+
+###### TS Development
+
+- `npm install`
+- `npm run parcel-setup`
 
 #### Production
 

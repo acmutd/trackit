@@ -10,7 +10,8 @@
       "moduleResolution": "node"
   },
   "include": [
-      "./src/"
+      "./src/",
+      "./src/assets"
   ],
   "types": [
     "node",
