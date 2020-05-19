@@ -39,7 +39,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "heroku-postbuild": "npm run build",
-    "typescript": "tsc"
+    "webpack": "webpack-dev-server --config webpack.config.js",
+    "parcel": "parcel build src/index.js",
+    "parcel-test": "parcel build index.html",
+    "parcel-setup": "parcel index.html"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -57,6 +60,10 @@
     ]
   },
   "devDependencies": {
-    "webpack-cli": "^3.3.11"
+    "@babel/core": "^7.9.6",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "parcel-bundler": "^1.12.4",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
   }
 }
