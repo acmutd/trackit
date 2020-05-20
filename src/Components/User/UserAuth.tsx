@@ -10,10 +10,20 @@ import {
 } from "react-bootstrap";
 import NavBar from "../Layout/NavBar";
 
+interface AuthProp {
+  loginError: boolean,
+  authenticate: Function,
+};
+
+interface AuthState {
+  email: string,
+  password: string,
+  loginError: boolean
+}
 /**
  * Same UI as admin auth
  */
-class UserAuth extends React.Component<any, any> {
+class UserAuth extends React.Component<AuthProp, AuthState> {
   state = {
     email: "", // stores name of user
     password: "",
@@ -24,7 +34,7 @@ class UserAuth extends React.Component<any, any> {
    * If an error occurred in authentication this will update
    * @param {*} prevProps 
    */
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: AuthProp) {
     if (this.props.loginError !== prevProps.loginError) {
       this.setState({
         loginError: this.props.loginError,
@@ -35,7 +45,7 @@ class UserAuth extends React.Component<any, any> {
   /**
    * Listener
    */
-  fillEmail = (event) => {
+  fillEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       email: event.target.value,
     });
@@ -44,7 +54,7 @@ class UserAuth extends React.Component<any, any> {
   /**
    * Listener
    */
-  fillPassword = (event) => {
+  fillPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       password: event.target.value,
     });

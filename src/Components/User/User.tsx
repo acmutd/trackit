@@ -32,7 +32,7 @@ class User extends React.Component<any, any> {
   componentDidMount() {
     this.loginListener = this.props.database
       .auth()
-      .onAuthStateChanged((user) => {
+      .onAuthStateChanged((user: firebase.User) => {
         if (user) {
           console.log("logging in user");
           // user is signed in
@@ -53,7 +53,7 @@ class User extends React.Component<any, any> {
    * @param {*} email
    * @param {*} password
    */
-  authenticate = (email, password) => {
+  authenticate = (email: string, password: string) => {
     //resets the state of login error to be false
     if (this.state.loginError) {
       this.setState({
@@ -65,7 +65,7 @@ class User extends React.Component<any, any> {
     this.props.database
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           loginError: true,
         });
@@ -78,7 +78,7 @@ class User extends React.Component<any, any> {
    * This will validate that said workshop exists, is enabled and if so will open up the user dashboard
    * @param {*} workshop
    */
-  authenticateWorkshop = (workshop) => {
+  authenticateWorkshop = (workshop: string) => {
     //reset the login error if any occurred during authentication
     //same variable gets reused to see if any errors happen in authenticating the workshop name
     if (this.state.loginError) {
@@ -93,7 +93,7 @@ class User extends React.Component<any, any> {
       .collection("Workshop")
       .doc(workshop)
       .get()
-      .then((doc) => {
+      .then((doc: firebase.firestore.DocumentSnapshot) => {
         if (!doc.exists) {
           this.setState({
             loginError: true,
@@ -105,7 +105,7 @@ class User extends React.Component<any, any> {
           });
         }
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in reading back workshop information",
@@ -135,7 +135,7 @@ class User extends React.Component<any, any> {
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
-      .onSnapshot((snapshot) => {
+      .onSnapshot((snapshot: firebase.firestore.QueryDocumentSnapshot) => {
         console.log("new values from listener");
         console.log(snapshot.data().testProgress[email]);
         this.setState({
@@ -162,7 +162,7 @@ class User extends React.Component<any, any> {
    * Update the progress in firestore for a given student when they click markCompleted in the UI
    * @param {*} progress
    */
-  updateUserProgress = (progress) => {
+  updateUserProgress = (progress: number) => {
     var result = encodeURIComponent(
       this.props.database.auth().currentUser.email
     ).replace(/\./g, "%2E");
@@ -176,7 +176,7 @@ class User extends React.Component<any, any> {
       .then(() => {
         console.log("user progress updated");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in updating user progress",
@@ -204,7 +204,7 @@ class User extends React.Component<any, any> {
           Enabled: false,
         });
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in signing out the user",

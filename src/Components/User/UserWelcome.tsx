@@ -2,7 +2,14 @@ import * as React from "react";
 import NavBar from "../Layout/NavBar";
 import { Container, Card, Button, Image } from "react-bootstrap";
 
-const UserWelcome = (props) => {
+interface WelcomeProps {
+  signOut: Function,
+  Workshop_Name: string,
+  user: string,
+  markCompleted: Function
+}
+
+const UserWelcome = (props: WelcomeProps) => {
   return (
     <div>
       <NavBar dashboard={true} signOut={props.signOut} />

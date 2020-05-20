@@ -5,10 +5,36 @@ import Loading from "../Layout/Loading";
 import UserProgressBar from "./UserProgressBar";
 import { Row, Col, Card, Button, Container, Alert } from "react-bootstrap";
 
+interface DashProps {
+  workshop_data: any,
+  getProgressData: Function,
+  updateUserProgress: Function,
+  progressListener: Function,
+  Level_Enabled: number,
+  signOut: Function,
+  savedProgress: number,
+  dataLoaded: boolean,
+  user: string,
+  alert: boolean,
+  alertText: string,
+  resetAlertStatus: Function
+}
+
+interface DashState {
+  user: string,
+  workshop_data: any,
+  userProgress: number,
+  currentPage: number,
+  Level_Enabled: number,
+  dataLoaded: boolean,
+  alert: boolean,
+  alertText: string
+}
+
 /**
  * UI for the user dashboard
  */
-class UserDash extends React.Component<any, any> {
+class UserDash extends React.Component<DashProps, DashState> {
   state = {
     user: this.props.user,
     workshop_data: this.props.workshop_data,
@@ -16,7 +42,6 @@ class UserDash extends React.Component<any, any> {
     currentPage: this.props.savedProgress - 1,
     Level_Enabled: this.props.Level_Enabled,
     dataLoaded: this.props.dataLoaded,
-
     alert: false,
     alertText: "Unknown error occurred",
   };
@@ -33,7 +58,7 @@ class UserDash extends React.Component<any, any> {
   }
 
   // lifecycle method that is invoked anytime the component props are updated
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: DashProps) {
     if (this.props.savedProgress !== prevProps.savedProgress) {
       this.setState({
         userProgress: this.props.savedProgress,
@@ -60,7 +85,7 @@ class UserDash extends React.Component<any, any> {
 
   // increments current level by 1. This is not their overall progress, but the stage which they are viewing.
   nextLevel = () => {
-    this.setState((state) => ({
+    this.setState((state: React.ComponentState) => ({
       currentPage: state.currentPage + 1,
     }));
   };
@@ -85,7 +110,7 @@ class UserDash extends React.Component<any, any> {
 
   render() {
     let workshop_levels = this.state.workshop_data.Level_Titles.map(
-      (item, index) => {
+      (item: string, index: number) => {
         if (this.state.currentPage === index) {
           return (
             <Col key={index}>

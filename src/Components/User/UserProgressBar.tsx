@@ -1,7 +1,13 @@
 import * as React from "react";
 import { ProgressBar } from "react-bootstrap";
 
-const UserProgressBar = (props) => {
+interface BarProps {
+  userProgress: number,
+  Number_Of_Levels: number,
+  Level_Enabled: number
+}
+
+const UserProgressBar = (props: BarProps) => {
   return (
     <div>
       <ProgressBar className="mb-4">

@@ -10,10 +10,19 @@ import {
   Alert,
 } from "react-bootstrap";
 
+interface WorkshopLoginProps {
+  authenticate: Function,
+  loginError: boolean
+}
+
+interface WorkshopLoginState {
+  workshopID: string,
+  loginError: boolean
+}
 /**
  * Page for entering the workshop ID, based on design from <UserAuth /> and <AdminAuth />
  */
-class WorkshopLogin extends React.Component<any, any> {
+class WorkshopLogin extends React.Component<WorkshopLoginProps, WorkshopLoginState> {
   state = {
     workshopID: "",
     loginError: false,
@@ -23,7 +32,7 @@ class WorkshopLogin extends React.Component<any, any> {
    * Update and display alert if there does not exist a workshop with the given name
    * @param {*} prevProps
    */
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: WorkshopLoginProps) {
     if (this.props.loginError !== prevProps.loginError) {
       this.setState({
         loginError: this.props.loginError,
@@ -34,7 +43,7 @@ class WorkshopLogin extends React.Component<any, any> {
   /**
    * Event listener
    */
-  fillWorkshop = (event) => {
+  fillWorkshop = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       workshopID: event.target.value,
     });
