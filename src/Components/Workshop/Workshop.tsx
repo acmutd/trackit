@@ -12,7 +12,32 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  * Contains summary information about the workshop as well as the graphs
  *
  */
-class Workshop extends React.Component<any, any> {
+
+interface WorkshopProps {
+  incrementLevel: Function,
+  decrementLevel: Function,
+  enableWorkshop: Function,
+  disableWorkshop: Function,
+  clearAllStudents: Function,
+  deleteWorkshop: Function,
+  addEditWorkshop: Function,
+  exportWorkshop: Function,
+  properties: any, // workshop object
+  data: any // students at workshop object
+}
+
+ interface GraphData {
+   label: number,
+   y: number
+ }
+
+ interface WorkshopState {
+   dataArray: GraphData[],
+   confirmationDialog: boolean,
+   addEditWorkshopDialog: boolean
+ }
+
+class Workshop extends React.Component<WorkshopProps, WorkshopState> {
   constructor(props) {
     super(props);
 
