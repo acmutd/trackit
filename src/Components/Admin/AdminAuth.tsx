@@ -10,10 +10,21 @@ import {
 } from "react-bootstrap";
 import NavBar from "../Layout/NavBar";
 
+interface AdminAuthProps {
+  loginError: boolean,
+  authenticate(username: string, password: string): void,
+}
+
+interface AdminAuthState {
+  username: string,
+  password: string,
+  loginError: boolean,
+}
+
 /**
  * UI Component that contains two text fields to enter username and password as well as a submit button
  */
-class AdminAuth extends React.Component<any, any> {
+class AdminAuth extends React.Component<AdminAuthProps, AdminAuthState> {
   state = {
     username: "", //stores username
     password: "", //stores password
@@ -21,7 +32,7 @@ class AdminAuth extends React.Component<any, any> {
   };
 
   // checks if error occurred in authentication and if so updates the state
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: AdminAuthProps) {
     if (this.props.loginError !== prevProps.loginError) {
       this.setState({
         loginError: this.props.loginError,
@@ -33,7 +44,7 @@ class AdminAuth extends React.Component<any, any> {
    * Saves username to the component state
    * @param {*} event contains target value from the username text field
    */
-  fillUsername = (event) => {
+  fillUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       username: event.target.value,
     });
@@ -43,7 +54,7 @@ class AdminAuth extends React.Component<any, any> {
    * Saves password to the component state
    * @param {*} event contains target value from the password text field
    */
-  fillPassword = (event) => {
+  fillPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
       password: event.target.value,
     });

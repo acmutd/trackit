@@ -35,7 +35,7 @@ interface DashState {
  * UI for the user dashboard
  */
 class UserDash extends React.Component<DashProps, DashState> {
-  state = {
+  state: DashState = {
     user: this.props.user,
     workshop_data: this.props.workshop_data,
     userProgress: this.props.savedProgress,

@@ -23,7 +23,7 @@ interface WorkshopLoginState {
  * Page for entering the workshop ID, based on design from <UserAuth /> and <AdminAuth />
  */
 class WorkshopLogin extends React.Component<WorkshopLoginProps, WorkshopLoginState> {
-  state = {
+  state: WorkshopLoginState = {
     workshopID: "",
     loginError: false,
   };
