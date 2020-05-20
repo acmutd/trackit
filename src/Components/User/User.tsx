@@ -3,17 +3,33 @@ import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
 
-class User extends React.Component<any, any> {
-  state = {
+interface UserProps {
+  database: firebase.app.App,
+}
+
+interface UserState {
+  loggedIn: boolean,
+  workshopID: string,
+  workshop_data: any,
+  Level_Enabled: number,
+  dataLoaded: boolean,
+  Enabled: boolean,
+  loginError: boolean,
+  initialProgress: number,
+  alert: boolean,
+  alertText: string
+}
+
+class User extends React.Component<UserProps, UserState> {
+  state: UserState = {
     loggedIn: false, //once authentication happens this will toggle to true
-    workshopID: null,
+    workshopID: "",
     workshop_data: null,
     Level_Enabled: 0,
     dataLoaded: false,
     Enabled: false,
     loginError: false,
     initialProgress: 0,
-
     alert: false,
     alertText: "Unknown error occurred",
   };
@@ -32,7 +48,7 @@ class User extends React.Component<any, any> {
   componentDidMount() {
     this.loginListener = this.props.database
       .auth()
-      .onAuthStateChanged((user: firebase.User) => {
+      .onAuthStateChanged((user: any) => {
         if (user) {
           console.log("logging in user");
           // user is signed in
@@ -124,20 +140,27 @@ class User extends React.Component<any, any> {
    * Read the progress of the current student from the StudentsAtWorkshop collection on firestore
    * Additionally read whether a workshop is enabled or not and the progress of the admin
    */
-  getProgressData = () => {
+  getProgressData = () => 
+  {
+    let email: any = this.props.database.auth().currentUser?.email
     //convert .,@ and other weird symbols in emails to be of a proper format
-    let email = encodeURIComponent(
-      this.props.database.auth().currentUser.email
-    ).replace(/\./g, "%2E");
+    if(email)
+    {
+      email = encodeURIComponent(
+        email
+      ).replace(/\./g, "%2E");
+    }
 
     //set listener on firestore
     this.progressListener = this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
-      .onSnapshot((snapshot: firebase.firestore.QueryDocumentSnapshot) => {
+      .onSnapshot((snapshot: firebase.firestore.DocumentData) => {
         console.log("new values from listener");
-        console.log(snapshot.data().testProgress[email]);
+        if(snapshot !== undefined)
+        {
+          console.log(snapshot.data().testProgress[email]);
         this.setState({
           Level_Enabled: snapshot.data().Level_Enabled,
           Enabled: snapshot.data().Enabled,
@@ -155,6 +178,7 @@ class User extends React.Component<any, any> {
             dataLoaded: true,
           });
         }
+        }
       });
   };
 
@@ -163,9 +187,13 @@ class User extends React.Component<any, any> {
    * @param {*} progress
    */
   updateUserProgress = (progress: number) => {
-    var result = encodeURIComponent(
-      this.props.database.auth().currentUser.email
-    ).replace(/\./g, "%2E");
+    var result: any = this.props.database.auth().currentUser?.email
+    if(result !== null)
+    {
+      result = encodeURIComponent(
+        result
+      ).replace(/\./g, "%2E");
+    }
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
@@ -197,7 +225,7 @@ class User extends React.Component<any, any> {
         //reset the state
         this.setState({
           loggedIn: false,
-          workshopID: null,
+          workshopID: "",
           workshop_data: null,
           Level_Enabled: 0,
           dataLoaded: false,
@@ -221,6 +249,12 @@ class User extends React.Component<any, any> {
   }
 
   render() {
+    var userID: any = this.props.database.auth().currentUser?.email
+    if(userID !== null)
+    {
+      userID = userID.substring(
+        0, userID.lastIndexOf("@"))
+    }
     return (
       <div>
         {this.state.loggedIn ? (
@@ -239,12 +273,7 @@ class User extends React.Component<any, any> {
               signOut={this.signOutUser}
               savedProgress={this.state.initialProgress}
               dataLoaded={this.state.dataLoaded}
-              user={this.props.database
-                .auth()
-                .currentUser.email.substring(
-                  0,
-                  this.props.database.auth().currentUser.email.lastIndexOf("@")
-                )}
+              user={userID}
               alert={this.state.alert}
               alertText={this.state.alertText}
               resetAlertStatus={this.resetAlertStatus}
