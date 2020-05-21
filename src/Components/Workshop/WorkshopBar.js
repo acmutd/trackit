@@ -88,12 +88,11 @@ class WorkshopBar extends React.Component {
 
     return (
       <div>
-        <div className="m-3 mt-5 p-4 floating-icon">
-          <Nav justify>
+        <div className="m-2 m-lg-3 mt-2 mt-lg-5 mb-3 mb-lg-5 p-4 floating-icon">
+          <Nav justify className="flex-column flex-lg-row d-flex">
             <Nav.Item>
               <h1>{this.props.data.Workshop_ID}</h1>
             </Nav.Item>
-            {/* This needs to eventually be dynamic and use inforamtion passed in as props to render the actual proportions instead of hardcoded values */}
             <Nav.Item className="mt-3">
               <ProgressBar>
                 <ProgressBar

@@ -3,7 +3,7 @@ import NavBar from "../Layout/NavBar";
 import UserWelcome from "./UserWelcome";
 import Loading from "../Layout/Loading";
 import UserProgressBar from "./UserProgressBar";
-import { Row, Col, Card, Button, Container } from "react-bootstrap";
+import { Row, Col, Card, Button, Container, Alert } from "react-bootstrap";
 
 /**
  * UI for the user dashboard
@@ -16,6 +16,9 @@ class UserDash extends React.Component {
     currentPage: this.props.savedProgress - 1,
     Level_Enabled: this.props.Level_Enabled,
     dataLoaded: this.props.dataLoaded,
+
+    alert: false,
+    alertText: "Unknown error occurred",
   };
 
   /**
@@ -47,18 +50,24 @@ class UserDash extends React.Component {
         dataLoaded: this.props.dataLoaded,
       });
     }
+    if (this.props.alert !== prevProps.alert) {
+      this.setState({
+        alert: this.props.alert,
+        alertText: this.props.alertText,
+      })
+    }
   }
 
   // increments current level by 1. This is not their overall progress, but the stage which they are viewing.
   nextLevel = () => {
-    this.setState(state => ({
+    this.setState((state) => ({
       currentPage: state.currentPage + 1,
     }));
   };
 
   // decrements current level by 1. This is not their overall progress, but the stage which they are viewing.
   previousLevel = () => {
-    this.setState(state => ({
+    this.setState((state) => ({
       currentPage: state.currentPage - 1,
     }));
   };
@@ -66,7 +75,8 @@ class UserDash extends React.Component {
   // marks current stage completed and sends data to database.
   markCompleted = () => {
     // update database on current user progress
-    this.setState(state => ({
+    this.setState(
+      (state) => ({
         userProgress: state.userProgress + 1,
       }),
       this.props.updateUserProgress(this.state.userProgress + 1)
@@ -105,9 +115,17 @@ class UserDash extends React.Component {
       this.state
     );
 
-    let workshop_level_text = this.state.workshop_data.Level_Descriptions[
-      this.state.currentPage
-    ];
+    // display workshop level descriptions with HTML formatting
+    let workshop_level_text = (
+      <div
+        dangerouslySetInnerHTML={{
+          __html: this.state.workshop_data.Level_Descriptions[
+            this.state.currentPage
+          ],
+        }}
+      />
+    );
+
     let workshop_level_title = this.state.workshop_data.Level_Titles[
       this.state.currentPage
     ];
@@ -123,12 +141,12 @@ class UserDash extends React.Component {
 
     if (this.state.userProgress === -1) {
       return (
-          <UserWelcome
-            signOut={this.props.signOut}
-            Workshop_Name={this.state.workshop_data.Workshop_Name}
-            user={this.state.user}
-            markCompleted={this.markCompleted}
-          />
+        <UserWelcome
+          signOut={this.props.signOut}
+          Workshop_Name={this.state.workshop_data.Workshop_Name}
+          user={this.state.user}
+          markCompleted={this.markCompleted}
+        />
       );
     }
 
@@ -136,6 +154,19 @@ class UserDash extends React.Component {
       <div>
         <NavBar dashboard={true} signOut={this.props.signOut} />
         <Container fluid className="text-center p-3">
+          {this.state.alert ? (
+            <div className="m-1 mt-3">
+              <Alert
+                variant="danger"
+                onClose={() => this.props.resetAlertStatus()}
+                dismissible
+              >
+                {this.state.alertText}
+              </Alert>
+            </div>
+          ) : (
+            ""
+          )}
           {!this.state.dataLoaded ? (
             <Loading />
           ) : (
@@ -153,9 +184,8 @@ class UserDash extends React.Component {
                     ? "Workshop Complete!"
                     : workshop_level_title}
                 </Card.Header>
-                <Card.Body className="text-left px-3 mb-3">
-                  {workshop_level_text}
-                </Card.Body>
+
+                <Card.Body>{workshop_level_text}</Card.Body>
                 <Row>
                   <Col className="">
                     {displayPrevious ? (

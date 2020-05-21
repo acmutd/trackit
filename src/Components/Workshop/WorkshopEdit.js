@@ -12,6 +12,8 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
 import DatePicker from "react-datepicker";
+import WorksdopEditor from "../Layout/WorkshopEditor";
+import { Row, Col, Alert } from "react-bootstrap";
 
 /**
  * Opens up a dialog modal for the workshop data to be edited or a new workshop informatin to be added
@@ -30,6 +32,10 @@ class WorkshopEdit extends React.Component {
       Number_Of_Levels: 1,
       Date: null,
     },
+    editWindow: false,
+    currLevel: -1,
+    hasBeenEdited: false,
+    alertText: "Workshop has been modified, submit to save changes",
   };
 
   /**
@@ -41,14 +47,15 @@ class WorkshopEdit extends React.Component {
     //if it is null then a new workshop is being created else an existing  one is being updated
     if (this.props.workshop != null) {
       let temp = new Date(this.props.workshop.Date.seconds * 1000);
-      let tempX = { 
-      ...this.props.workshop, //creates deep copy
-      Date: temp };
+      let tempX = {
+        ...this.props.workshop, //creates deep copy
+        Date: temp,
+      };
       this.setState({
         Workshop: tempX,
       });
     }
-  }
+  };
 
   /**
    * This gets called when someone clicks cancel or outside the dialog box
@@ -64,14 +71,29 @@ class WorkshopEdit extends React.Component {
         Number_Of_Levels: 1,
         Date: null,
       },
+      hasBeenEdited: false,
     });
     this.props.submit(this.state.Workshop, false);
-  }
+  };
 
   /**
    * This gets called when the submit button is pressed to save changes made to a workshop or save a new workshop
    */
   submit = () => {
+    if(this.state.Workshop.Date === null) {
+      this.setState({
+        hasBeenEdited: true,
+        alertText: "Date field cannot be null",
+      });
+    }
+    else if(this.state.Workshop.Workshop_ID === null) {
+      this.setState({
+        hasBeenEdited: true,
+        alertText: "Workshop title cannot be null",
+      });
+    }
+    else {
+      console.log(this.state.Workshop);
     this.props.submit(this.state.Workshop, true);
     //sets to null to prepare for the next time the component may get used
     this.setState({
@@ -83,15 +105,17 @@ class WorkshopEdit extends React.Component {
         Number_Of_Levels: 1,
         Date: null,
       },
+      hasBeenEdited: false,
     });
   }
+  };
 
   /**
    * Links button to function passed in as props
    */
   callPropsSubmit = () => {
     this.props.submit(this.state.Workshop, true);
-  }
+  };
 
   /**
    * Updates state with additional level
@@ -99,8 +123,8 @@ class WorkshopEdit extends React.Component {
   incrementLevel = () => {
     let workshop = this.state.Workshop;
     workshop.Number_Of_Levels = workshop.Number_Of_Levels + 1;
-    this.setState({ Workshop: workshop });
-  }
+    this.setState({ Workshop: workshop, hasBeenEdited: true });
+  };
 
   /**
    * Updates state with reduced level
@@ -109,9 +133,9 @@ class WorkshopEdit extends React.Component {
     if (this.state.Workshop.Number_Of_Levels > 1) {
       let workshop = this.state.Workshop;
       workshop.Number_Of_Levels = workshop.Number_Of_Levels - 1;
-      this.setState({ Workshop: workshop });
+      this.setState({ Workshop: workshop, hasBeenEdited: true });
     }
-  }
+  };
 
   /**
    * Event handler for workshop name, note: workshop name is a primary key and changing it is not allowed if a workshop has already been created
@@ -125,8 +149,9 @@ class WorkshopEdit extends React.Component {
         Workshop_ID: temp,
         Workshop_Name: temp,
       },
+      hasBeenEdited: true,
     }));
-  }
+  };
 
   /**
    * Event handler for the level name, was tricky using the same event handler for all level names but it works like a charm
@@ -146,44 +171,79 @@ class WorkshopEdit extends React.Component {
         ...state.Workshop,
         Level_Titles: tempArray,
       },
+      hasBeenEdited: true,
     }));
-  }
+  };
 
   /**
    * Event handler for the level description
    * @param {*} event
    */
-  setWorkshopLevelDescription = (event) => {
-    let temp = event.target.id; //used to identify the correct description to edit
+  setWorkshopLevelDescription = (newText) => {
     let tempArray = this.state.Workshop.Level_Descriptions;
-    for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
-      if (temp === i + "-level") {
-        tempArray[i] = event.target.value;
-      }
-    }
+    tempArray[this.state.currLevel] = newText;
 
-    this.setState(state => ({
+    this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
         Level_Descriptions: tempArray,
       },
+      hasBeenEdited: true,
     }));
-  }
+  };
+
+  openWorkshopEdit = (level) => {
+    this.setState({
+      editWindow: true,
+      currLevel: level,
+      hasBeenEdited: true,
+    });
+  };
 
   /**
    * Event listener
    */
   setWorkshopDate = (date) => {
     let d = new Date(date);
-    this.setState(state => ({
+    this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
         Date: d,
       },
+      hasBeenEdited: true,
     }));
-  }
+  };
+
+  closeWorkshopEdit = (newText) => {
+    if (newText) this.setWorkshopLevelDescription(newText);
+    this.setState({
+      editWindow: false,
+      hasBeenEdited: true,
+    });
+  };
 
   render() {
+    if (this.state.editWindow) {
+      return (
+        <Dialog
+          open={this.props.isOpen}
+          onClose={this.cancel}
+          onEnter={this.initializeState}
+          maxWidth="xl"
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent>
+            <WorksdopEditor
+              closeWindow={this.closeWorkshopEdit}
+              content={
+                this.state.Workshop.Level_Descriptions[this.state.currLevel]
+              }
+            />
+          </DialogContent>
+        </Dialog>
+      );
+    }
     //the following code generates the appropriate number of textFields to be filled in based on Number_Of_Levels
     //level text fields have the id set to 0,1,2,3... etc which is used by the event handler to decide what to modify
     //level description fields have the id set to 0-level,1-level,2-level... etc which is used by the event handler
@@ -196,27 +256,32 @@ class WorkshopEdit extends React.Component {
     let lvlTitleFields = lvlTitl.map((item, i) => (
       <DialogContent key={i}>
         <form>
-          <TextField
-            required
-            id={item}
-            label="Level Name"
-            helperText="Enter Level Name"
-            placeholder="Level Name"
-            className="mr-5"
-            onChange={this.setWorkshopLevelName}
-            value={this.state.Workshop.Level_Titles[i] || ""}
-          />
-          <TextField
-            id={lvlDesc[i]}
-            label="Level Description"
-            multiline
-            rowsMax="4"
-            helperText="Enter Description of Level"
-            placeholder="Level Description"
-            className="mr-5"
-            onChange={this.setWorkshopLevelDescription}
-            value={this.state.Workshop.Level_Descriptions[i] || ""}
-          />
+          <Row>
+            <Col>
+              <TextField
+                required
+                id={item}
+                label="Level Name"
+                helperText="Enter Level Name"
+                placeholder="Level Name"
+                className="mr-5"
+                onChange={(event) => this.setWorkshopLevelName(event)}
+                value={this.state.Workshop.Level_Titles[i] || ""}
+              />
+            </Col>
+            <Col>
+              <Button
+                type="button"
+                label="Level Description"
+                className="mr-5"
+                onClick={() => {
+                  this.openWorkshopEdit(i);
+                }}
+              >
+                Edit Level Info
+              </Button>
+            </Col>
+          </Row>
         </form>
       </DialogContent>
     ));
@@ -231,6 +296,16 @@ class WorkshopEdit extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
+          <DialogContent>
+            {this.state.hasBeenEdited ? (
+              <Alert
+                variant="danger"
+                onClose={() => this.setState({ hasBeenEdited: false })}
+            >{this.state.alertText}</Alert>
+            ) : (
+              ""
+            )}
+          </DialogContent>
           <DialogTitle id="alert-dialog-title">
             {this.props.titleText}
           </DialogTitle>
@@ -244,20 +319,20 @@ class WorkshopEdit extends React.Component {
               <TextField
                 required
                 id="workshop-title"
-                label="Workshop Title"
+                label="Title"
                 helperText="Enter title of Workshop"
                 placeholder="Workshop Name"
                 className="mr-5"
-                onChange={this.setWorkshopName}
+                onChange={(event) => this.setWorkshopName(event)}
                 value={this.state.Workshop.Workshop_Name || ""}
                 disabled={!this.props.newWorkshop}
               />
-              {"Workshop Levels: " + this.state.Workshop.Number_Of_Levels}
+              {"Workshop_Levels:" + this.state.Workshop.Number_Of_Levels}
               <Fab color="primary" aria-label="remove" className="ml-5 mr-2">
-                <RemoveIcon onClick={this.decrementLevel} />
+                <RemoveIcon onClick={() => this.decrementLevel()} />
               </Fab>
               <Fab color="primary" aria-label="add" className="ml-2 mr-2">
-                <AddIcon onClick={this.incrementLevel} />
+                <AddIcon onClick={() => this.incrementLevel()} />
               </Fab>
             </form>
           </DialogContent>
@@ -270,7 +345,7 @@ class WorkshopEdit extends React.Component {
               <p>Workshop Date: </p>
               <DatePicker
                 selected={this.state.Workshop.Date}
-                onChange={this.setWorkshopDate}
+                onChange={(date) => this.setWorkshopDate(date)}
                 name="startDate"
                 dateFormat="MM/dd/yyyy"
                 placeholderText="Select Date"
