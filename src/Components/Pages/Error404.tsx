@@ -1,12 +1,12 @@
-import React, { Component } from "react";
+import * as React from "react";
 import Navbar from "../Layout/NavBar";
 import { Container } from "react-bootstrap";
-import error404 from "../../assets/404.png";
+const error404 = require("../../assets/404.png");
 
 /**
  * 404 error page, will get rendered on any path that is not defined
  */
-export class Error404 extends Component {
+export class Error404 extends React.Component {
   render() {
     return (
       <div>

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import * as React from "react";
 import Navbar from "../Layout/NavBar";
 import {
   Button,
@@ -9,44 +9,45 @@ import {
   ListGroupItem,
 } from "react-bootstrap";
 
+interface PricingState {
+  tiers: string[];
+}
+
 /**
  * Displayes a grid of pricing options for the product
  */
-export class Pricing extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tiers: [
-        {
-          name: "Free",
-          price: "$0/mo",
-          perks: [
-            "Up to 5 Workshop Levels",
-            "Limited to 20 students",
-            "No concurrent workshops",
-          ],
-        },
-        {
-          name: "Pro",
-          price: "$10/mo",
-          perks: [
-            "Up to 25 Workshop Levels",
-            "Limited to 100 students",
-            "5 concurrent workshops",
-          ],
-        },
-        {
-          name: "Enterprise",
-          price: "$50/mo",
-          perks: [
-            "Unlimited Workshop Levels",
-            "Unlimited students",
-            "Unlimited concurrent workshops",
-          ],
-        },
-      ],
-    };
-  }
+export class Pricing extends React.Component<PricingState> {
+  state = {
+    tiers: [
+      {
+        name: "Free",
+        price: "$0/mo",
+        perks: [
+          "Up to 5 Workshop Levels",
+          "Limited to 20 students",
+          "No concurrent workshops",
+        ],
+      },
+      {
+        name: "Pro",
+        price: "$10/mo",
+        perks: [
+          "Up to 25 Workshop Levels",
+          "Limited to 100 students",
+          "5 concurrent workshops",
+        ],
+      },
+      {
+        name: "Enterprise",
+        price: "$50/mo",
+        perks: [
+          "Unlimited Workshop Levels",
+          "Unlimited students",
+          "Unlimited concurrent workshops",
+        ],
+      },
+    ],
+  };
 
   render() {
     let tierCards = this.state.tiers.map((item, index) => (
