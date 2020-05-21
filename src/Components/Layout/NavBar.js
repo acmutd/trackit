@@ -20,6 +20,10 @@ class NavBar extends React.Component {
         link: "/",
       },
       {
+        name: "User",
+        link: "/user"
+      },
+      {
         name: "Admin",
         link: "/admin",
       },
