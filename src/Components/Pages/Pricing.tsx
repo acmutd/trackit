@@ -10,7 +10,7 @@ import {
 } from "react-bootstrap";
 
 interface PricingState {
-  tiers: string[];
+  tiers: any[];
 }
 
 /**
