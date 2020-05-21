@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import {
   Button,
   Dialog,
@@ -8,10 +8,19 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 
+interface ConfirmationDialogProps {
+  handleDialogResponse(isTrue: boolean): void;
+  isOpen: boolean;
+  titleText: string;
+  messageText: string;
+  workshop: any[];
+  newWorkshop: boolean;
+}
+
 /**
  * This component represents a modal which pops up when needing to confirm deletion, no other button uses this component yet
  */
-class ConfirmationDialog extends React.Component {
+class ConfirmationDialog extends React.Component<ConfirmationDialogProps> {
   /**
    * This function will get executed when the dialog is closed in any possible way except clicking the agree button
    */
