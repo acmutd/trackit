@@ -14,8 +14,12 @@ interface NavBarProps {
   signOut(): void;
 }
 
+type navlink = {
+  name: string;
+  link: string;
+};
 interface NavBarState {
-  Navlink: any[];
+  Navlink: navlink[];
 }
 
 /**

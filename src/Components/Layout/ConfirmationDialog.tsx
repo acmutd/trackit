@@ -20,7 +20,7 @@ interface ConfirmationDialogProps {
 /**
  * This component represents a modal which pops up when needing to confirm deletion, no other button uses this component yet
  */
-class ConfirmationDialog extends React.Component<ConfirmationDialogProps> {
+class ConfirmationDialog extends React.Component<any, ConfirmationDialogProps> {
   /**
    * This function will get executed when the dialog is closed in any possible way except clicking the agree button
    */

@@ -12,7 +12,7 @@ import { Button } from "@material-ui/core";
 
 interface WorkshopEditorProps {
   closeWindow(newText: string): void;
-  content: any;
+  content: string;
 }
 
 interface WorkshopEditorState {
