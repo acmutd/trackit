@@ -9,15 +9,21 @@ import {
   ListGroupItem,
 } from "react-bootstrap";
 
+type tier = {
+  name: string;
+  price: string;
+  perks: string[];
+};
+
 interface PricingState {
-  tiers: any[];
+  tiers: tier[];
 }
 
 /**
  * Displayes a grid of pricing options for the product
  */
-export class Pricing extends React.Component<PricingState> {
-  state = {
+class Pricing extends React.Component<any, PricingState> {
+  state: PricingState = {
     tiers: [
       {
         name: "Free",
