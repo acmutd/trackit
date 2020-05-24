@@ -6,45 +6,49 @@ import WorkshopEdit from "../Workshop/WorkshopEdit";
 import CardTile from "../Workshop/CardTile";
 import Loading from "../Layout/Loading";
 import { Row, Col, Container, Alert } from "react-bootstrap";
+import { workshop, studentsAtWorkshop } from "../Firebase/interface";
 import * as FileSaver from "file-saver";
 
 interface AdminDashboardProps {
-  workshop_data: any[],
-  student_data: any[],
-  readStudentData(): void,
-  readWorkshopData(): void,
-  updateWorkshop(workshopID: string, workshopObject: any): void,
-  updateLevel(workshopID: string, level: number): void,
-  createWorkshop(workshopObject: any): void,
-  deleteWorkshop(workshopID: string): void,
-  updateStatus(workshopID: string, status: boolean): void,
-  clearWorkshop(workshopID: string): void,
-  progressListener: any,
-  workshopListener: any,
-  signOut(): void,
-  dataLoaded: boolean,
-  alert: boolean,
-  alertText: string,
-  resetAlertStatus(): void,
+  workshop_data: workshop[];
+  student_data: studentsAtWorkshop[];
+  readStudentData(): void;
+  readWorkshopData(): void;
+  updateWorkshop(workshopID: string, workshopObject: workshop): void;
+  updateLevel(workshopID: string, level: number): void;
+  createWorkshop(workshopObject: workshop): void;
+  deleteWorkshop(workshopID: string): void;
+  updateStatus(workshopID: string, status: boolean): void;
+  clearWorkshop(workshopID: string): void;
+  progressListener: firebase.Unsubscribe | any; //find a way to get rid of any,
+  workshopListener: firebase.Unsubscribe | any; //find a way to get rid of any,
+  signOut(): void;
+  dataLoaded: boolean;
+  alert: boolean;
+  alertText: string;
+  resetAlertStatus(): void;
 }
 
 interface AdminDashboardState {
-  workshops: any[],
-  dataLoaded: boolean,
-  cards: any[],
-  studentsAtWorkshop: any[],
-  viewWorkshop: boolean,
-  workshopView: number,
-  addWorkshopDialogState: boolean,
-  alert: boolean,
-  alertText: string,
+  workshops: workshop[];
+  dataLoaded: boolean;
+  cards: any[];
+  studentsAtWorkshop: studentsAtWorkshop[];
+  viewWorkshop: boolean;
+  workshopView: number;
+  addWorkshopDialogState: boolean;
+  alert: boolean;
+  alertText: string;
 }
 
 /**
  * UI component that manages how the admin dashboard looks like
  *
  */
-class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboardState> {
+class AdminDashboard extends React.Component<
+  AdminDashboardProps,
+  AdminDashboardState
+> {
   constructor(props: AdminDashboardProps) {
     super(props);
     let openDialog = () => {
@@ -248,11 +252,14 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
         progress,
       });
     }
-    data.Date = new Date(data.Date.seconds * 1000).toDateString();
+
+    let newObject = {...data, Date: data.Date.toDateString()};
+
+    //data.Date = new Date(data.Date.seconds * 1000).toDateString();
 
     // Merging both workshop data and student data into one json object
     let export_data = {
-      workshop_data: data,
+      workshop_data: newObject,
       student_data: student_data,
     };
     const export_data_2 = JSON.stringify(export_data, null, 4);
@@ -290,11 +297,13 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
           progress,
         });
       }
-      data.Date = new Date(data.Date.seconds * 1000).toDateString();
+
+      let newObject = {...data, Date: data.Date.toDateString()};
+      //data.Date = new Date(data.Date.seconds * 1000).toDateString();
 
       // Merging both workshop data and student data into one json object that is pushed to the main object
       big_data.push({
-        workshop_data: data,
+        workshop_data: newObject,
         student_data: student_data,
       });
     }
@@ -414,12 +423,12 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
           {this.state.alert ? (
             <div className="m-1 mt-3 m-lg-5">
               <Alert
-              variant="danger"
-              onClose={() => this.props.resetAlertStatus()}
-              dismissible
-            >
-              {this.state.alertText}
-            </Alert>
+                variant="danger"
+                onClose={() => this.props.resetAlertStatus()}
+                dismissible
+              >
+                {this.state.alertText}
+              </Alert>
             </div>
           ) : (
             ""
