@@ -9,15 +9,32 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // import { Avatar, deepOrange } from "@material-ui/core"; (later use)
 
+interface NavBarProps {
+  dashboard: boolean;
+  signOut(): void;
+}
+
+type navlink = {
+  name: string;
+  link: string;
+};
+interface NavBarState {
+  Navlink: navlink[];
+}
+
 /**
  * This is the <NavBar /> used at the top, uses the bootstrap components but extracted it to a separate component
  */
-class NavBar extends React.Component<any, any> {
+class NavBar extends React.Component<NavBarProps, NavBarState> {
   state = {
     Navlink: [
       {
         name: "Home",
         link: "/",
+      },
+      {
+        name: "User",
+        link: "/user",
       },
       {
         name: "Admin",
@@ -33,7 +50,9 @@ class NavBar extends React.Component<any, any> {
   render() {
     // maps the links to be displayed at the top, eventually one of them can be like "Hello " + this.props.studentUsername
     let navlinks = this.state.Navlink.map((item, index) => (
-      <Nav.Link href={item.link} key={index}>{item.name}</Nav.Link>
+      <Nav.Link href={item.link} key={index}>
+        {item.name}
+      </Nav.Link>
     ));
     return (
       <div>
