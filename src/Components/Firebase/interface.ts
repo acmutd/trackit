@@ -14,6 +14,10 @@ export interface workshopFirebase
   Workshop_Name?: string;
 }
 
+interface progress {
+  [key: string] : number;
+}
+
 export interface studentsAtWorkshopFirebase
   extends firebase.firestore.QueryDocumentSnapshot<
     firebase.firestore.DocumentData
@@ -22,8 +26,9 @@ export interface studentsAtWorkshopFirebase
   readonly Enabled?: boolean;
   readonly Level_Enabled?: number;
   readonly Workshop_ID?: string;
-  readonly testProgress?: any; //need help on this
+  readonly testProgress?: progress
 }
+
 
 //super strict definition of data required for the front-end, no optional parameters
 export interface studentsAtWorkshop {
