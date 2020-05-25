@@ -334,7 +334,7 @@ class AdminDashboard extends React.Component<
    * @param {*} wasSubmitPressed
    */
   receiveAddEditWorkshopInformationFromDialog = (
-    Workshop_Object: any,
+    Workshop_Object: workshop,
     wasSubmitPressed: boolean
   ) => {
     this.showHideAddEditDialog();
@@ -348,8 +348,8 @@ class AdminDashboard extends React.Component<
    * Will perform some modifications to the data before calling the parent functions from props to update/create in firestore
    * @param {*} Workshop_Object
    */
-  addEditWorkshop = (Workshop_Object: any) => {
-    let workshopIndex = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
+  addEditWorkshop = (Workshop_Object: workshop) => {
+    let workshopIndex: number = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
     //the slice commands below ensure that when the workshop is saved then only the correct number of levels are passed back
     //For example if the workshop used to have 5 levels but was edited to only have 4 then the slice commands will remove the extra one
     Workshop_Object.Level_Titles = Workshop_Object.Level_Titles.slice(
