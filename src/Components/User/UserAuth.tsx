@@ -24,7 +24,7 @@ interface AuthState {
  * Same UI as admin auth
  */
 class UserAuth extends React.Component<AuthProp, AuthState> {
-  state = {
+  state: AuthState = {
     email: "", // stores name of user
     password: "",
     loginError: false,

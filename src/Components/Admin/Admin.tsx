@@ -1,6 +1,27 @@
 import * as React from "react";
 import AdminAuth from "./AdminAuth";
 import AdminDashboard from "./AdminDashboard";
+import {
+  user,
+  workshop,
+  studentsAtWorkshopFirebase,
+  workshopFirebase,
+  studentsAtWorkshop,
+} from "../Firebase/interface";
+
+interface AdminProps {
+  database: firebase.app.App;
+}
+
+interface AdminState {
+  loggedIn: boolean;
+  loginError: boolean;
+  workshop_data: workshop[];
+  student_data: studentsAtWorkshop[];
+  dataLoaded: boolean;
+  alert: boolean;
+  alertText: string;
+}
 
 /**
  * This component is designed to strictly be backend only
@@ -8,19 +29,19 @@ import AdminDashboard from "./AdminDashboard";
  * This component will also handle authentication and security related contraints
  *
  */
-class Admin extends React.Component<any, any> {
-  state = {
+class Admin extends React.Component<AdminProps, AdminState> {
+  state: AdminState = {
     loggedIn: false, //once authentication happens this will toggle to true
     loginError: false,
-    workshop_data: null,
-    student_data: null,
+    workshop_data: [],
+    student_data: [],
     dataLoaded: false,
     alert: false,
-    alertText: "Unknown error occured"
+    alertText: "Unknown error occured",
   };
-  progressListener: any;
-  workshopListener: any;
-  loginListener: any;
+  progressListener: firebase.Unsubscribe | any; //find a way to get rid of any
+  workshopListener: firebase.Unsubscribe | any;
+  loginListener: firebase.Unsubscribe | any;
 
   /**
    * If the page crashes then the user gets automatically logged out
@@ -34,7 +55,7 @@ class Admin extends React.Component<any, any> {
   componentDidMount() {
     this.loginListener = this.props.database
       .auth()
-      .onAuthStateChanged((user) => {
+      .onAuthStateChanged((user: firebase.User | null) => {
         // user is signed in
         if (user) {
           // get user data from Students collection to check if they are an admin
@@ -43,9 +64,9 @@ class Admin extends React.Component<any, any> {
             .collection("Student")
             .doc(user.uid)
             .get()
-            .then((doc) => {
+            .then((doc: user) => {
               // if the user has admin acess then set loggedIn to true
-              if (doc.data().isAdmin === true) {
+              if (doc.data()?.isAdmin === true) {
                 this.setState({
                   loggedIn: true,
                 });
@@ -58,10 +79,10 @@ class Admin extends React.Component<any, any> {
                   .auth()
                   .signOut()
                   .then(() => {
-                    console.log("successfully logged out non admin ");
+                    console.log("successfully logged out non admin");
                   })
-                  .catch((err) => {
-                    console.log("error logging out non admin user");
+                  .catch((error) => {
+                    console.log(error + " error logging out non admin user");
                   });
               }
             })
@@ -78,12 +99,12 @@ class Admin extends React.Component<any, any> {
 
   /**
    * This function is passed as props to the <AdminAuth /> Component which returns the username and password entered
-   * Currrently just changes the loggedIn state to true without any checks
+   * Signs in the user through firebase authentication
    *
-   * @param {*} username is the username of the person logging in
-   * @param {*} password is the password of the person logging in
+   * @param {string} username is the username of the person logging in
+   * @param {string} password is the password of the person logging in
    */
-  authenticate = (username, password) => {
+  authenticate = (username: string, password: string) => {
     if (this.state.loginError) {
       this.setState({
         loginError: false,
@@ -92,11 +113,11 @@ class Admin extends React.Component<any, any> {
     this.props.database
       .auth()
       .signInWithEmailAndPassword(username, password)
-      .catch((err) => {
+      .catch((error) => {
         this.setState({
           loginError: true,
         });
-        console.log("Invalid Email or Password");
+        console.log(error + " Invalid Email or Password");
       });
   };
 
@@ -111,10 +132,18 @@ class Admin extends React.Component<any, any> {
       .firestore()
       .collection("Workshop")
       .onSnapshot((snapshot) => {
-        let arr = [];
+        let arr: workshop[] = [];
         //save each workshop into an array
-        snapshot.forEach((snap) => {
-          arr.push(snap.data());
+        snapshot.forEach((snap: workshopFirebase) => {
+          let workshopObject = {
+            Date: snap.data()?.Date,
+            Level_Descriptions: snap.data()?.Level_Descriptions,
+            Level_Titles: snap.data()?.Level_Titles,
+            Number_Of_Levels: snap.data()?.Number_Of_Levels,
+            Workshop_ID: snap.data()?.Workshop_ID,
+            Workshop_Name: snap.data()?.Workshop_Name,
+          };
+          arr.push(workshopObject);
         });
         //save array in state
         this.setState({
@@ -131,47 +160,48 @@ class Admin extends React.Component<any, any> {
     this.progressListener = this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
-      .onSnapshot((snapshot) => {
-        let arr = [];
-        snapshot.forEach((snap) => {
-          //split map into two parallel arrays for easy use in front-end
-          let students = [];
-          let progress = [];
-          for (var x in snap.data().testProgress) {
-            var user = decodeURIComponent(x).replace("%2E", ".");
-            students.push(user);
-            progress.push(snap.data().testProgress[x]);
-          }
-          interface studentsAtworkshop {
-            Students: string[],
-            Progress: number[],
-            Enabled: boolean,
-            Workshop_ID: string,
-            Level_Enabled: number,
-          }
-          let temp = {};
-          temp.Students = students;
-          temp.Progress = progress;
-          temp.Enabled = snap.data().Enabled;
-          temp.Workshop_ID = snap.data().Workshop_ID;
-          temp.Level_Enabled = snap.data().Level_Enabled;
-          arr.push(temp);
-        });
+      .onSnapshot(
+        (
+          snapshot: firebase.firestore.QuerySnapshot<
+            firebase.firestore.DocumentData
+          >
+        ) => {
+          let arr: studentsAtWorkshop[] = [];
+          snapshot.forEach((snap: studentsAtWorkshopFirebase) => {
+            //split map into two parallel arrays for easy use in front-end
+            let students = [];
+            let progress = [];
+            for (var x in snap.data().testProgress) {
+              var user = decodeURIComponent(x).replace("%2E", ".");
+              students.push(user);
+              progress.push(snap.data().testProgress[x]);
+            }
 
-        //save data in state
-        this.setState({
-          student_data: arr,
-          dataLoaded: true,
-        });
-      });
+            let studentsObject: studentsAtWorkshop = {
+              Students: students,
+              Progress: progress,
+              Enabled: snap.data().Enabled,
+              Workshop_ID: snap.data().Workshop_ID,
+              Level_Enabled: snap.data().Level_Enabled,
+            };
+            arr.push(studentsObject);
+          });
+
+          //save data in state
+          this.setState({
+            student_data: arr,
+            dataLoaded: true,
+          });
+        }
+      );
   };
 
   /**
    * If workshop level gets incremented or decremented this function gets called to update Level_Enabled on firestore
-   * @param {*} workshopID
-   * @param {*} level
+   * @param {string} workshopID
+   * @param {number} level
    */
-  updateWorkshopLevel = (workshopID, level) => {
+  updateWorkshopLevel = (workshopID: string, level: number) => {
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
@@ -193,10 +223,10 @@ class Admin extends React.Component<any, any> {
 
   /**
    * If workshop gets toggled between Enabled/Disabled this function gets called to update in firestore
-   * @param {*} workshopID
-   * @param {*} status
+   * @param {string} workshopID
+   * @param {number} status
    */
-  updateWorkshopStatus = (workshopID, status) => {
+  updateWorkshopStatus = (workshopID: string, status: boolean) => {
     console.log("updating status");
     this.props.database
       .firestore()
@@ -220,9 +250,9 @@ class Admin extends React.Component<any, any> {
   /**
    * map<student, progress> on firestore gets cleared when this function gets called
    * All students signed in for a given workshop have their progress erased and removed
-   * @param {*} workshopID
+   * @param {string} workshopID
    */
-  clearStudentsAtWorkshop = (workshopID) => {
+  clearStudentsAtWorkshop = (workshopID: string) => {
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
@@ -247,7 +277,7 @@ class Admin extends React.Component<any, any> {
    * @param {*} workshopID
    * @param {*} workshopObject
    */
-  updateWorkshop = (workshopID, workshopObject) => {
+  updateWorkshop = (workshopID: string, workshopObject: workshop) => {
     this.props.database
       .firestore()
       .collection("Workshop")
@@ -296,7 +326,7 @@ class Admin extends React.Component<any, any> {
    * Should fail if a workshop already exists with the same name
    * @param {*} workshopObject
    */
-  createNewWorkshop = (workshopObject) => {
+  createNewWorkshop = (workshopObject: workshop) => {
     //creates a blank object for the number of students in a workshop
     //this happens first to avoid issues due to the async nature of the JS listener
     let tempStudentWorkshop = {
@@ -316,7 +346,9 @@ class Admin extends React.Component<any, any> {
       .catch((error) => {
         this.setState({
           alert: true,
-          alertText: error + " Error occurred in adding empty students at workshop object",
+          alertText:
+            error +
+            " Error occurred in adding empty students at workshop object",
         });
         console.log(
           error + " error occured in adding empty sudents at workshop object"
@@ -343,9 +375,9 @@ class Admin extends React.Component<any, any> {
 
   /**
    * deletes a workshop from both the workshop and the studentsAtworkshop collection
-   * @param {*} workshopID
+   * @param {string} workshopID
    */
-  deleteWorkshop = (workshopID) => {
+  deleteWorkshop = (workshopID: string) => {
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
@@ -391,8 +423,8 @@ class Admin extends React.Component<any, any> {
         this.setState({
           loggedIn: false,
           loginError: false,
-          workshop_data: null,
-          student_data: null,
+          workshop_data: [],
+          student_data: [],
           dataLoaded: false,
         });
       })
@@ -405,11 +437,24 @@ class Admin extends React.Component<any, any> {
       });
   };
 
+  /**
+   * Reset the alert status once it has been closed
+   */
   resetAlertStatus = () => {
     this.setState({
       alert: false,
       alertText: "Unknown error occurred",
-    })
+    });
+  };
+
+  /**
+   * Check whether the arrays are not empty meaning they have been filled in with information from firebase
+   */
+  isDataLoaded = () => {
+    if(this.state.workshop_data.length > 0 && this.state.student_data.length > 0) {
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -435,7 +480,7 @@ class Admin extends React.Component<any, any> {
             progressListener={this.progressListener}
             workshopListener={this.workshopListener}
             signOut={this.signOutUser}
-            dataLoaded={this.state.workshop_data && this.state.student_data}
+            dataLoaded={this.isDataLoaded()} //executes function call, does not pass in function
             alert={this.state.alert}
             alertText={this.state.alertText}
             resetAlertStatus={this.resetAlertStatus}

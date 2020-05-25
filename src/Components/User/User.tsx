@@ -249,7 +249,7 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   render() {
-    var userID: any = this.props.database.auth().currentUser?.email
+    var userID: any = this.props.database.auth().currentUser?.email || ""
     if(userID !== null)
     {
       userID = userID.substring(
