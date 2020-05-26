@@ -11,7 +11,7 @@ import { Button, Card, ButtonGroup } from "react-bootstrap";
    title: string;
    subtitle: string;
    description: string;
-   links: Function[];
+   links?: Function[];
    linkText: string[];
    disabled: boolean;
  }
@@ -29,7 +29,7 @@ class CardTile extends React.Component<CardProps, {}> {
     // the onclick will be a function defined in props and passed in
     let cardLinks = linkTexts.map((item: string, index: number) => (
       <Button
-        onClick={links[index]}
+        onClick={() => links[index]}
         variant={"success"} //used to be {variants[index]}
         disabled={this.props.data.disabled}
         key={index}
