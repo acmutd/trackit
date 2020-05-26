@@ -22,8 +22,26 @@ import { Row, Col, Alert } from "react-bootstrap";
  * Intially the state is set to null and only gets updated when the textFields are changed
  * If a workshop is being edited then that workshop information is passed in as props
  */
-class WorkshopEdit extends React.Component<any, any> {
-  state = {
+
+interface WorkshopEditState {
+  Workshop: any;
+  editWindow: boolean;
+  currLevel: number;
+  hasBeenEdited: boolean;
+  alertText: string;
+}
+
+interface WorkshopEditProps {
+  workshop: any;
+  submit: Function;
+  isOpen: boolean;
+  titleText: string;
+  messageText: string;
+  newWorkshop: boolean;
+}
+
+class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState> {
+  state: WorkshopEditState = {
     Workshop: {
       Workshop_ID: null,
       Workshop_Name: null,
