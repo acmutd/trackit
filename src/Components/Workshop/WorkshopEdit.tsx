@@ -32,7 +32,7 @@ interface WorkshopEditState {
 }
 
 interface WorkshopEditProps {
-  workshop: any;
+  workshop?: any;
   submit: Function;
   isOpen: boolean;
   titleText: string;
@@ -157,7 +157,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * Event handler for workshop name, note: workshop name is a primary key and changing it is not allowed if a workshop has already been created
    * @param {*} event
    */
-  setWorkshopName = (event) => {
+  setWorkshopName = (event: React.ChangeEvent<HTMLInputElement>) => {
     let temp = event.target.value;
     this.setState((state) => ({
       Workshop: {
@@ -173,7 +173,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * Event handler for the level name, was tricky using the same event handler for all level names but it works like a charm
    * @param {*} event
    */
-  setWorkshopLevelName = (event) => {
+  setWorkshopLevelName = (event: React.ChangeEvent<HTMLInputElement>) => {
     let temp = event.target.id;
     let tempArray = this.state.Workshop.Level_Titles;
     for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
@@ -195,7 +195,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * Event handler for the level description
    * @param {*} event
    */
-  setWorkshopLevelDescription = (newText) => {
+  setWorkshopLevelDescription = (newText: string) => {
     let tempArray = this.state.Workshop.Level_Descriptions;
     tempArray[this.state.currLevel] = newText;
 
@@ -208,7 +208,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
     }));
   };
 
-  openWorkshopEdit = (level) => {
+  openWorkshopEdit = (level: number) => {
     this.setState({
       editWindow: true,
       currLevel: level,

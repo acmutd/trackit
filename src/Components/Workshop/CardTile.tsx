@@ -7,8 +7,17 @@ import { Button, Card, ButtonGroup } from "react-bootstrap";
  *
  */
 
+ interface Card {
+   title: string;
+   subtitle: string;
+   description: string;
+   links: Function[];
+   linkText: string[];
+   disabled: boolean;
+ }
+
 interface CardProps {
-  data: any
+  data: Card
 }
 
 class CardTile extends React.Component<CardProps, {}> {
