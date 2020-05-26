@@ -41,7 +41,7 @@ interface WorkshopEditProps {
 }
 
 class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState> {
-  state = {
+  state: WorkshopEditState = {
     Workshop: {
       Workshop_ID: null,
       Workshop_Name: null,

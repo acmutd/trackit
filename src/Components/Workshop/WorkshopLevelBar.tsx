@@ -29,7 +29,7 @@ interface WorkshopLevelBarState {
 }
 
 class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLevelBarState> {
-  state = {
+  state: WorkshopLevelBarState = {
     workshopLevel: this.props.Workshop_Level,
     enabled: this.props.enabled,
   };
