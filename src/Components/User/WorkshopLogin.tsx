@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 
 interface WorkshopLoginProps {
-  authenticate: Function,
+  authenticate(workshop: string): void,
   loginError: boolean
 }
 

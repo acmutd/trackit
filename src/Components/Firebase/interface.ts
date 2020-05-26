@@ -1,6 +1,6 @@
-import firebase from "firebase";
+import * as firebase from "firebase";
 
-export interface user
+export interface userFirebase
   extends firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData> {
   readonly isAdmin?: boolean;
 }

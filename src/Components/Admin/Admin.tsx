@@ -2,7 +2,7 @@ import * as React from "react";
 import AdminAuth from "./AdminAuth";
 import AdminDashboard from "./AdminDashboard";
 import {
-  user,
+  userFirebase,
   workshop,
   studentsAtWorkshopFirebase,
   workshopFirebase,
@@ -39,9 +39,9 @@ class Admin extends React.Component<AdminProps, AdminState> {
     alert: false,
     alertText: "Unknown error occured",
   };
-  progressListener: firebase.Unsubscribe; //find a way to get rid of any
-  workshopListener: firebase.Unsubscribe;
-  loginListener: firebase.Unsubscribe;
+  progressListener?: firebase.Unsubscribe;
+  workshopListener?: firebase.Unsubscribe;
+  loginListener?: firebase.Unsubscribe;
 
   /**
    * If the page crashes then the user gets automatically logged out
@@ -55,7 +55,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
   componentDidMount() {
     this.loginListener = this.props.database
       .auth()
-      .onAuthStateChanged((user: firebase.User) => {
+      .onAuthStateChanged((user: firebase.User | null) => {
         // user is signed in
         if (user) {
           // get user data from Students collection to check if they are an admin
@@ -64,7 +64,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
             .collection("Student")
             .doc(user.uid)
             .get()
-            .then((doc: user) => {
+            .then((doc: userFirebase) => {
               // if the user has admin acess then set loggedIn to true
               if (doc.data()?.isAdmin === true) {
                 this.setState({
@@ -476,10 +476,10 @@ class Admin extends React.Component<AdminProps, AdminState> {
             deleteWorkshop={this.deleteWorkshop}
             updateStatus={this.updateWorkshopStatus}
             clearWorkshop={this.clearStudentsAtWorkshop}
-            progressListener={this.progressListener}
-            workshopListener={this.workshopListener}
+            progressListener={this.progressListener as firebase.Unsubscribe} //ensures that it cannot be undefined by using type guards
+            workshopListener={this.workshopListener as firebase.Unsubscribe}
             signOut={this.signOutUser}
-            dataLoaded={this.isDataLoaded()} //executes function call, does not pass in function
+            dataLoaded={this.isDataLoaded()} //executes function call to get boolean, does not pass in a function
             alert={this.state.alert}
             alertText={this.state.alertText}
             resetAlertStatus={this.resetAlertStatus}

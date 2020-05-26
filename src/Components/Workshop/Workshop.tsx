@@ -28,7 +28,7 @@ interface WorkshopProps {
 }
 
  interface GraphData {
-   label: number,
+   label: string,
    y: number
  }
 
@@ -39,11 +39,11 @@ interface WorkshopProps {
  }
 
 class Workshop extends React.Component<WorkshopProps, WorkshopState> {
-  constructor(props) {
+  constructor(props: WorkshopProps) {
     super(props);
 
     //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph
-    var dps = [];
+    var dps: GraphData[] = [];
 
     var xValues = [];
     var yValues = [];
@@ -76,7 +76,7 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
    * Refreshes all the information displayed when the props change
    * @param {*} prevProps 
    */
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: WorkshopProps) {
     if (this.props.data !== prevProps.data) {
       var dps = [];
 

@@ -11,7 +11,7 @@ interface UserProps {
 interface UserState {
   loggedIn: boolean,
   workshopID: string,
-  workshop_data: workshop,
+  workshop_data: workshop | null, //null when unitialized, perhaps we may want to create a dummy workshop in the constructor (or as default props)
   Level_Enabled: number,
   dataLoaded: boolean,
   Enabled: boolean,
@@ -34,8 +34,8 @@ class User extends React.Component<UserProps, UserState> {
     alert: false,
     alertText: "Unknown error occurred",
   };
-  progressListener: firebase.Unsubscribe;
-  loginListener: firebase.Unsubscribe;
+  progressListener?: firebase.Unsubscribe;
+  loginListener?: firebase.Unsubscribe;
 
   /**
    * Sign out the user if the page crashes or components gets unmounted
@@ -49,7 +49,7 @@ class User extends React.Component<UserProps, UserState> {
   componentDidMount() {
     this.loginListener = this.props.database
       .auth()
-      .onAuthStateChanged((user: firebase.User) => {
+      .onAuthStateChanged((user: firebase.User | null) => {
         if (user) {
           console.log("logging in user");
           // user is signed in
@@ -67,8 +67,8 @@ class User extends React.Component<UserProps, UserState> {
   /**
    * Contacts firestore and authenticates the user
    * Sets user data if user login works
-   * @param {*} email
-   * @param {*} password
+   * @param {string} email
+   * @param {string} password
    */
   authenticate = (email: string, password: string) => {
     //resets the state of login error to be false
@@ -93,7 +93,7 @@ class User extends React.Component<UserProps, UserState> {
   /**
    * Once the user is signed in they will enter the workshop_ID
    * This will validate that said workshop exists, is enabled and if so will open up the user dashboard
-   * @param {*} workshop
+   * @param {string} workshop
    */
   authenticateWorkshop = (workshop: string) => {
     //reset the login error if any occurred during authentication
@@ -152,34 +152,26 @@ class User extends React.Component<UserProps, UserState> {
   getProgressData = () => 
   {    
     // //convert .,@ and other weird symbols in emails to be of a proper format
-    let email: string = encodeURIComponent(this.props.database.auth().currentUser.email).replace(/\./g, "%2E");
+    let email: string = encodeURIComponent(this.props.database.auth().currentUser?.email as string).replace(/\./g, "%2E");
     
-    // let email: string = this.props.database.auth().currentUser?.email
-    // if(email)
-    // {
-    //   email = encodeURIComponent(
-    //     email
-    //   ).replace(/\./g, "%2E");
-    // }
-
     //set listener on firestore
     this.progressListener = this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
-      .onSnapshot((snapshot: studentsAtWorkshopFirebase) => {
+      .onSnapshot((snapshot: studentsAtWorkshopFirebase | firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>) => { //query snapshot too strict of a definition, firebase does not verify if data is present
         console.log("new values from listener");
         if(snapshot !== undefined)
         {
-          console.log(snapshot.data().testProgress[email]);
+          console.log(snapshot.data()?.testProgress[email]);
         this.setState({
-          Level_Enabled: snapshot.data().Level_Enabled,
-          Enabled: snapshot.data().Enabled,
+          Level_Enabled: snapshot.data()?.Level_Enabled,
+          Enabled: snapshot.data()?.Enabled,
         });
-        if (snapshot.data().testProgress[email]) {
+        if (snapshot.data()?.testProgress[email]) {
           //if the user is logging back onto a workshop
           this.setState({
-            initialProgress: snapshot.data().testProgress[email],
+            initialProgress: snapshot.data()?.testProgress[email],
             dataLoaded: true,
           });
         } else {
@@ -195,17 +187,10 @@ class User extends React.Component<UserProps, UserState> {
 
   /**
    * Update the progress in firestore for a given student when they click markCompleted in the UI
-   * @param {*} progress
+   * @param {number} progress
    */
   updateUserProgress = (progress: number) => {
-    // var result: any = this.props.database.auth().currentUser?.email
-    // if(result !== null)
-    // {
-    //   result = encodeURIComponent(
-    //     result
-    //   ).replace(/\./g, "%2E");
-    // }
-    let result: string = encodeURIComponent(this.props.database.auth().currentUser.email).replace(/\./g, "%2E");
+    let result: string = encodeURIComponent(this.props.database.auth().currentUser?.email as string).replace(/\./g, "%2E");
 
     this.props.database
       .firestore()

@@ -12,7 +12,7 @@ import NavBar from "../Layout/NavBar";
 
 interface AuthProp {
   loginError: boolean,
-  authenticate: Function,
+  authenticate(email: string, password: string): void,
 };
 
 interface AuthState {

@@ -7,7 +7,7 @@ import CardTile from "../Workshop/CardTile";
 import Loading from "../Layout/Loading";
 import { Row, Col, Container, Alert } from "react-bootstrap";
 import { workshop, studentsAtWorkshop, CardData } from "../Firebase/interface";
-import FileSaver from "file-saver";
+import * as FileSaver from "file-saver";
 
 interface AdminDashboardProps {
   workshop_data: workshop[];
@@ -20,8 +20,8 @@ interface AdminDashboardProps {
   deleteWorkshop(workshopID: string): void;
   updateStatus(workshopID: string, status: boolean): void;
   clearWorkshop(workshopID: string): void;
-  progressListener: firebase.Unsubscribe; //find a way to get rid of any,
-  workshopListener: firebase.Unsubscribe; //find a way to get rid of any,
+  progressListener: firebase.Unsubscribe;
+  workshopListener: firebase.Unsubscribe;
   signOut(): void;
   dataLoaded: boolean;
   alert: boolean;

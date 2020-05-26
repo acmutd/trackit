@@ -9,17 +9,17 @@ import { workshop } from "../Firebase/interface"
 
 interface DashProps {
   workshop_data: workshop,
-  getProgressData: Function,
+  getProgressData(): void,
   updateUserProgress: Function,
-  progressListener: Function,
+  progressListener: firebase.Unsubscribe | undefined, //undefined in the event that 
   Level_Enabled: number,
-  signOut: Function,
+  signOut(): void,
   savedProgress: number,
   dataLoaded: boolean,
   user: string,
   alert: boolean,
   alertText: string,
-  resetAlertStatus: Function
+  resetAlertStatus(): void
 }
 
 interface DashState {
