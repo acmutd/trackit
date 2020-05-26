@@ -135,7 +135,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
         let arr: workshop[] = [];
         //save each workshop into an array
         snapshot.forEach((snap: workshopFirebase) => {
-          let workshopObject = {
+          let workshopObject: workshop = {
             Date: snap.data()?.Date,
             Level_Descriptions: snap.data()?.Level_Descriptions,
             Level_Titles: snap.data()?.Level_Titles,
@@ -227,7 +227,6 @@ class Admin extends React.Component<AdminProps, AdminState> {
    * @param {number} status
    */
   updateWorkshopStatus = (workshopID: string, status: boolean) => {
-    console.log("updating status");
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")

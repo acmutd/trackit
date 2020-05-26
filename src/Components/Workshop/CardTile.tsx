@@ -6,6 +6,7 @@ import { Button, Card, ButtonGroup } from "react-bootstrap";
  * The card also has the abillity to take in a variable number of arguments (the buttons and their text) so it can be multipurpose
  *
  */
+
 class CardTile extends React.Component<any, any> {
   render() {
     let links = this.props.data.links;

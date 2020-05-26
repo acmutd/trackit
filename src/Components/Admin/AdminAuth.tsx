@@ -25,7 +25,7 @@ interface AdminAuthState {
  * UI Component that contains two text fields to enter username and password as well as a submit button
  */
 class AdminAuth extends React.Component<AdminAuthProps, AdminAuthState> {
-  state = {
+  state: AdminAuthState = {
     username: "", //stores username
     password: "", //stores password
     loginError: false,
