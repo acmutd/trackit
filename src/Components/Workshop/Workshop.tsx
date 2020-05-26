@@ -4,6 +4,7 @@ import StudentBar from "./StudentBar";
 import WorkshopLevelBar from "./WorkshopLevelBar";
 import ConfirmationDialog from "../Layout/ConfirmationDialog";
 import WorkshopEdit from "./WorkshopEdit";
+import { workshop, studentsAtWorkshop } from "../Firebase/interface"
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -12,7 +13,32 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  * Contains summary information about the workshop as well as the graphs
  *
  */
-class Workshop extends React.Component<any, any> {
+
+interface WorkshopProps {
+  incrementLevel: Function,
+  decrementLevel: Function,
+  enableWorkshop: Function,
+  disableWorkshop: Function,
+  clearAllStudents: Function,
+  deleteWorkshop: Function,
+  addEditWorkshop: Function,
+  exportWorkshop: Function,
+  properties: workshop, // workshop object
+  data: studentsAtWorkshop // students at workshop object
+}
+
+ interface GraphData {
+   label: number,
+   y: number
+ }
+
+ interface WorkshopState {
+   dataArray: GraphData[],
+   confirmationDialog: boolean,
+   addEditWorkshopDialog: boolean
+ }
+
+class Workshop extends React.Component<WorkshopProps, WorkshopState> {
   constructor(props) {
     super(props);
 

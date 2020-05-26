@@ -2,23 +2,40 @@ import * as React from "react";
 import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
+import { studentsAtWorkshopFirebase, workshopFirebase, workshop } from "../Firebase/interface"
 
-class User extends React.Component<any, any> {
-  state = {
+interface UserProps {
+  database: firebase.app.App,
+}
+
+interface UserState {
+  loggedIn: boolean,
+  workshopID: string,
+  workshop_data: workshop,
+  Level_Enabled: number,
+  dataLoaded: boolean,
+  Enabled: boolean,
+  loginError: boolean,
+  initialProgress: number,
+  alert: boolean,
+  alertText: string
+}
+
+class User extends React.Component<UserProps, UserState> {
+  state: UserState = {
     loggedIn: false, //once authentication happens this will toggle to true
-    workshopID: null,
+    workshopID: "",
     workshop_data: null,
     Level_Enabled: 0,
     dataLoaded: false,
     Enabled: false,
     loginError: false,
     initialProgress: 0,
-
     alert: false,
     alertText: "Unknown error occurred",
   };
-  progressListener: any;
-  loginListener: any;
+  progressListener: firebase.Unsubscribe;
+  loginListener: firebase.Unsubscribe;
 
   /**
    * Sign out the user if the page crashes or components gets unmounted
@@ -32,7 +49,7 @@ class User extends React.Component<any, any> {
   componentDidMount() {
     this.loginListener = this.props.database
       .auth()
-      .onAuthStateChanged((user) => {
+      .onAuthStateChanged((user: firebase.User) => {
         if (user) {
           console.log("logging in user");
           // user is signed in
@@ -53,7 +70,7 @@ class User extends React.Component<any, any> {
    * @param {*} email
    * @param {*} password
    */
-  authenticate = (email, password) => {
+  authenticate = (email: string, password: string) => {
     //resets the state of login error to be false
     if (this.state.loginError) {
       this.setState({
@@ -65,7 +82,7 @@ class User extends React.Component<any, any> {
     this.props.database
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           loginError: true,
         });
@@ -78,7 +95,7 @@ class User extends React.Component<any, any> {
    * This will validate that said workshop exists, is enabled and if so will open up the user dashboard
    * @param {*} workshop
    */
-  authenticateWorkshop = (workshop) => {
+  authenticateWorkshop = (workshop: string) => {
     //reset the login error if any occurred during authentication
     //same variable gets reused to see if any errors happen in authenticating the workshop name
     if (this.state.loginError) {
@@ -93,19 +110,27 @@ class User extends React.Component<any, any> {
       .collection("Workshop")
       .doc(workshop)
       .get()
-      .then((doc) => {
+      .then((doc: workshopFirebase) => {
         if (!doc.exists) {
           this.setState({
             loginError: true,
           });
         } else {
+          let workshopObject: workshop = {
+            Date: doc.data()?.Date,
+            Level_Descriptions: doc.data()?.Level_Descriptions,
+            Level_Titles: doc.data()?.Level_Titles,
+            Number_Of_Levels: doc.data()?.Number_Of_Levels,
+            Workshop_ID: doc.data()?.Workshop_ID,
+            Workshop_Name: doc.data()?.Workshop_Name,
+          };
           this.setState({
-            workshop_data: doc.data(),
+            workshop_data: workshopObject,
             workshopID: workshop,
           });
         }
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in reading back workshop information",
@@ -124,20 +149,27 @@ class User extends React.Component<any, any> {
    * Read the progress of the current student from the StudentsAtWorkshop collection on firestore
    * Additionally read whether a workshop is enabled or not and the progress of the admin
    */
-  getProgressData = () => {
+  getProgressData = () => 
+  {
+    let email: any = this.props.database.auth().currentUser?.email
     //convert .,@ and other weird symbols in emails to be of a proper format
-    let email = encodeURIComponent(
-      this.props.database.auth().currentUser.email
-    ).replace(/\./g, "%2E");
+    if(email)
+    {
+      email = encodeURIComponent(
+        email
+      ).replace(/\./g, "%2E");
+    }
 
     //set listener on firestore
     this.progressListener = this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
-      .onSnapshot((snapshot) => {
+      .onSnapshot((snapshot: studentsAtWorkshopFirebase) => {
         console.log("new values from listener");
-        console.log(snapshot.data().testProgress[email]);
+        if(snapshot !== undefined)
+        {
+          console.log(snapshot.data().testProgress[email]);
         this.setState({
           Level_Enabled: snapshot.data().Level_Enabled,
           Enabled: snapshot.data().Enabled,
@@ -155,6 +187,7 @@ class User extends React.Component<any, any> {
             dataLoaded: true,
           });
         }
+        }
       });
   };
 
@@ -162,10 +195,14 @@ class User extends React.Component<any, any> {
    * Update the progress in firestore for a given student when they click markCompleted in the UI
    * @param {*} progress
    */
-  updateUserProgress = (progress) => {
-    var result = encodeURIComponent(
-      this.props.database.auth().currentUser.email
-    ).replace(/\./g, "%2E");
+  updateUserProgress = (progress: number) => {
+    var result: any = this.props.database.auth().currentUser?.email
+    if(result !== null)
+    {
+      result = encodeURIComponent(
+        result
+      ).replace(/\./g, "%2E");
+    }
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")
@@ -176,7 +213,7 @@ class User extends React.Component<any, any> {
       .then(() => {
         console.log("user progress updated");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in updating user progress",
@@ -197,14 +234,14 @@ class User extends React.Component<any, any> {
         //reset the state
         this.setState({
           loggedIn: false,
-          workshopID: null,
+          workshopID: "",
           workshop_data: null,
           Level_Enabled: 0,
           dataLoaded: false,
           Enabled: false,
         });
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in signing out the user",
@@ -221,6 +258,12 @@ class User extends React.Component<any, any> {
   }
 
   render() {
+    var userID: any = this.props.database.auth().currentUser?.email || ""
+    if(userID !== null)
+    {
+      userID = userID.substring(
+        0, userID.lastIndexOf("@"))
+    }
     return (
       <div>
         {this.state.loggedIn ? (
@@ -239,12 +282,7 @@ class User extends React.Component<any, any> {
               signOut={this.signOutUser}
               savedProgress={this.state.initialProgress}
               dataLoaded={this.state.dataLoaded}
-              user={this.props.database
-                .auth()
-                .currentUser.email.substring(
-                  0,
-                  this.props.database.auth().currentUser.email.lastIndexOf("@")
-                )}
+              user={userID}
               alert={this.state.alert}
               alertText={this.state.alertText}
               resetAlertStatus={this.resetAlertStatus}

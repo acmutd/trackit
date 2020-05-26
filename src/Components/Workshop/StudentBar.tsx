@@ -10,7 +10,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  * The is a Student bar that shows detailed information about a student. 
  * It shows their name, their progress in the workshop and an option to see if they have submitted an alert and to download their information
  */
-class StudentBar extends React.Component<any, any> {
+
+interface StudentBarProps {
+  TotalProgress: number; 
+  Student_Name: string;
+  key: number;
+  Progress: number;
+}
+
+class StudentBar extends React.Component<StudentBarProps, {}> {
   render() {
     //makes the data dynamic by calculating how much is complete, how much is being worked on and how much is left to be finished
     //probably extract this into a function and just load 3 values into render in the future

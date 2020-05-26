@@ -14,6 +14,8 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import DatePicker from "react-datepicker";
 import WorksdopEditor from "../Layout/WorkshopEditor";
 import { Row, Col, Alert } from "react-bootstrap";
+import { workshop, studentsAtWorkshop } from "../Firebase/interface"
+
 
 /**
  * Opens up a dialog modal for the workshop data to be edited or a new workshop informatin to be added
@@ -22,8 +24,26 @@ import { Row, Col, Alert } from "react-bootstrap";
  * Intially the state is set to null and only gets updated when the textFields are changed
  * If a workshop is being edited then that workshop information is passed in as props
  */
-class WorkshopEdit extends React.Component<any, any> {
-  state = {
+
+interface WorkshopEditState {
+  Workshop: workshop;
+  editWindow: boolean;
+  currLevel: number;
+  hasBeenEdited: boolean;
+  alertText: string;
+}
+
+interface WorkshopEditProps {
+  workshop?: workshop;
+  submit: Function;
+  isOpen: boolean;
+  titleText: string;
+  messageText: string;
+  newWorkshop: boolean;
+}
+
+class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState> {
+  state: WorkshopEditState = {
     Workshop: {
       Workshop_ID: null,
       Workshop_Name: null,
@@ -139,7 +159,7 @@ class WorkshopEdit extends React.Component<any, any> {
    * Event handler for workshop name, note: workshop name is a primary key and changing it is not allowed if a workshop has already been created
    * @param {*} event
    */
-  setWorkshopName = (event) => {
+  setWorkshopName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let temp = event.target.value;
     this.setState((state) => ({
       Workshop: {
@@ -155,7 +175,7 @@ class WorkshopEdit extends React.Component<any, any> {
    * Event handler for the level name, was tricky using the same event handler for all level names but it works like a charm
    * @param {*} event
    */
-  setWorkshopLevelName = (event) => {
+  setWorkshopLevelName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let temp = event.target.id;
     let tempArray = this.state.Workshop.Level_Titles;
     for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
@@ -177,7 +197,7 @@ class WorkshopEdit extends React.Component<any, any> {
    * Event handler for the level description
    * @param {*} event
    */
-  setWorkshopLevelDescription = (newText) => {
+  setWorkshopLevelDescription = (newText: string) => {
     let tempArray = this.state.Workshop.Level_Descriptions;
     tempArray[this.state.currLevel] = newText;
 
@@ -190,7 +210,7 @@ class WorkshopEdit extends React.Component<any, any> {
     }));
   };
 
-  openWorkshopEdit = (level) => {
+  openWorkshopEdit = (level: number) => {
     this.setState({
       editWindow: true,
       currLevel: level,

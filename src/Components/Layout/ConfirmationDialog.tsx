@@ -1,4 +1,7 @@
 import * as React from "react";
+import { workshop } from "../Firebase/interface"
+
+
 import {
   Button,
   Dialog,
@@ -8,10 +11,19 @@ import {
   DialogTitle,
 } from "@material-ui/core";
 
+interface ConfirmationDialogProps {
+  handleDialogResponse(isTrue: boolean): void;
+  isOpen: boolean;
+  titleText: string;
+  messageText: string;
+  workshop?: workshop[];
+  newWorkshop?: boolean;
+}
+
 /**
  * This component represents a modal which pops up when needing to confirm deletion, no other button uses this component yet
  */
-class ConfirmationDialog extends React.Component<any, any> {
+class ConfirmationDialog extends React.Component<ConfirmationDialogProps, {}> {
   /**
    * This function will get executed when the dialog is closed in any possible way except clicking the agree button
    */
