@@ -11,7 +11,7 @@ interface CardProps {
   data: any
 }
 
-class CardTile extends React.Component<CardProps, any> {
+class CardTile extends React.Component<CardProps, {}> {
   render() {
     let links = this.props.data.links;
     let linkTexts = this.props.data.linkText;
