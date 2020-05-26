@@ -418,7 +418,7 @@ class AdminDashboard extends React.Component<
 
     return (
       <div>
-        <NavBar dashboard={true} signOut={()=>this.props.signOut} />
+        <NavBar dashboard={true} signOut={this.props.signOut} />
         <Container fluid>
           {this.state.alert ? (
             <div className="m-1 mt-3 m-lg-5">

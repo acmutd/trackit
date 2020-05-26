@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface NavBarProps {
   dashboard?: boolean;
-  signOut(): Function;
+  signOut: Function;
 }
 
 type navlink = {
@@ -91,7 +91,7 @@ class NavBar extends React.Component<NavBarProps, NavBarState> {
                 />
               </Nav.Link>
               {this.props.dashboard === true ? (
-                <Button variant="dark" onClick={this.props.signOut}>
+                <Button variant="dark" onClick={()=>this.props.signOut()}>
                   Sign Out
                 </Button>
               ) : (

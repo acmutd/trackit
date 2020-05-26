@@ -140,7 +140,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
                 <Nav.Item>
                   <Nav.Link>
                     <Button
-                      onClick={()=>this.props.addEditWorkshop}
+                      onClick={()=>this.props.addEditWorkshop()}
                       variant="primary"
                       size="lg"
                     >
@@ -157,7 +157,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
                 <Nav.Item>
                   <Nav.Link>
                     <Button
-                      onClick={()=>this.props.exportWorkshop}
+                      onClick={()=>this.props.exportWorkshop()}
                       variant="secondary"
                       size="lg"
                     >
@@ -174,7 +174,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
                 <Nav.Item>
                   <Nav.Link>
                     <Button
-                      onClick={()=>this.props.clearAllStudents}
+                      onClick={()=>this.props.clearAllStudents()}
                       variant="dark"
                       size="lg"
                     >
@@ -191,7 +191,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
                 <Nav.Item>
                   <Nav.Link>
                     <Button
-                      onClick={()=>this.props.deleteWorkshop}
+                      onClick={()=>this.props.deleteWorkshop()}
                       variant="danger"
                       size="lg"
                     >

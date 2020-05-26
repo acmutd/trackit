@@ -21,7 +21,7 @@ class CardTile extends React.Component<CardProps, {}> {
     // the onclick will be a function defined in props and passed in
     let cardLinks = linkTexts.map((item: string, index: number) => (
       <Button
-        onClick={() => links[index]}
+        onClick={() => links[index]()}
         variant={"success"} //used to be {variants[index]}
         disabled={this.props.data.disabled}
         key={index}
