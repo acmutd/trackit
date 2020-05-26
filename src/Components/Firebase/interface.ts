@@ -41,13 +41,28 @@ export interface studentsAtWorkshop {
   Level_Enabled: number;
 }
 
+// Type for Date object which combines Javascript Date object with Date object from databse
+interface DateType extends Date {
+  seconds?: number
+}
+
 //super strict definition of data required for the front-end, no optional parameters
 //this coincidentally happens to be the exact same as workshopFirebase but none of the fields are optional
+
 export interface workshop {
-  Date: Date;
+  Date: DateType;
   Level_Descriptions: string[];
   Level_Titles: string[];
   Number_Of_Levels: number;
   Workshop_ID: string;
   Workshop_Name: string;
+}
+
+export interface CardData {
+  title: string;
+  subtitle: string;
+  description: string;
+  links: Function[];
+  linkText: string[];
+  disabled: boolean;
 }

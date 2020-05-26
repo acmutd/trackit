@@ -12,7 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  */
 
 interface StudentBarProps {
-  TotalProgress: any; // properties which is a workshop data object
+  TotalProgress: number; 
   Student_Name: string;
   key: number;
   Progress: number;

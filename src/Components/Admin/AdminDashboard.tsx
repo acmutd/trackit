@@ -6,7 +6,7 @@ import WorkshopEdit from "../Workshop/WorkshopEdit";
 import CardTile from "../Workshop/CardTile";
 import Loading from "../Layout/Loading";
 import { Row, Col, Container, Alert } from "react-bootstrap";
-import { workshop, studentsAtWorkshop } from "../Firebase/interface";
+import { workshop, studentsAtWorkshop, CardData } from "../Firebase/interface";
 import FileSaver from "file-saver";
 
 interface AdminDashboardProps {
@@ -20,8 +20,8 @@ interface AdminDashboardProps {
   deleteWorkshop(workshopID: string): void;
   updateStatus(workshopID: string, status: boolean): void;
   clearWorkshop(workshopID: string): void;
-  progressListener: firebase.Unsubscribe | any; //find a way to get rid of any,
-  workshopListener: firebase.Unsubscribe | any; //find a way to get rid of any,
+  progressListener: firebase.Unsubscribe; //find a way to get rid of any,
+  workshopListener: firebase.Unsubscribe; //find a way to get rid of any,
   signOut(): void;
   dataLoaded: boolean;
   alert: boolean;
@@ -32,7 +32,7 @@ interface AdminDashboardProps {
 interface AdminDashboardState {
   workshops: workshop[];
   dataLoaded: boolean;
-  cards: any[];
+  cards: CardData[];
   studentsAtWorkshop: studentsAtWorkshop[];
   viewWorkshop: boolean;
   workshopView: number;
@@ -418,7 +418,7 @@ class AdminDashboard extends React.Component<
 
     return (
       <div>
-        <NavBar dashboard={true} signOut={this.props.signOut} />
+        <NavBar dashboard={true} signOut={()=>this.props.signOut} />
         <Container fluid>
           {this.state.alert ? (
             <div className="m-1 mt-3 m-lg-5">

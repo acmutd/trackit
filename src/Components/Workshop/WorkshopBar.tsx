@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Nav, ProgressBar } from "react-bootstrap";
+import { workshop, studentsAtWorkshop } from "../Firebase/interface"
 
 /**
  * The is a workshop bar that shows a minimized view of the information in a workshop
@@ -14,8 +15,8 @@ interface WorkshopBarState {
 interface WorkshopBarProps {
   expandWindow: Function,
   expandState: boolean,
-  students: any, // studentsAtWorkshop object
-  data: any, // workshop data object
+  students: studentsAtWorkshop, // studentsAtWorkshop object
+  data: workshop, // workshop data object
 }
 
 class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {

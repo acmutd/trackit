@@ -14,6 +14,8 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import DatePicker from "react-datepicker";
 import WorksdopEditor from "../Layout/WorkshopEditor";
 import { Row, Col, Alert } from "react-bootstrap";
+import { workshop, studentsAtWorkshop } from "../Firebase/interface"
+
 
 /**
  * Opens up a dialog modal for the workshop data to be edited or a new workshop informatin to be added
@@ -24,7 +26,7 @@ import { Row, Col, Alert } from "react-bootstrap";
  */
 
 interface WorkshopEditState {
-  Workshop: any;
+  Workshop: workshop;
   editWindow: boolean;
   currLevel: number;
   hasBeenEdited: boolean;
@@ -32,7 +34,7 @@ interface WorkshopEditState {
 }
 
 interface WorkshopEditProps {
-  workshop?: any;
+  workshop?: workshop;
   submit: Function;
   isOpen: boolean;
   titleText: string;
@@ -157,7 +159,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * Event handler for workshop name, note: workshop name is a primary key and changing it is not allowed if a workshop has already been created
    * @param {*} event
    */
-  setWorkshopName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  setWorkshopName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let temp = event.target.value;
     this.setState((state) => ({
       Workshop: {
@@ -173,7 +175,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * Event handler for the level name, was tricky using the same event handler for all level names but it works like a charm
    * @param {*} event
    */
-  setWorkshopLevelName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  setWorkshopLevelName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let temp = event.target.id;
     let tempArray = this.state.Workshop.Level_Titles;
     for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {

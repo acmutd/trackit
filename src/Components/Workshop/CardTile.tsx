@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Button, Card, ButtonGroup } from "react-bootstrap";
+import { CardData } from "../Firebase/interface"
 
 /**
  * This component represents a singular tile in the interface. It has support to hold several buttons and have custom functionality for them.
@@ -7,17 +8,8 @@ import { Button, Card, ButtonGroup } from "react-bootstrap";
  *
  */
 
- interface Card {
-   title: string;
-   subtitle: string;
-   description: string;
-   links?: Function[];
-   linkText: string[];
-   disabled: boolean;
- }
-
 interface CardProps {
-  data: Card
+  data: CardData
 }
 
 class CardTile extends React.Component<CardProps, {}> {

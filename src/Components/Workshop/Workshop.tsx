@@ -4,6 +4,7 @@ import StudentBar from "./StudentBar";
 import WorkshopLevelBar from "./WorkshopLevelBar";
 import ConfirmationDialog from "../Layout/ConfirmationDialog";
 import WorkshopEdit from "./WorkshopEdit";
+import { workshop, studentsAtWorkshop } from "../Firebase/interface"
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -22,8 +23,8 @@ interface WorkshopProps {
   deleteWorkshop: Function,
   addEditWorkshop: Function,
   exportWorkshop: Function,
-  properties: any, // workshop object
-  data: any // students at workshop object
+  properties: workshop, // workshop object
+  data: studentsAtWorkshop // students at workshop object
 }
 
  interface GraphData {

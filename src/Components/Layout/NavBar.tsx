@@ -11,12 +11,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface NavBarProps {
   dashboard?: boolean;
-  signOut(): void;
+  signOut(): Function;
 }
 
 type navlink = {
   name: string;
-  link: string;
+  link: string; 
 };
 interface NavBarState {
   Navlink: navlink[];
