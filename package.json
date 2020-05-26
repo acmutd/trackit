@@ -36,7 +36,7 @@
   "scripts": {
     "start": "serve -s build",
     "dev": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm run parcel-build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "heroku-postbuild": "npm run parcel-build",
