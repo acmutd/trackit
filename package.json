@@ -39,11 +39,11 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "npm run build",
+    "heroku-postbuild": "npm run parcel-build",
     "webpack": "webpack-dev-server --config webpack.config.js",
-    "parcel": "parcel watch index.html",
+    "parcel": "parcel index.html",
     "parcel-build": "parcel build index.html",
-    "parcel-setup": "parcel index.html"
+    "parcel-setup": "parcel watch index.html"
   },
   "eslintConfig": {
     "extends": "react-app"
