@@ -39,9 +39,9 @@ class Admin extends React.Component<AdminProps, AdminState> {
     alert: false,
     alertText: "Unknown error occured",
   };
-  progressListener: firebase.Unsubscribe | any; //find a way to get rid of any
-  workshopListener: firebase.Unsubscribe | any;
-  loginListener: firebase.Unsubscribe | any;
+  progressListener: firebase.Unsubscribe; //find a way to get rid of any
+  workshopListener: firebase.Unsubscribe;
+  loginListener: firebase.Unsubscribe;
 
   /**
    * If the page crashes then the user gets automatically logged out
@@ -55,7 +55,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
   componentDidMount() {
     this.loginListener = this.props.database
       .auth()
-      .onAuthStateChanged((user: firebase.User | null) => {
+      .onAuthStateChanged((user: firebase.User) => {
         // user is signed in
         if (user) {
           // get user data from Students collection to check if they are an admin

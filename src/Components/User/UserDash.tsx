@@ -4,9 +4,11 @@ import UserWelcome from "./UserWelcome";
 import Loading from "../Layout/Loading";
 import UserProgressBar from "./UserProgressBar";
 import { Row, Col, Card, Button, Container, Alert } from "react-bootstrap";
+import { workshop } from "../Firebase/interface"
+
 
 interface DashProps {
-  workshop_data: any,
+  workshop_data: workshop,
   getProgressData: Function,
   updateUserProgress: Function,
   progressListener: Function,
@@ -22,7 +24,7 @@ interface DashProps {
 
 interface DashState {
   user: string,
-  workshop_data: any,
+  workshop_data: workshop,
   userProgress: number,
   currentPage: number,
   Level_Enabled: number,

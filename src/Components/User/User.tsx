@@ -2,7 +2,7 @@ import * as React from "react";
 import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
-import { studentsAtWorkshopFirebase } from "../Firebase/interface"
+import { studentsAtWorkshopFirebase, workshopFirebase, workshop } from "../Firebase/interface"
 
 interface UserProps {
   database: firebase.app.App,
@@ -11,7 +11,7 @@ interface UserProps {
 interface UserState {
   loggedIn: boolean,
   workshopID: string,
-  workshop_data: any,
+  workshop_data: workshop,
   Level_Enabled: number,
   dataLoaded: boolean,
   Enabled: boolean,
@@ -34,8 +34,8 @@ class User extends React.Component<UserProps, UserState> {
     alert: false,
     alertText: "Unknown error occurred",
   };
-  progressListener: any;
-  loginListener: any;
+  progressListener: firebase.Unsubscribe;
+  loginListener: firebase.Unsubscribe;
 
   /**
    * Sign out the user if the page crashes or components gets unmounted
@@ -49,7 +49,7 @@ class User extends React.Component<UserProps, UserState> {
   componentDidMount() {
     this.loginListener = this.props.database
       .auth()
-      .onAuthStateChanged((user: any) => {
+      .onAuthStateChanged((user: firebase.User) => {
         if (user) {
           console.log("logging in user");
           // user is signed in
@@ -110,14 +110,22 @@ class User extends React.Component<UserProps, UserState> {
       .collection("Workshop")
       .doc(workshop)
       .get()
-      .then((doc: firebase.firestore.DocumentSnapshot) => {
+      .then((doc: workshopFirebase) => {
         if (!doc.exists) {
           this.setState({
             loginError: true,
           });
         } else {
+          let workshopObject: workshop = {
+            Date: doc.data()?.Date,
+            Level_Descriptions: doc.data()?.Level_Descriptions,
+            Level_Titles: doc.data()?.Level_Titles,
+            Number_Of_Levels: doc.data()?.Number_Of_Levels,
+            Workshop_ID: doc.data()?.Workshop_ID,
+            Workshop_Name: doc.data()?.Workshop_Name,
+          };
           this.setState({
-            workshop_data: doc.data(),
+            workshop_data: workshopObject,
             workshopID: workshop,
           });
         }

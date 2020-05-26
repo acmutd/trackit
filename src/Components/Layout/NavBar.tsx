@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface NavBarProps {
   dashboard?: boolean;
-  signOut: Function;
+  signOut?: Function;
 }
 
 type navlink = {
