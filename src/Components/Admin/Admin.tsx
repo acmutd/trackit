@@ -81,12 +81,12 @@ class Admin extends React.Component<AdminProps, AdminState> {
                   .then(() => {
                     console.log("successfully logged out non admin");
                   })
-                  .catch((error) => {
+                  .catch((error: firebase.auth.AuthError) => {
                     console.log(error + " error logging out non admin user");
                   });
               }
             })
-            .catch((error) => {
+            .catch((error: firebase.firestore.FirestoreError) => {
               this.setState({
                 alert: true,
                 alertText: error + " Error occurred in login process",
@@ -113,7 +113,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
     this.props.database
       .auth()
       .signInWithEmailAndPassword(username, password)
-      .catch((error) => {
+      .catch((error: firebase.auth.AuthError) => {
         this.setState({
           loginError: true,
         });
@@ -212,7 +212,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       .then(() => {
         console.log("workshop level successfully updated");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in updating workshop level",
@@ -237,7 +237,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       .then(() => {
         console.log("workshop status successfully updated");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in updating workshop status",
@@ -262,7 +262,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       .then(() => {
         console.log("All student progress successfully cleared");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in erasing student progress",
@@ -292,7 +292,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       .then(() => {
         console.log("updating workshop successful");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in updating workshop",
@@ -311,7 +311,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       .then(() => {
         console.log("workshop level successfully reset to 1");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in reseting workshop level to 1",
@@ -342,7 +342,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       .then(() => {
         console.log("empty students at workshop entry created");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText:
@@ -363,7 +363,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       .then(() => {
         console.log("new workshop created");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in creating new workshop",
@@ -385,7 +385,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       .then(() => {
         console.log("successfully deleted students at workshop");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in deleting students at workshop",
@@ -401,7 +401,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       .then(() => {
         console.log("successfully deleted workshop");
       })
-      .catch((error) => {
+      .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in deleting workshop",
@@ -427,7 +427,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
           dataLoaded: false,
         });
       })
-      .catch((error) => {
+      .catch((error: firebase.auth.AuthError) => {
         this.setState({
           alert: true,
           alertText: error + " Error occurred in signing out the user",

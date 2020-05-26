@@ -85,7 +85,7 @@ class UserDash extends React.Component<DashProps, DashState> {
 
   // increments current level by 1. This is not their overall progress, but the stage which they are viewing.
   nextLevel = () => {
-    this.setState((state: React.ComponentState) => ({
+    this.setState((state) => ({
       currentPage: state.currentPage + 1,
     }));
   };

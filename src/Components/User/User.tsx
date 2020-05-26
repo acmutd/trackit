@@ -2,6 +2,7 @@ import * as React from "react";
 import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
+import { studentsAtWorkshopFirebase } from "../Firebase/interface"
 
 interface UserProps {
   database: firebase.app.App,
@@ -156,7 +157,7 @@ class User extends React.Component<UserProps, UserState> {
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(this.state.workshopID)
-      .onSnapshot((snapshot: firebase.firestore.DocumentData) => {
+      .onSnapshot((snapshot: studentsAtWorkshopFirebase) => {
         console.log("new values from listener");
         if(snapshot !== undefined)
         {
