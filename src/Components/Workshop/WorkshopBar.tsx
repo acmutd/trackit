@@ -5,7 +5,20 @@ import { Nav, ProgressBar } from "react-bootstrap";
  * The is a workshop bar that shows a minimized view of the information in a workshop
  * Quick look at the data available
  */
-class WorkshopBar extends React.Component<any, any> {
+
+interface WorkshopBarState {
+  expandView: boolean,
+  refresh: boolean
+}
+
+interface WorkshopBarProps {
+  expandWindow: Function,
+  expandState: boolean,
+  students: any, // studentsAtWorkshop object
+  data: any, // workshop data object
+}
+
+class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
   state = {
     expandView: this.props.expandState, //if this is true then the <Workshop /> Component is also rendered on the AdminDashboard, here it only changes the "Show View" to "Hide View"
     refresh: false,
@@ -17,7 +30,7 @@ class WorkshopBar extends React.Component<any, any> {
    */
   componentDidUpdate(prevProps) {
     if (this.props.students !== prevProps.students) {
-      this.setState(state => ({
+      this.setState(state  => ({
         refresh: !state.refresh,
       }));
     }

@@ -6,23 +6,19 @@ import { Button, Card, ButtonGroup } from "react-bootstrap";
  * The card also has the abillity to take in a variable number of arguments (the buttons and their text) so it can be multipurpose
  *
  */
-class CardTile extends React.Component<any, any> {
+
+interface CardProps {
+  data: any
+}
+
+class CardTile extends React.Component<CardProps, {}> {
   render() {
     let links = this.props.data.links;
     let linkTexts = this.props.data.linkText;
-    // let variants: string[] = [
-    //   "primary",
-    //   "success",
-    //   "warning",
-    //   "danger",
-    //   "dark",
-    //   "danger",
-    //   "light",
-    // ];
 
     // create a button with the text passed in from props
     // the onclick will be a function defined in props and passed in
-    let cardLinks = linkTexts.map((item, index: number) => (
+    let cardLinks = linkTexts.map((item: string, index: number) => (
       <Button
         onClick={links[index]}
         variant={"success"} //used to be {variants[index]}

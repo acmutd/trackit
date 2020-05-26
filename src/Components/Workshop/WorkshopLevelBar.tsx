@@ -8,8 +8,28 @@ import RemoveIcon from "@material-ui/icons/Remove";
  * Administrative toolbar to control workshop settings such as enabling a workshop, disabling a workshop, clearing all students to reset a workshop
  * Also contains a slider to enable workshop levels
  */
-class WorkshopLevelBar extends React.Component<any, any> {
-  state = {
+
+interface WorkshopLevelBarProps {
+  incrementLevel: Function;
+  decrementLevel: Function;
+  enableWorkshop: Function;
+  disableWorkshop: Function;
+  clearAllStudents: Function;
+  deleteWorkshop: Function;
+  addEditWorkshop: Function;
+  exportWorkshop: Function;
+  Workshop_Level: number
+  enabled: boolean;
+  maxLevel: number;
+}
+
+interface WorkshopLevelBarState {
+  workshopLevel: number,
+  enabled: boolean
+}
+
+class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLevelBarState> {
+  state: WorkshopLevelBarState = {
     workshopLevel: this.props.Workshop_Level,
     enabled: this.props.enabled,
   };
@@ -120,7 +140,7 @@ class WorkshopLevelBar extends React.Component<any, any> {
                 <Nav.Item>
                   <Nav.Link>
                     <Button
-                      onClick={this.props.addEditWorkshop}
+                      onClick={()=>this.props.addEditWorkshop}
                       variant="primary"
                       size="lg"
                     >
@@ -137,7 +157,7 @@ class WorkshopLevelBar extends React.Component<any, any> {
                 <Nav.Item>
                   <Nav.Link>
                     <Button
-                      onClick={this.props.exportWorkshop}
+                      onClick={()=>this.props.exportWorkshop}
                       variant="secondary"
                       size="lg"
                     >
@@ -154,7 +174,7 @@ class WorkshopLevelBar extends React.Component<any, any> {
                 <Nav.Item>
                   <Nav.Link>
                     <Button
-                      onClick={this.props.clearAllStudents}
+                      onClick={()=>this.props.clearAllStudents}
                       variant="dark"
                       size="lg"
                     >
@@ -171,7 +191,7 @@ class WorkshopLevelBar extends React.Component<any, any> {
                 <Nav.Item>
                   <Nav.Link>
                     <Button
-                      onClick={this.props.deleteWorkshop}
+                      onClick={()=>this.props.deleteWorkshop}
                       variant="danger"
                       size="lg"
                     >
