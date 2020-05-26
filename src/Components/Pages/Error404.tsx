@@ -1,17 +1,19 @@
 import * as React from "react";
 import Navbar from "../Layout/NavBar";
 import { Container } from "react-bootstrap";
-// eslint-disable-next-line spaced-comment
-// import error404 from "../../assets/404.png";
+const error404 = require("../../assets/404.png");
 
 /**
  * 404 error page, will get rendered on any path that is not defined
  */
-class Error404 extends React.Component<any, any> {
+export class Error404 extends React.Component {
   render() {
     return (
       <div>
-        <Navbar />
+        <Navbar 
+          dashboard = {false}
+          signOut = {null}
+        />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
             <h1>Whoops...</h1>

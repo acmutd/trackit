@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import Navbar from "../Layout/NavBar";
 import {
   Button,
@@ -9,44 +9,51 @@ import {
   ListGroupItem,
 } from "react-bootstrap";
 
+type tier = {
+  name: string;
+  price: string;
+  perks: string[];
+};
+
+interface PricingState {
+  tiers: tier[];
+}
+
 /**
  * Displayes a grid of pricing options for the product
  */
-class Pricing extends React.Component<any, any> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      tiers: [
-        {
-          name: "Free",
-          price: "$0/mo",
-          perks: [
-            "Up to 5 Workshop Levels",
-            "Limited to 20 students",
-            "No concurrent workshops",
-          ],
-        },
-        {
-          name: "Pro",
-          price: "$10/mo",
-          perks: [
-            "Up to 25 Workshop Levels",
-            "Limited to 100 students",
-            "5 concurrent workshops",
-          ],
-        },
-        {
-          name: "Enterprise",
-          price: "$50/mo",
-          perks: [
-            "Unlimited Workshop Levels",
-            "Unlimited students",
-            "Unlimited concurrent workshops",
-          ],
-        },
-      ],
-    };
-  }
+class Pricing extends React.Component<any, PricingState> {
+  state: PricingState = {
+    tiers: [
+      {
+        name: "Free",
+        price: "$0/mo",
+        perks: [
+          "Up to 5 Workshop Levels",
+          "Limited to 20 students",
+          "No concurrent workshops",
+        ],
+      },
+      {
+        name: "Pro",
+        price: "$10/mo",
+        perks: [
+          "Up to 25 Workshop Levels",
+          "Limited to 100 students",
+          "5 concurrent workshops",
+        ],
+      },
+      {
+        name: "Enterprise",
+        price: "$50/mo",
+        perks: [
+          "Unlimited Workshop Levels",
+          "Unlimited students",
+          "Unlimited concurrent workshops",
+        ],
+      },
+    ],
+  };
 
   render() {
     let tierCards = this.state.tiers.map((item, index) => (
@@ -67,7 +74,10 @@ class Pricing extends React.Component<any, any> {
 
     return (
       <div>
-        <Navbar />
+        <Navbar 
+          dashboard = {false}
+          signOut = {null}
+        />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
             <h1>Pricing</h1>

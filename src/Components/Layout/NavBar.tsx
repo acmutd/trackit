@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { Avatar, deepOrange } from "@material-ui/core"; (later use)
 
 interface NavBarProps {
-  dashboard: boolean;
+  dashboard?: boolean;
   signOut(): void;
 }
 
