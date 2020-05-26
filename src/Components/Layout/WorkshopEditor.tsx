@@ -10,10 +10,23 @@ import draftToHtml from "draftjs-to-html";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Button } from "@material-ui/core";
 
-class WorkshopEditor extends React.Component<any, any> {
-  constructor(props) {
+interface WorkshopEditorProps {
+  closeWindow(newText: string): void;
+  content: string;
+}
+
+interface WorkshopEditorState {
+  editorState: any;
+  savedState: any;
+}
+
+class WorkshopEditor extends React.Component<
+  WorkshopEditorProps,
+  WorkshopEditorState
+> {
+  constructor(props: any) {
     super(props);
-    var defaultState;
+    var defaultState: any;
     console.log(this.props.content);
     if (this.props.content) {
       const blocksFromHTML = convertFromHTML(this.props.content);
@@ -33,7 +46,7 @@ class WorkshopEditor extends React.Component<any, any> {
     this.closeWindow = this.closeWindow.bind(this);
   }
 
-  onEditorStateChange = (editorState) => {
+  onEditorStateChange = (editorState: any) => {
     console.log("in editor state change");
     this.setState({
       editorState: editorState,
