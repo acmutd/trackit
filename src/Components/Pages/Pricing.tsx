@@ -22,7 +22,7 @@ interface PricingState {
 /**
  * Displayes a grid of pricing options for the product
  */
-class Pricing extends React.Component<any, PricingState> {
+class Pricing extends React.Component<{}, PricingState> {
   state: PricingState = {
     tiers: [
       {

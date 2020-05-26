@@ -150,15 +150,17 @@ class User extends React.Component<UserProps, UserState> {
    * Additionally read whether a workshop is enabled or not and the progress of the admin
    */
   getProgressData = () => 
-  {
-    let email: any = this.props.database.auth().currentUser?.email
-    //convert .,@ and other weird symbols in emails to be of a proper format
-    if(email)
-    {
-      email = encodeURIComponent(
-        email
-      ).replace(/\./g, "%2E");
-    }
+  {    
+    // //convert .,@ and other weird symbols in emails to be of a proper format
+    let email: string = encodeURIComponent(this.props.database.auth().currentUser.email).replace(/\./g, "%2E");
+    
+    // let email: string = this.props.database.auth().currentUser?.email
+    // if(email)
+    // {
+    //   email = encodeURIComponent(
+    //     email
+    //   ).replace(/\./g, "%2E");
+    // }
 
     //set listener on firestore
     this.progressListener = this.props.database
@@ -196,13 +198,15 @@ class User extends React.Component<UserProps, UserState> {
    * @param {*} progress
    */
   updateUserProgress = (progress: number) => {
-    var result: any = this.props.database.auth().currentUser?.email
-    if(result !== null)
-    {
-      result = encodeURIComponent(
-        result
-      ).replace(/\./g, "%2E");
-    }
+    // var result: any = this.props.database.auth().currentUser?.email
+    // if(result !== null)
+    // {
+    //   result = encodeURIComponent(
+    //     result
+    //   ).replace(/\./g, "%2E");
+    // }
+    let result: string = encodeURIComponent(this.props.database.auth().currentUser.email).replace(/\./g, "%2E");
+
     this.props.database
       .firestore()
       .collection("StudentsAtWorkshop")

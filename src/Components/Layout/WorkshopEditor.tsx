@@ -16,8 +16,8 @@ interface WorkshopEditorProps {
 }
 
 interface WorkshopEditorState {
-  editorState: any;
-  savedState: any;
+  editorState: EditorState;
+  savedState: string;
 }
 
 class WorkshopEditor extends React.Component<
