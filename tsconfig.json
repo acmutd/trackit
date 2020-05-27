@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-      "outDir": "./dist/",        // path to output directory
+      "outDir": "./build/",        // path to output directory
       "sourceMap": true,          // allow sourcemap support
       "module": "commonjs",            // specify module code generation
       "jsx": "react",             // use typescript to transpile jsx to js

@@ -1,16 +1,21 @@
 import * as React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import App from './App';
 
-describe("Examining the syntax of Jest tests", () => {
-  it("sums numbers", () => {
-    expect(1 + 2).toEqual(3);
-    expect(2 + 2).toEqual(4);
+describe("Render testing", () => {
+  it("shallow render without crashing", () => {
+    const component = shallow(<App />);
+
+    expect(component).toMatchSnapshot();
+
+    component.unmount();
+  });
+
+  it("full render to DOM without crashing", () => {
+    const component = mount(<App />);
+
+    expect(component).toMatchSnapshot();
+
+    component.unmount();
   });
 });
-
-describe('First React component test with Enzyme', () => {
-    it('renders without crashing', () => {
-       shallow(<App />);
-     });
- });

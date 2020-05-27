@@ -41,14 +41,14 @@
   },
   "scripts": {
     "start": "serve -s build",
-    "dev": "npm run parcel-setup",
+    "dev": "npm run parcel",
     "build": "npm run parcel-build",
     "test": "jest --config=jest.config.js",
     "eject": "react-scripts eject",
     "heroku-postbuild": "npm run parcel-build",
     "webpack": "webpack-dev-server --config webpack.config.js",
-    "parcel": "parcel index.html",
-    "parcel-build": "parcel build index.html",
+    "parcel": "parcel index.html -p 3000",
+    "parcel-build": "parcel build --out-dir build index.html",
     "parcel-setup": "parcel watch index.html"
   },
   "eslintConfig": {

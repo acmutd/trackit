@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Render testing full render to DOM without crashing 1`] = `ReactWrapper {}`;
+
+exports[`Render testing shallow render without crashing 1`] = `ShallowWrapper {}`;
