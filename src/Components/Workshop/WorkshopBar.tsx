@@ -13,26 +13,26 @@ interface WorkshopBarState {
 }
 
 interface WorkshopBarProps {
-  expandWindow: Function,
+  expandWindow(Workshop_ID: string): void,
   expandState: boolean,
   students: studentsAtWorkshop, // studentsAtWorkshop object
   data: workshop, // workshop data object
 }
 
 class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
-  state = {
+  state: WorkshopBarState = {
     expandView: this.props.expandState, //if this is true then the <Workshop /> Component is also rendered on the AdminDashboard, here it only changes the "Show View" to "Hide View"
     refresh: false,
   };
 
   /**
    * Updates the workshop state if the props change
-   * @param {*} prevProps 
+   * @param {WorkshopBarProps} prevProps 
    */
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: WorkshopBarProps) {
     if (this.props.students !== prevProps.students) {
       this.setState(state  => ({
-        refresh: !state.refresh,
+        refresh: !state.refresh, //will cause it to refresh since state changes
       }));
     }
   }
@@ -50,12 +50,12 @@ class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
     let month = null;
     let year = null;
     let day = null;
-    let temp = new Date(this.props.data.Date.seconds * 1000);
+    let temp = new Date(this.props.data.Date?.seconds as number * 1000); //forces it to be number instead of being number | undefined
     if (temp != null) {
       date = temp.getDate();
 
       month = temp.getMonth();
-      let monthsOfYear = [
+      let monthsOfYear: string[] = [
         "January",
         "February",
         "March",
@@ -74,7 +74,7 @@ class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
       year = temp.getFullYear();
 
       day = temp.getDay();
-      let daysOfWeek = [
+      let daysOfWeek: string[] = [
         "Sunday",
         "Monday",
         "Tuesday",
@@ -87,8 +87,8 @@ class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
     }
 
     //compute number of students behind and at the same level of progress as admin
-    let studentsAtLevel = 0;
-    let studentsBehindLevel = 0;
+    let studentsAtLevel: number = 0;
+    let studentsBehindLevel: number = 0;
     for(var i = 0; i < this.props.students.Progress.length; i++) {
       if(this.props.students.Progress[i] < this.props.students.Level_Enabled) {
         studentsBehindLevel++;

@@ -6,9 +6,10 @@ import {
   convertFromHTML,
   ContentState,
 } from "draft-js";
-import draftToHtml from "draftjs-to-html";
+// import draftToHtml from "draftjs-to-html";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Button } from "@material-ui/core";
+import draftToHtml = require('draftjs-to-html'); //ran into error and solved using --> https://stackoverflow.com/questions/57960016/what-does-can-only-be-default-imported-using-the-esmoduleinterop-flag-mean
 
 interface WorkshopEditorProps {
   closeWindow(newText: string): void;
@@ -24,9 +25,9 @@ class WorkshopEditor extends React.Component<
   WorkshopEditorProps,
   WorkshopEditorState
 > {
-  constructor(props: any) {
+  constructor(props: WorkshopEditorProps) {
     super(props);
-    var defaultState: any;
+    var defaultState: EditorState;
     console.log(this.props.content);
     if (this.props.content) {
       const blocksFromHTML = convertFromHTML(this.props.content);
@@ -39,7 +40,7 @@ class WorkshopEditor extends React.Component<
 
     this.state = {
       editorState: defaultState,
-      savedState: null,
+      savedState: "",
     };
     this.onEditorStateChange = this.onEditorStateChange.bind(this);
     this.saveCurrentContent = this.saveCurrentContent.bind(this);
@@ -54,12 +55,6 @@ class WorkshopEditor extends React.Component<
   };
 
   saveCurrentContent() {
-    // var text = this.state.editorState.getCurrentContent().getBlocksAsArray();
-    // var finalText;
-    // text.map((item) => {
-    // finalText = item.getText() + finalText});
-    // console.log(finalText)
-
     var rawContentState = convertToRaw(
       this.state.editorState.getCurrentContent()
     );

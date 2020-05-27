@@ -42,7 +42,7 @@ export interface studentsAtWorkshop {
 }
 
 // Type for Date object which combines Javascript Date object with Date object from databse
-interface DateType extends Date {
+export interface DateType extends Date {
   seconds?: number
 }
 

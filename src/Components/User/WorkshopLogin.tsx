@@ -30,7 +30,7 @@ class WorkshopLogin extends React.Component<WorkshopLoginProps, WorkshopLoginSta
 
   /**
    * Update and display alert if there does not exist a workshop with the given name
-   * @param {*} prevProps
+   * @param {WorkshopLoginProps} prevProps
    */
   componentDidUpdate(prevProps: WorkshopLoginProps) {
     if (this.props.loginError !== prevProps.loginError) {
@@ -65,7 +65,7 @@ class WorkshopLogin extends React.Component<WorkshopLoginProps, WorkshopLoginSta
   render() {
     return (
       <div>
-        <NavBar />
+        <NavBar dashboard={false} signOut={() => {console.log("placeholder function")}}/>
         <Container fluid>
           <div className="m-1 mt-3 m-lg-5 mt-lg-5 p-5 floating-icon">
             {this.state.loginError ? (

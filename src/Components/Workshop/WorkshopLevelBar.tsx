@@ -10,14 +10,14 @@ import RemoveIcon from "@material-ui/icons/Remove";
  */
 
 interface WorkshopLevelBarProps {
-  incrementLevel: Function;
-  decrementLevel: Function;
-  enableWorkshop: Function;
-  disableWorkshop: Function;
-  clearAllStudents: Function;
-  deleteWorkshop: Function;
-  addEditWorkshop: Function;
-  exportWorkshop: Function;
+  incrementLevel(): void;
+  decrementLevel(): void;
+  enableWorkshop(): void;
+  disableWorkshop(): void;
+  clearAllStudents(): void;
+  deleteWorkshop(): void;
+  addEditWorkshop(): void;
+  exportWorkshop(): void;
   Workshop_Level: number
   enabled: boolean;
   maxLevel: number;
@@ -36,9 +36,9 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
 
   /**
    * Updates if there's a change to the props passed in
-   * @param {*} prevProps
+   * @param {WorkshopLevelBarProps} prevProps
    */
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: WorkshopLevelBarProps) {
     if (this.props !== prevProps) {
       this.setState({
         workshopLevel: this.props.Workshop_Level,
@@ -84,10 +84,6 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
   };
 
   render() {
-    function valuetext(value) {
-      return value;
-    }
-
     return (
       <div>
         <div className="m-2 mt-3 m-lg-3 mt-lg-5 p-4 floating-icon">
@@ -217,7 +213,6 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
               <div className="mt-3">
                 <Slider
                   value={this.state.workshopLevel}
-                  getAriaValueText={valuetext}
                   aria-labelledby="discrete-slider"
                   valueLabelDisplay="auto"
                   step={1}

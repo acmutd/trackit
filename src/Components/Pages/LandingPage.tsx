@@ -7,7 +7,9 @@ const LandingPage = () => {
     <div>
       <Navbar 
         dashboard = {false}
-        signOut = {null}
+        signOut={() => {
+          console.log("placeholder function");
+        }}
       />
       <Container fluid>
         <div className="m-5 p-5 floating-icon">

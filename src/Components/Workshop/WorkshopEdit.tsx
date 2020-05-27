@@ -14,7 +14,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import DatePicker from "react-datepicker";
 import WorksdopEditor from "../Layout/WorkshopEditor";
 import { Row, Col, Alert } from "react-bootstrap";
-import { workshop, studentsAtWorkshop } from "../Firebase/interface"
+import { workshop, DateType } from "../Firebase/interface"
 
 
 /**
@@ -45,12 +45,12 @@ interface WorkshopEditProps {
 class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState> {
   state: WorkshopEditState = {
     Workshop: {
-      Workshop_ID: null,
-      Workshop_Name: null,
-      Level_Titles: [null],
-      Level_Descriptions: [null],
+      Workshop_ID: "",
+      Workshop_Name: "",
+      Level_Titles: [],
+      Level_Descriptions: [],
       Number_Of_Levels: 1,
-      Date: null,
+      Date: new Date(),
     },
     editWindow: false,
     currLevel: -1,
@@ -66,7 +66,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
   initializeState = () => {
     //if it is null then a new workshop is being created else an existing  one is being updated
     if (this.props.workshop != null) {
-      let temp = new Date(this.props.workshop.Date.seconds * 1000);
+      let temp = new Date(this.props.workshop.Date.seconds as number * 1000);
       let tempX = {
         ...this.props.workshop, //creates deep copy
         Date: temp,
@@ -84,12 +84,12 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
   cancel = () => {
     this.setState({
       Workshop: {
-        Workshop_ID: null,
-        Workshop_Name: null,
-        Level_Titles: [null],
-        Level_Descriptions: [null],
+        Workshop_ID: "",
+        Workshop_Name: "",
+        Level_Titles: [],
+        Level_Descriptions: [],
         Number_Of_Levels: 1,
-        Date: null,
+        Date: new Date(),
       },
       hasBeenEdited: false,
     });
@@ -116,12 +116,12 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
       //sets to null to prepare for the next time the component may get used
       this.setState({
         Workshop: {
-          Workshop_ID: null,
-          Workshop_Name: null,
-          Level_Titles: [null],
-          Level_Descriptions: [null],
+          Workshop_ID: "",
+          Workshop_Name: "",
+          Level_Titles: [],
+          Level_Descriptions: [],
           Number_Of_Levels: 1,
-          Date: null,
+          Date: new Date(),
         },
         hasBeenEdited: false,
       });
@@ -157,7 +157,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
 
   /**
    * Event handler for workshop name, note: workshop name is a primary key and changing it is not allowed if a workshop has already been created
-   * @param {*} event
+   * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} event
    */
   setWorkshopName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let temp = event.target.value;
@@ -173,7 +173,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
 
   /**
    * Event handler for the level name, was tricky using the same event handler for all level names but it works like a charm
-   * @param {*} event
+   * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} event
    */
   setWorkshopLevelName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     let temp = event.target.id;
@@ -195,7 +195,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
 
   /**
    * Event handler for the level description
-   * @param {*} event
+   * @param {string} event
    */
   setWorkshopLevelDescription = (newText: string) => {
     let tempArray = this.state.Workshop.Level_Descriptions;
@@ -210,6 +210,10 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
     }));
   };
 
+  /**
+   * Opens the editing panel for a specific workshop
+   * @param {number} level
+   */
   openWorkshopEdit = (level: number) => {
     this.setState({
       editWindow: true,
@@ -221,7 +225,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
   /**
    * Event listener
    */
-  setWorkshopDate = (date) => {
+  setWorkshopDate = (date: DateType) => {
     let d = new Date(date);
     this.setState((state) => ({
       Workshop: {
@@ -232,7 +236,10 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
     }));
   };
 
-  closeWorkshopEdit = (newText) => {
+  /**
+   * @param {string} newText
+   */
+  closeWorkshopEdit = (newText: string) => {
     if (newText) this.setWorkshopLevelDescription(newText);
     this.setState({
       editWindow: false,
@@ -363,7 +370,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
               <p>Workshop Date: </p>
               <DatePicker
                 selected={this.state.Workshop.Date}
-                onChange={(date) => this.setWorkshopDate(date)}
+                onChange={(date) => this.setWorkshopDate(date as Date)} //it could have been Date | null
                 name="startDate"
                 dateFormat="MM/dd/yyyy"
                 placeholderText="Select Date"

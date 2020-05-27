@@ -3,10 +3,10 @@ import NavBar from "../Layout/NavBar";
 import { Container, Card, Button, Image } from "react-bootstrap";
 
 interface WelcomeProps {
-  signOut: Function,
+  signOut(): void,
   Workshop_Name: string,
   user: string,
-  markCompleted: Function
+  markCompleted(): void
 }
 
 const UserWelcome = (props: WelcomeProps) => {

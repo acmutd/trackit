@@ -42,7 +42,7 @@ class AdminAuth extends React.Component<AdminAuthProps, AdminAuthState> {
 
   /**
    * Saves username to the component state
-   * @param {*} event contains target value from the username text field
+   * @param {React.ChangeEvent<HTMLInputElement>} event contains target value from the username text field
    */
   fillUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
@@ -52,7 +52,7 @@ class AdminAuth extends React.Component<AdminAuthProps, AdminAuthState> {
 
   /**
    * Saves password to the component state
-   * @param {*} event contains target value from the password text field
+   * @param {React.ChangeEvent<HTMLInputElement>} event contains target value from the password text field
    */
   fillPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({
@@ -70,7 +70,7 @@ class AdminAuth extends React.Component<AdminAuthProps, AdminAuthState> {
   render() {
     return (
       <div>
-        <NavBar />
+        <NavBar dashboard={false} signOut={() => {console.log("placeholder function")}}/>
         <Container fluid>
           <div className="m-1 mt-3 m-lg-5 mt-lg-5 p-5 floating-icon">
             {this.state.loginError ? (

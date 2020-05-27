@@ -15,14 +15,14 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  */
 
 interface WorkshopProps {
-  incrementLevel: Function,
-  decrementLevel: Function,
-  enableWorkshop: Function,
-  disableWorkshop: Function,
-  clearAllStudents: Function,
-  deleteWorkshop: Function,
-  addEditWorkshop: Function,
-  exportWorkshop: Function,
+  incrementLevel(Workshop_ID: string): void,
+  decrementLevel(Workshop_ID: string): void,
+  enableWorkshop(Workshop_ID: string): void,
+  disableWorkshop(Workshop_ID: string): void,
+  clearAllStudents(Workshop_ID: string): void,
+  deleteWorkshop(Workshop_ID: string): void,
+  addEditWorkshop(Workshop_Object: workshop): void,
+  exportWorkshop(Workshop_ID: string): void,
   properties: workshop, // workshop object
   data: studentsAtWorkshop // students at workshop object
 }
@@ -43,10 +43,10 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
     super(props);
 
     //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph
-    var dps: GraphData[] = [];
+    let dps: GraphData[] = [];
 
-    var xValues = [];
-    var yValues = [];
+    let xValues: string[] = [];
+    let yValues: number[] = [];
 
     for (var i = 0; i < this.props.properties.Number_Of_Levels; i++) {
       let a = i + 1; //make the index start from 0 instead of 1
@@ -74,7 +74,7 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
 
   /**
    * Refreshes all the information displayed when the props change
-   * @param {*} prevProps 
+   * @param {WorkshopProps} prevProps 
    */
   componentDidUpdate(prevProps: WorkshopProps) {
     if (this.props.data !== prevProps.data) {
@@ -173,8 +173,8 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
    * Only called if submit was pressed
    */
   receiveAddEditWorkshopInformationFromDialog = (
-    Workshop_Object,
-    wasSubmitPressed
+    Workshop_Object: workshop,
+    wasSubmitPressed: boolean
   ) => {
     this.showHideAddEditDialog();
     if (wasSubmitPressed) {
@@ -210,7 +210,7 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
   /**
    * Get response from the confirmation dialog on whether to delete the workshop
    */
-  getDialogResponse = (bool) => {
+  getDialogResponse = (bool: boolean) => {
     this.showHideDeleteConfirmation();
     if (bool) {
       this.props.deleteWorkshop(this.props.data.Workshop_ID);
@@ -219,15 +219,15 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
 
   render() {
     //mapping student array into <StudentBar />
-    let student_progress = this.props.data.Students.map((item, i) => (
+    let student_progress = this.props.data.Students.map((item: string, index: number) => (
       <StudentBar
         TotalProgress={this.props.properties.Number_Of_Levels}
-        Progress={this.props.data.Progress[i]}
+        Progress={this.props.data.Progress[index]}
         Student_Name={item.substring(
           0,
           item.lastIndexOf("@")
         )}
-        key={i}
+        key={index}
       />
     ));
 
@@ -254,8 +254,8 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
     };
 
     //confirmation dialog setup
-    let titleText = "Confirmation";
-    let messageText =
+    let titleText: string = "Confirmation";
+    let messageText: string =
       "Are you sure about performing this action? This action cannot be reversed.";
 
     return (

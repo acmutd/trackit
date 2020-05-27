@@ -10,9 +10,11 @@ export class Error404 extends React.Component {
   render() {
     return (
       <div>
-        <Navbar 
-          dashboard = {false}
-          signOut = {null}
+        <Navbar
+          dashboard={false}
+          signOut={() => {
+            console.log("placeholder function");
+          }}
         />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
@@ -21,7 +23,7 @@ export class Error404 extends React.Component {
               Beep boop, looks like we ran into an error. The{" "}
               <strong>infamous Error 404.</strong>
             </p>
-            {/* <img src={error404} alt="404 Error"></img> */}
+            <img src={error404} alt="404 Error"></img>
           </div>
         </Container>
       </div>

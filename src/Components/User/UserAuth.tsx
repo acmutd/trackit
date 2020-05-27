@@ -70,7 +70,7 @@ class UserAuth extends React.Component<AuthProp, AuthState> {
   render() {
     return (
       <div>
-        <NavBar />
+        <NavBar dashboard={false} signOut={() => {console.log("placeholder function")}}/>
         <Container fluid>
           <div className="m-1 mt-3 m-lg-5 mt-lg-5 p-5 floating-icon">
             {this.state.loginError ? (
