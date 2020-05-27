@@ -38,7 +38,7 @@
     "start": "serve -s build",
     "dev": "npm run parcel-setup",
     "build": "npm run parcel-build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject",
     "heroku-postbuild": "npm run parcel-build",
     "webpack": "webpack-dev-server --config webpack.config.js",
