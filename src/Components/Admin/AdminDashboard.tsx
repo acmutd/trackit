@@ -253,9 +253,8 @@ class AdminDashboard extends React.Component<
       });
     }
 
-    let newObject = {...data, Date: data.Date.toDateString()};
-
-    //data.Date = new Date(data.Date.seconds * 1000).toDateString();
+    //sets the date object as a string
+    let newObject = {...data, Date: new Date(data.Date.seconds as number * 1000).toDateString()};
 
     // Merging both workshop data and student data into one json object
     let export_data = {
@@ -298,8 +297,8 @@ class AdminDashboard extends React.Component<
         });
       }
 
-      let newObject = {...data, Date: data.Date.toDateString()};
-      //data.Date = new Date(data.Date.seconds * 1000).toDateString();
+      //sets the date object as a string
+      let newObject = {...data, Date: new Date(data.Date.seconds as number * 1000).toDateString()};
 
       // Merging both workshop data and student data into one json object that is pushed to the main object
       big_data.push({
