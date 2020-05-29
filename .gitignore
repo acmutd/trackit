@@ -24,5 +24,10 @@ yarn-error.log*
 node_modules
 
 # webstorm
-.idea
+/.idea
 yarn.lock
+
+#typescript
+/out
+/dist
+/.cache
