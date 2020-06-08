@@ -3,7 +3,7 @@ import { shallow, mount } from "enzyme";
 import { Button } from 'react-bootstrap';
 import Admin from "./Admin";
 import AdminAuth from "./AdminAuth";
-import firebase from "../Firebase/firebase";
+import firebase from "../Config/firebase";
 
 describe("Render testing", () => {
   it("shallow render without crashing", () => {

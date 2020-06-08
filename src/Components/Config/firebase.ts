@@ -1,4 +1,5 @@
 import * as firebase from "firebase";
+import 'firebase/analytics';
 import { FirebaseConfig } from "./interface";
 
 const dev_firebaseConfig: FirebaseConfig = {
@@ -33,5 +34,6 @@ else {
 }
 
 let app = firebase.initializeApp(firebaseConfig);
+firebase.analytics();
 
 export default app;
