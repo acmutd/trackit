@@ -1,7 +1,7 @@
 import * as firebase from "firebase";
-//import { FirebaseConfig } from "./interface";
+import { FirebaseConfig } from "./interface";
 
-const dev_firebaseConfig = {
+const dev_firebaseConfig: FirebaseConfig = {
   apiKey: process.env.DEV_API_KEY,
   authDomain: process.env.DEV_AUTH_DOMAIN,
   databaseURL: process.env.DEV_DATABASAE_URL,
@@ -12,7 +12,7 @@ const dev_firebaseConfig = {
   measurementId: process.env.DEV_MEASUREMENT_ID,
 };
 
-const prod_firebaseConfig = {
+const prod_firebaseConfig: FirebaseConfig = {
   apiKey: process.env.PROD_API_KEY,
   authDomain: process.env.PROD_AUTH_DOMAIN,
   databaseURL: process.env.PROD_DATABASAE_URL,
@@ -23,9 +23,7 @@ const prod_firebaseConfig = {
   measurementId: process.env.PROD_MEASUREMENT_ID,
 };
 
-
-
-let firebaseConfig;
+let firebaseConfig: FirebaseConfig;
 
 if(process.env.NODE_ENV !==  "production") {
   firebaseConfig = dev_firebaseConfig;
