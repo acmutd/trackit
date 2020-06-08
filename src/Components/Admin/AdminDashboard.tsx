@@ -6,7 +6,7 @@ import WorkshopEdit from "../Workshop/WorkshopEdit";
 import CardTile from "../Workshop/CardTile";
 import Loading from "../Layout/Loading";
 import { Row, Col, Container, Alert } from "react-bootstrap";
-import { workshop, studentsAtWorkshop, CardData } from "../Firebase/interface";
+import { workshop, studentsAtWorkshop, CardData } from "../Config/interface";
 import * as FileSaver from "file-saver";
 
 interface AdminDashboardProps {

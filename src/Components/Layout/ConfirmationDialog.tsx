@@ -1,5 +1,5 @@
 import * as React from "react";
-import { workshop } from "../Firebase/interface"
+import { workshop } from "../Config/interface"
 
 
 import {

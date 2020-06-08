@@ -4,7 +4,7 @@ import StudentBar from "./StudentBar";
 import WorkshopLevelBar from "./WorkshopLevelBar";
 import ConfirmationDialog from "../Layout/ConfirmationDialog";
 import WorkshopEdit from "./WorkshopEdit";
-import { workshop, studentsAtWorkshop } from "../Firebase/interface"
+import { workshop, studentsAtWorkshop } from "../Config/interface"
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 

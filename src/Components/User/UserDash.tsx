@@ -4,7 +4,7 @@ import UserWelcome from "./UserWelcome";
 import Loading from "../Layout/Loading";
 import UserProgressBar from "./UserProgressBar";
 import { Row, Col, Card, Button, Container, Alert } from "react-bootstrap";
-import { workshop } from "../Firebase/interface"
+import { workshop } from "../Config/interface"
 
 
 interface DashProps {
