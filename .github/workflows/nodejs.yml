@@ -19,14 +19,23 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 12.x ]
+        node-version: [12.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci #clean install
-    - run: npm run build --if-present #same as npm run build
-    - run: npm test #run jest & enzyme testing for application
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        env:
+          REACT_APP_DEV_API_KEY: ${{ secrets.REACT_APP_DEV_API_KEY }}
+          REACT_APP_DEV_AUTH_DOMAIN: ${{ secrets.REACT_APP_DEV_AUTH_DOMAIN }}
+          REACT_APP_DEV_DATABASE_URL: ${{ secrets.REACT_APP_DEV_DATABASE_URL }}
+          REACT_APP_DEV_PROJECT_ID: ${{ secrets.REACT_APP_DEV_PROJECT_ID }}
+          REACT_APP_DEV_STORAGE_BUCKET: ${{ secrets.REACT_APP_DEV_STORAGE_BUCKET }}
+          REACT_APP_DEV_MESSENGER_SENDER_ID: ${{ secrets.REACT_APP_DEV_MESSENGER_SENDER_ID }}
+          REACT_APP_DEV_APP_ID: ${{ secrets.REACT_APP_DEV_APP_ID }}
+          REACT_APP_DEV_MEASUREMENT_ID: ${{ secrets.REACT_APP_DEV_MEASUREMENT_ID }}
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci #clean install
+      - run: npm run build --if-present #same as npm run build
+      - run: npm test #run jest & enzyme testing for application
