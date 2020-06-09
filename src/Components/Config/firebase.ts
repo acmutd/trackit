@@ -1,5 +1,4 @@
 import * as firebase from "firebase";
-import "firebase/analytics";
 import { FirebaseConfig } from "./interface";
 
 const dev_firebaseConfig: FirebaseConfig = {
@@ -32,8 +31,7 @@ if(process.env.NODE_ENV !==  "production") {
 else {
   firebaseConfig = prod_firebaseConfig;
 }
-
+console.log(firebaseConfig); //remove this line later
 let app = firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 
 export default app;
