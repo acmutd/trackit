@@ -20,6 +20,7 @@
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/file-saver": "^2.0.1",
     "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.12",
     "@types/react-datepicker": "^2.11.0",
     "@types/react-draft-wysiwyg": "^1.13.0",
     "bootstrap": "^4.5.0",
