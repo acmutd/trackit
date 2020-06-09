@@ -45,6 +45,6 @@ jobs:
           REACT_APP_DEV_APP_ID: ${{ secrets.REACT_APP_DEV_APP_ID }}
           REACT_APP_DEV_MEASUREMENT_ID: ${{ secrets.REACT_APP_DEV_MEASUREMENT_ID }}
       - run: npm ci #clean install
+      - run: echo $REACT_APP_DEV_API_KEY
       - run: npm run build --if-present #same as npm run build
       - run: npm test #run jest & enzyme testing for application
-      - run: echo $REACT_APP_DEV_API_KEY
