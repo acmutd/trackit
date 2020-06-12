@@ -2,7 +2,7 @@ import * as React from "react";
 import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
-import { studentsAtWorkshopFirebase, workshopFirebase, workshop } from "../Firebase/interface"
+import { studentsAtWorkshopFirebase, workshopFirebase, workshop } from "../Config/interface"
 
 interface UserProps {
   database: firebase.app.App,

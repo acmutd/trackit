@@ -7,7 +7,7 @@ import {
   studentsAtWorkshopFirebase,
   workshopFirebase,
   studentsAtWorkshop,
-} from "../Firebase/interface";
+} from "../Config/interface";
 
 interface AdminProps {
   database: firebase.app.App;

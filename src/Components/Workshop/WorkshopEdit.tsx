@@ -14,7 +14,7 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import DatePicker from "react-datepicker";
 import WorksdopEditor from "../Layout/WorkshopEditor";
 import { Row, Col, Alert } from "react-bootstrap";
-import { workshop, DateType } from "../Firebase/interface"
+import { workshop, DateType } from "../Config/interface"
 
 
 /**

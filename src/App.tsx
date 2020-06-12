@@ -4,7 +4,7 @@ import User from "./Components/User/User";
 import Pricing from "./Components/Pages/Pricing";
 import Error404 from "./Components/Pages/Error404";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
-import app from "./Components/Firebase/firebase";
+import app from "./Components/Config/firebase";
 import LandingPage from "./Components/Pages/LandingPage";
 
 function App() {
