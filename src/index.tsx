@@ -8,5 +8,5 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 ReactDOM.render(
   <App />,
-  document.getElementById("root") || document.getElementById("example")
+  document.getElementById("root")
 );

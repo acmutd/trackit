@@ -2,6 +2,9 @@ import * as React from "react";
 import { shallow, mount } from "enzyme";
 import App from "./App";
 
+console.log("app.test.tsx file log");
+console.log(process.env);
+
 describe("Render testing", () => {
   it("shallow render without crashing", () => {
     const component = shallow(<App />);
