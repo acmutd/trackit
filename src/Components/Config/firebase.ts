@@ -23,11 +23,6 @@ const prod_firebaseConfig: FirebaseConfig = {
   measurementId: process.env.REACT_APP_PROD_MEASUREMENT_ID,
 };
 
-console.log(process.env);
-console.log(dev_firebaseConfig);
-console.log(prod_firebaseConfig);
-console.log(process.env.NODE_ENV);
-
 let firebaseConfig: FirebaseConfig;
 
 if(process.env.NODE_ENV !==  "production") {
@@ -36,7 +31,7 @@ if(process.env.NODE_ENV !==  "production") {
 else {
   firebaseConfig = prod_firebaseConfig;
 }
-console.log(firebaseConfig); //remove this line later
+
 let app = firebase.initializeApp(firebaseConfig);
 
 export default app;
