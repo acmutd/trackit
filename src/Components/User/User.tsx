@@ -2,7 +2,7 @@ import * as React from "react";
 import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
-import { studentsAtWorkshopFirebase, workshopFirebase, workshop } from "../Config/interface"
+import { workshopFirebase, workshop } from "../Config/interface"
 
 interface UserProps {
   database: firebase.app.App,
@@ -34,7 +34,6 @@ class User extends React.Component<UserProps, UserState> {
     alert: false,
     alertText: "Unknown error occurred",
   };
-  progressListener?: firebase.Unsubscribe;
   loginListener?: firebase.Unsubscribe;
 
   /**
@@ -42,7 +41,6 @@ class User extends React.Component<UserProps, UserState> {
    */
   componentWillUnmount() {
     //remove progress listener
-    if (this.progressListener) this.progressListener();
     if (this.loginListener) this.loginListener();
   }
 
@@ -141,75 +139,10 @@ class User extends React.Component<UserProps, UserState> {
       });
   };
 
-  signInWorkshop = () => {
-    if (this.state.Enabled) this.updateUserProgress(0);
-  };
-
   /**
    * Read the progress of the current student from the StudentsAtWorkshop collection on firestore
    * Additionally read whether a workshop is enabled or not and the progress of the admin
    */
-  getProgressData = () => 
-  {    
-    // //convert .,@ and other weird symbols in emails to be of a proper format
-    let email: string = encodeURIComponent(this.props.database.auth().currentUser?.email as string).replace(/\./g, "%2E");
-    
-    //set listener on firestore
-    this.progressListener = this.props.database
-      .firestore()
-      .collection("StudentsAtWorkshop")
-      .doc(this.state.workshopID)
-      .onSnapshot((snapshot: studentsAtWorkshopFirebase | firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>) => { //query snapshot too strict of a definition, firebase does not verify if data is present
-        console.log("new values from listener");
-        if(snapshot !== undefined)
-        {
-          console.log(snapshot.data()?.testProgress[email]);
-        this.setState({
-          Level_Enabled: snapshot.data()?.Level_Enabled,
-          Enabled: snapshot.data()?.Enabled,
-        });
-        if (snapshot.data()?.testProgress[email]) {
-          //if the user is logging back onto a workshop
-          this.setState({
-            initialProgress: snapshot.data()?.testProgress[email],
-            dataLoaded: true,
-          });
-        } else {
-          //if a user is logging onto a workshop for the first time
-          this.setState({
-            initialProgress: -1,
-            dataLoaded: true,
-          });
-        }
-        }
-      });
-  };
-
-  /**
-   * Update the progress in firestore for a given student when they click markCompleted in the UI
-   * @param {number} progress
-   */
-  updateUserProgress = (progress: number) => {
-    let result: string = encodeURIComponent(this.props.database.auth().currentUser?.email as string).replace(/\./g, "%2E");
-
-    this.props.database
-      .firestore()
-      .collection("StudentsAtWorkshop")
-      .doc(this.state.workshopID)
-      .update({
-        ["testProgress." + result]: progress,
-      })
-      .then(() => {
-        console.log("user progress updated");
-      })
-      .catch((error: firebase.firestore.FirestoreError) => {
-        this.setState({
-          alert: true,
-          alertText: error + " Error occurred in updating user progress",
-        });
-        console.log(error + "error occurred in updating user progress");
-      });
-  };
 
   /**
    * Sign out the user when they click sign out
@@ -239,13 +172,6 @@ class User extends React.Component<UserProps, UserState> {
       });
   };
 
-  resetAlertStatus = () => {
-    this.setState({
-      alert: false,
-      alertText: "Unknown error occurred",
-    })
-  }
-
   render() {
     var userID: any = this.props.database.auth().currentUser?.email || ""
     if(userID !== null)
@@ -263,18 +189,12 @@ class User extends React.Component<UserProps, UserState> {
             />
           ) : (
             <UserDash
+              workshopID={this.state.workshopID}
               workshop_data={this.state.workshop_data}
-              getProgressData={this.getProgressData}
-              updateUserProgress={this.updateUserProgress}
-              progressListener={this.progressListener}
+              database={this.props.database}
               Level_Enabled={this.state.Level_Enabled}
               signOut={this.signOutUser}
-              savedProgress={this.state.initialProgress}
-              dataLoaded={this.state.dataLoaded}
               user={userID}
-              alert={this.state.alert}
-              alertText={this.state.alertText}
-              resetAlertStatus={this.resetAlertStatus}
             />
           )
         ) : (
