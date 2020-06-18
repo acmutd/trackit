@@ -27,7 +27,7 @@ let firebaseConfig: FirebaseConfig;
 
 if(process.env.NODE_ENV !==  "production") {
   firebaseConfig = dev_firebaseConfig;
-}
+} 
 else {
   firebaseConfig = prod_firebaseConfig;
 }
