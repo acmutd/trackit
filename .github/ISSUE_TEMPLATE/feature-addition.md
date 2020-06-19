@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**Describe the new feature**
+**Describe new addition**
 A clear and concise description of what feature or technology will be incorporated into the application. This could be a UI or a backend feature. Ex. Create a data store for the application through Redux to [...]
 
 **Task List**
