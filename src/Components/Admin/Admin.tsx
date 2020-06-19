@@ -4,6 +4,9 @@ import AdminDashboard from "./AdminDashboard";
 import {
   userFirebase,
 } from "../Config/interface";
+import { loginAction, logoutAction, authInterface } from "../../actions/authentication";
+import RootReducer from "../../reducers/rootReducer";
+import { connect } from "react-redux";
 
 interface AdminProps {
   database: firebase.app.App;
@@ -22,9 +25,9 @@ interface AdminState {
  * This component will also handle authentication and security related contraints
  *
  */
-class Admin extends React.Component<AdminProps, AdminState> {
-  state: AdminState = {
-    loggedIn: false, //once authentication happens this will toggle to true
+class Admin extends React.Component<any, any> {
+  state: any = {
+    //loggedIn: false, //once authentication happens this will toggle to true
     loginError: false,
     alert: false,
     alertText: "",
@@ -54,8 +57,10 @@ class Admin extends React.Component<AdminProps, AdminState> {
               // if the user has admin acess then set loggedIn to true
               if (doc.data()?.isAdmin === true) {
                 this.setState({
-                  loggedIn: true,
+                  //loggedIn: true,
                 });
+                this.props.loginAction("hello");
+                console.log(this.state.loggedIn);
               } else {
                 this.setState({
                   loginError: true,
@@ -167,4 +172,24 @@ class Admin extends React.Component<AdminProps, AdminState> {
   }
 }
 
-export default Admin;
+const mapState = (state: RootReducer) => {
+  return {
+    loggedIn: state.loggedIn,
+    username: state.username,
+  };
+};
+
+const mapDispatch = (dispatch: (action: authInterface) => void) => {
+  return {
+    login: (username: string) => {
+      dispatch(loginAction(username));
+    },
+    logout: () => {
+      dispatch(logoutAction());
+    },
+  };
+};
+
+
+
+export default connect(mapState, mapDispatch)(Admin);

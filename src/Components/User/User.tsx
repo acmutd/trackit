@@ -2,23 +2,21 @@ import * as React from "react";
 import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
-import { workshopFirebase, workshop } from "../Config/interface"
+import { workshopFirebase, workshop } from "../Config/interface";
 
 interface UserProps {
-  database: firebase.app.App,
+  database: firebase.app.App;
 }
 
 interface UserState {
-  loggedIn: boolean,
-  workshopID: string,
-  workshop_data: workshop | null, //null when unitialized, perhaps we may want to create a dummy workshop in the constructor (or as default props)
-  Level_Enabled: number,
-  dataLoaded: boolean,
-  Enabled: boolean,
-  loginError: boolean,
-  initialProgress: number,
-  alert: boolean,
-  alertText: string
+  loggedIn: boolean;
+  workshopID: string;
+  workshop_data: workshop | null; //null when unitialized, perhaps we may want to create a dummy workshop in the constructor (or as default props)
+  Level_Enabled: number;
+  dataLoaded: boolean;
+  Enabled: boolean;
+  loginError: boolean;
+  initialProgress: number;
 }
 
 class User extends React.Component<UserProps, UserState> {
@@ -31,8 +29,6 @@ class User extends React.Component<UserProps, UserState> {
     Enabled: false,
     loginError: false,
     initialProgress: 0,
-    alert: false,
-    alertText: "Unknown error occurred",
   };
   loginListener?: firebase.Unsubscribe;
 
@@ -129,10 +125,6 @@ class User extends React.Component<UserProps, UserState> {
         }
       })
       .catch((error: firebase.firestore.FirestoreError) => {
-        this.setState({
-          alert: true,
-          alertText: error + " Error occurred in reading back workshop information",
-        });
         console.log(
           error + " error occurred in reading back workshop information"
         );
@@ -164,20 +156,14 @@ class User extends React.Component<UserProps, UserState> {
         });
       })
       .catch((error: firebase.firestore.FirestoreError) => {
-        this.setState({
-          alert: true,
-          alertText: error + " Error occurred in signing out the user",
-        });
         console.log(error + " error signing user out");
       });
   };
 
   render() {
-    var userID: any = this.props.database.auth().currentUser?.email || ""
-    if(userID !== null)
-    {
-      userID = userID.substring(
-        0, userID.lastIndexOf("@"))
+    var userID: any = this.props.database.auth().currentUser?.email || "";
+    if (userID !== null) {
+      userID = userID.substring(0, userID.lastIndexOf("@"));
     }
     return (
       <div>
