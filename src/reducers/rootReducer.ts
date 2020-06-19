@@ -1,15 +1,13 @@
 import { combineReducers } from "redux";
-
-import {
-  loginAction,
-  authInterface,
-  logoutAction,
-} from "../actions/authentication";
 import authenticateReducer from "./authentication";
 
-interface RootReducer {
+export interface RootReducer {
   loggedIn: boolean;
   username: string;
 }
+
+const appState = combineReducers({
+  authenticateReducer,
+});
 
 export default appState;

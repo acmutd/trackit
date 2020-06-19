@@ -25,9 +25,9 @@ interface AdminState {
  * This component will also handle authentication and security related contraints
  *
  */
-class Admin extends React.Component<any, any> {
-  state: any = {
-    //loggedIn: false, //once authentication happens this will toggle to true
+class Admin extends React.Component<any, AdminState> {
+  state: AdminState = {
+    loggedIn: false, //once authentication happens this will toggle to true
     loginError: false,
     alert: false,
     alertText: "",
@@ -57,10 +57,10 @@ class Admin extends React.Component<any, any> {
               // if the user has admin acess then set loggedIn to true
               if (doc.data()?.isAdmin === true) {
                 this.setState({
-                  //loggedIn: true,
+                  loggedIn: true,
                 });
-                this.props.loginAction("hello");
-                console.log(this.state.loggedIn);
+                this.props.login("hello");
+                console.log(this.props.loggedIn);
               } else {
                 this.setState({
                   loginError: true,
@@ -172,10 +172,9 @@ class Admin extends React.Component<any, any> {
   }
 }
 
-const mapState = (state: RootReducer) => {
+const mapState = (state: any) => {
   return {
-    loggedIn: state.loggedIn,
-    username: state.username,
+    loggedIn: state.authenticateReducer.loggedIn
   };
 };
 
