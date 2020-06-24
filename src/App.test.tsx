@@ -1,10 +1,16 @@
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 import App from "./App";
+import { Provider } from "react-redux";
+import store from "./store/store";
 
 describe("Render testing", () => {
   it("shallow render without crashing", () => {
-    const component = shallow(<App />);
+    const component = shallow(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
 
     expect(component).toMatchSnapshot();
 
@@ -12,7 +18,11 @@ describe("Render testing", () => {
   });
 
   it("full render to DOM without crashing", () => {
-    const component = mount(<App />);
+    const component = mount(
+      <Provider store={store}>
+        <App />
+      </Provider>
+    );
 
     expect(component).toMatchSnapshot();
 
