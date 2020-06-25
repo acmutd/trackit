@@ -1,8 +1,20 @@
 import * as React from "react";
+import { useEffect } from "react";
 import Navbar from "../Layout/NavBar";
-import { Container } from "react-bootstrap";
+import { Container, Button } from "react-bootstrap";
+import { useAuth0 } from '@auth0/auth0-react';
 
 const LandingPage = () => {
+  const { loginWithRedirect, isAuthenticated, isLoading } = useAuth0();
+
+  /**
+   * Imitates lifecycle method, method only gets called when the value of isAuthenticated changes
+   */
+  useEffect(function() {
+    if(!isLoading && isAuthenticated) {
+      window.location.href = "/user";
+    }
+  }, [isAuthenticated]);
 
   return (
     <div>
@@ -19,6 +31,7 @@ const LandingPage = () => {
             Interactive real-time solution to remotely delivering event content
             and tracking user progress
           </p>
+          <Button onClick={loginWithRedirect}>sign in with acm</Button>
         </div>
       </Container>
     </div>

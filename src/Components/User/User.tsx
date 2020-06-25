@@ -3,9 +3,12 @@ import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
 import { workshopFirebase, workshop } from "../Config/interface";
+import { withAuth0 } from "@auth0/auth0-react";
+import { load } from "dotenv/types";
 
 interface UserProps {
   database: firebase.app.App;
+  auth0: any;
 }
 
 interface UserState {
@@ -41,6 +44,14 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   componentDidMount() {
+    const { isAuthenticated, isLoading, user } = this.props.auth0;
+    console.log("isAuthenticated");
+    console.log(isAuthenticated);
+    console.log("isLoading");
+    console.log(isLoading);
+    console.log("user object");
+    console.log(user);
+
     this.loginListener = this.props.database
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
@@ -141,6 +152,8 @@ class User extends React.Component<UserProps, UserState> {
    */
   signOutUser = () => {
     console.log("signing Out");
+    const { logout } = this.props.auth0;
+    logout();
     this.props.database
       .auth()
       .signOut()
@@ -194,4 +207,4 @@ class User extends React.Component<UserProps, UserState> {
   }
 }
 
-export default User;
+export default withAuth0(User);
