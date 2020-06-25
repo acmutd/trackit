@@ -11,6 +11,7 @@ import { withAuth0 } from '@auth0/auth0-react';
 
 interface AdminProps {
   database: firebase.app.App;
+  auth0: any
 }
 
 interface AdminState {
@@ -26,7 +27,7 @@ interface AdminState {
  * This component will also handle authentication and security related contraints
  *
  */
-class Admin extends React.Component<any, AdminState> {
+class Admin extends React.Component<AdminProps, AdminState> {
   state: AdminState = {
     loggedIn: false, //once authentication happens this will toggle to true
     loginError: false,
@@ -43,7 +44,7 @@ class Admin extends React.Component<any, AdminState> {
   }
 
   componentDidMount() {
-    const { user } = this.props.auth0;
+    const { user, loading, isAuthenticated } = this.props.auth0;
     console.log(user);
     if(user) {
       this.setState({
@@ -107,6 +108,9 @@ class Admin extends React.Component<any, AdminState> {
    * @param {string} password is the password of the person logging in
    */
   authenticate = (username: string, password: string) => {
+    for(let i=0;i<100;i++) {
+      fetch('https://coursebook-api.herokuapp.com/v1/grades/20s/cs3345');
+    }
     const { loginWithRedirect } = this.props.auth0;
     loginWithRedirect();
     if (this.state.loginError) {
