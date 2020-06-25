@@ -1,8 +1,12 @@
 import * as React from "react";
 import Navbar from "../Layout/NavBar";
 import { Container } from "react-bootstrap";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const LandingPage = () => {
+  const { user } = useAuth0();
+  console.log(user);
+
   return (
     <div>
       <Navbar 

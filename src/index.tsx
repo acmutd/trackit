@@ -7,10 +7,17 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Provider } from "react-redux";
 import store from "./store/store";
+import { Auth0Provider } from "@auth0/auth0-react";
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+  <Auth0Provider
+    domain={process.env.REACT_APP_AUTH0_DOMAIN as string}
+    clientId={process.env.REACT_APP_AUTH0_CLIENTID as string}
+    redirectUri={"http://localhost:3000/"}
+  >
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </Auth0Provider>,
   document.getElementById("root")
 );

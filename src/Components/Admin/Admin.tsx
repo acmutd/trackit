@@ -7,6 +7,7 @@ import {
 import { loginAction, logoutAction, authInterface } from "../../actions/authentication";
 import RootReducer from "../../reducers/rootReducer";
 import { connect } from "react-redux";
+import { withAuth0 } from '@auth0/auth0-react';
 
 interface AdminProps {
   database: firebase.app.App;
@@ -42,50 +43,60 @@ class Admin extends React.Component<any, AdminState> {
   }
 
   componentDidMount() {
-    this.loginListener = this.props.database
-      .auth()
-      .onAuthStateChanged((user: firebase.User | null) => {
-        // user is signed in
-        if (user) {
-          // get user data from Students collection to check if they are an admin
-          this.props.database
-            .firestore()
-            .collection("Student")
-            .doc(user.uid)
-            .get()
-            .then((doc: userFirebase) => {
-              // if the user has admin acess then set loggedIn to true
-              if (doc.data()?.isAdmin === true) {
-                this.setState({
-                  loggedIn: true,
-                });
-                this.props.login("hello");
-                console.log(this.props.loggedIn);
-              } else {
-                this.setState({
-                  loginError: true,
-                });
-                // if the user had a valid login but was not an admin log them out
-                this.props.database
-                  .auth()
-                  .signOut()
-                  .then(() => {
-                    console.log("successfully logged out non admin");
-                  })
-                  .catch((error: firebase.auth.AuthError) => {
-                    console.log(error + " error logging out non admin user");
-                  });
-              }
-            })
-            .catch((error: firebase.firestore.FirestoreError) => {
-              this.setState({
-                alert: true,
-                alertText: error + " Error occurred in login process",
-              });
-              console.log(error + " error occurred in login process");
-            });
-        }
+    const { user } = this.props.auth0;
+    console.log(user);
+    if(user) {
+      this.setState({
+        loggedIn: true
       });
+      console.log(user);
+    }
+    // this.loginListener = this.props.database
+    //   .auth()
+    //   .onAuthStateChanged((user: firebase.User | null) => {
+    //     // user is signed in
+    //     if (user) {
+    //       // get user data from Students collection to check if they are an admin
+    //       this.props.database
+    //         .firestore()
+    //         .collection("Student")
+    //         .doc(user.uid)
+    //         .get()
+    //         .then((doc: userFirebase) => {
+    //           // if the user has admin acess then set loggedIn to true
+    //           if (doc.data()?.isAdmin === true) {
+    //             this.setState({
+    //               loggedIn: true,
+    //             });
+    //             this.props.login("hello");
+    //             console.log(this.props.loggedIn);
+    //           } else {
+    //             this.setState({
+    //               loginError: true,
+    //             });
+    //             // if the user had a valid login but was not an admin log them out
+    //             this.props.database
+    //               .auth()
+    //               .signOut()
+    //               .then(() => {
+    //                 console.log("successfully logged out non admin");
+    //               })
+    //               .catch((error: firebase.auth.AuthError) => {
+    //                 console.log(error + " error logging out non admin user");
+    //               });
+    //           }
+    //         })
+    //         .catch((error: firebase.firestore.FirestoreError) => {
+    //           this.setState({
+    //             alert: true,
+    //             alertText: error + " Error occurred in login process",
+    //           });
+    //           console.log(error + " error occurred in login process");
+    //         });
+    //     }
+    //   });
+
+
   }
 
   /**
@@ -96,6 +107,8 @@ class Admin extends React.Component<any, AdminState> {
    * @param {string} password is the password of the person logging in
    */
   authenticate = (username: string, password: string) => {
+    const { loginWithRedirect } = this.props.auth0;
+    loginWithRedirect();
     if (this.state.loginError) {
       this.setState({
         loginError: false,
@@ -191,4 +204,4 @@ const mapDispatch = (dispatch: (action: authInterface) => void) => {
 
 
 
-export default connect(mapState, mapDispatch)(Admin);
+export default connect(mapState, mapDispatch)(withAuth0(Admin));
