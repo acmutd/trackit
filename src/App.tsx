@@ -12,9 +12,9 @@ function App() {
     <div>
       <BrowserRouter>
         <Switch>
-          <Route path="/" component={LandingPage} exact />
+          <Route path="/landing" component={LandingPage} exact />
           <Route
-            path="/user"
+            path="/"
             render={(props) => <User database={app} />}
             exact
           />

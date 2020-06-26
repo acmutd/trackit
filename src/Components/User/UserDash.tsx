@@ -57,7 +57,7 @@ class UserDash extends React.Component<DashProps, DashState> {
   {    
     console.log('in getting progress data')
     // //convert .,@ and other weird symbols in emails to be of a proper format
-    let email: string = encodeURIComponent(this.props.database.auth().currentUser?.email as string).replace(/\./g, "%2E");
+    let email: string = encodeURIComponent(this.props.user).replace(/\./g, "%2E");
     
     //set listener on firestore
     this.progressListener = this.props.database
@@ -65,8 +65,6 @@ class UserDash extends React.Component<DashProps, DashState> {
       .collection("StudentsAtWorkshop")
       .doc(this.props.workshopID)
       .onSnapshot((snapshot: studentsAtWorkshopFirebase | firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>) => { //query snapshot too strict of a definition, firebase does not verify if data is present
-        console.log("new values from listener");
-        console.log(snapshot.data()?.testProgress[email])
         if(snapshot !== undefined)
         {
         this.setState({
@@ -96,7 +94,7 @@ class UserDash extends React.Component<DashProps, DashState> {
    * @param {number} progress
    */
   updateUserProgress = (progress: number) => {
-    let result: string = encodeURIComponent(this.props.database.auth().currentUser?.email as string).replace(/\./g, "%2E");
+    let result: string = encodeURIComponent(this.props.user).replace(/\./g, "%2E");
 
     this.props.database
       .firestore()

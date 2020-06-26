@@ -10,7 +10,7 @@ import { withAuth0 } from '@auth0/auth0-react';
 
 interface AdminProps {
   database: firebase.app.App;
-  auth0: any
+  auth0?: any
 }
 
 interface AdminState {

@@ -1,14 +1,13 @@
 import * as React from "react";
-import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
 import { workshopFirebase, workshop } from "../Config/interface";
 import { withAuth0 } from "@auth0/auth0-react";
-import { load } from "dotenv/types";
+import LandingPage from "../Pages/LandingPage";
 
 interface UserProps {
   database: firebase.app.App;
-  auth0: any;
+  auth0?: any;
 }
 
 interface UserState {
@@ -24,7 +23,7 @@ interface UserState {
 
 class User extends React.Component<UserProps, UserState> {
   state: UserState = {
-    loggedIn: false, //once authentication happens this will toggle to true
+    loggedIn: false, //represents whether the user has logged in to their firebase acct, not their auth0
     workshopID: "",
     workshop_data: null,
     Level_Enabled: 0,
@@ -44,14 +43,6 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   componentDidMount() {
-    const { isAuthenticated, isLoading, user } = this.props.auth0;
-    console.log("isAuthenticated");
-    console.log(isAuthenticated);
-    console.log("isLoading");
-    console.log(isLoading);
-    console.log("user object");
-    console.log(user);
-
     this.loginListener = this.props.database
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
@@ -68,6 +59,12 @@ class User extends React.Component<UserProps, UserState> {
         }
       });
   }
+  componentDidUpdate() {
+    const { isAuthenticated, isLoading } = this.props.auth0;
+    if (!isLoading && isAuthenticated && !this.state.loggedIn) {
+      this.authenticate();
+    }
+  }
 
   /**
    * Contacts firestore and authenticates the user
@@ -75,7 +72,7 @@ class User extends React.Component<UserProps, UserState> {
    * @param {string} email
    * @param {string} password
    */
-  authenticate = (email: string, password: string) => {
+  authenticate = async () => {
     //resets the state of login error to be false
     if (this.state.loginError) {
       this.setState({
@@ -83,15 +80,36 @@ class User extends React.Component<UserProps, UserState> {
       });
     }
 
-    //attempts to authenticate the user
+    const { getAccessTokenSilently } = this.props.auth0;
+
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://harshasrikara.com/api`,
+      scope: "read:current_user",
+    });
+    const response = await fetch(
+      `https://us-central1-trackit-271619.cloudfunctions.net/api/getCustomToken`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
     this.props.database
       .auth()
-      .signInWithEmailAndPassword(email, password)
-      .catch((error: firebase.firestore.FirestoreError) => {
+      .signInWithCustomToken(data.firebaseToken)
+      .then(() => {
+        this.setState({
+          loggedIn: true,
+        });
+      })
+      .catch((error: firebase.auth.AuthError) => {
         this.setState({
           loginError: true,
         });
-        console.log(error + " Invalid Email or Password");
+        console.log(error + " Invalid Credential");
       });
   };
 
@@ -100,7 +118,7 @@ class User extends React.Component<UserProps, UserState> {
    * This will validate that said workshop exists, is enabled and if so will open up the user dashboard
    * @param {string} workshop
    */
-  authenticateWorkshop = (workshop: string) => {
+  authenticateWorkshop = async (workshop: string) => {
     //reset the login error if any occurred during authentication
     //same variable gets reused to see if any errors happen in authenticating the workshop name
     if (this.state.loginError) {
@@ -174,13 +192,17 @@ class User extends React.Component<UserProps, UserState> {
   };
 
   render() {
-    var userID: any = this.props.database.auth().currentUser?.email || "";
-    if (userID !== null) {
-      userID = userID.substring(0, userID.lastIndexOf("@"));
+    const { isAuthenticated, isLoading, user } = this.props.auth0;
+
+    if (!isLoading && isAuthenticated && user) {
+      var userID: any = user.email || "";
+      if (userID !== null) {
+        userID = userID.substring(0, userID.lastIndexOf("@"));
+      }
     }
     return (
       <div>
-        {this.state.loggedIn ? (
+        {!isLoading && isAuthenticated ? (
           !this.state.workshop_data ? (
             <WorkshopLogin
               authenticate={this.authenticateWorkshop}
@@ -197,10 +219,7 @@ class User extends React.Component<UserProps, UserState> {
             />
           )
         ) : (
-          <UserAuth
-            authenticate={this.authenticate}
-            loginError={this.state.loginError}
-          />
+          <LandingPage />
         )}
       </div>
     );
