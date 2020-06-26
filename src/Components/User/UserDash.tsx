@@ -49,13 +49,11 @@ class UserDash extends React.Component<DashProps, DashState> {
 
   componentDidMount()
   {
-    console.log('component mounted')
     this.getProgressData();
   }
 
   getProgressData = () => 
   {    
-    console.log('in getting progress data')
     // //convert .,@ and other weird symbols in emails to be of a proper format
     let email: string = encodeURIComponent(this.props.user).replace(/\./g, "%2E");
     
@@ -72,13 +70,13 @@ class UserDash extends React.Component<DashProps, DashState> {
           // Enabled: snapshot.data()?.Enabled,
         });
         if (snapshot.data()?.testProgress[email] !== undefined) {
-          console.log('progress is true')
+          //console.log('progress is true')
           //if the user is logging back onto a workshop
           this.setState({
             userProgress: snapshot.data()?.testProgress[email],
           }, this.isDataLoaded);
         } else {
-          console.log('progress is false')
+          //console.log('progress is false')
 
           //if a user is logging onto a workshop for the first time
           this.setState({
@@ -104,7 +102,7 @@ class UserDash extends React.Component<DashProps, DashState> {
         ["testProgress." + result]: progress,
       })
       .then(() => {
-        console.log("user progress updated");
+        //user progress updated
       })
       .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({

@@ -33,10 +33,6 @@ class NavBar extends React.Component<NavBarProps, NavBarState> {
         link: "/",
       },
       {
-        name: "User",
-        link: "/user",
-      },
-      {
         name: "Admin",
         link: "/admin",
       },

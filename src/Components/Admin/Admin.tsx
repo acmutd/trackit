@@ -72,16 +72,8 @@ class Admin extends React.Component<AdminProps, AdminState> {
                 this.setState({
                   loginError: true,
                 });
-                // if the user had a valid login but was not an admin log them out
-                this.props.database
-                  .auth()
-                  .signOut()
-                  .then(() => {
-                    console.log("successfully logged out non admin");
-                  })
-                  .catch((error: firebase.auth.AuthError) => {
-                    console.log(error + " error logging out non admin user");
-                  });
+                // if the user had a valid login but was not an admin log them out (I dont think that this part of the code works)
+                this.signOutUser();
               }
             })
             .catch((error: firebase.firestore.FirestoreError) => {
@@ -89,6 +81,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
                 alert: true,
                 alertText: error + " Error occurred in login process",
               });
+              this.signOutUser();
               console.log(error + " error occurred in login process");
             });
         }

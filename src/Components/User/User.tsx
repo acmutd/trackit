@@ -80,7 +80,7 @@ class User extends React.Component<UserProps, UserState> {
       });
     }
 
-    const { getAccessTokenSilently } = this.props.auth0;
+    const { getAccessTokenSilently, user } = this.props.auth0;
 
     const accessToken = await getAccessTokenSilently({
       audience: `https://harshasrikara.com/api`,
@@ -100,10 +100,18 @@ class User extends React.Component<UserProps, UserState> {
     this.props.database
       .auth()
       .signInWithCustomToken(data.firebaseToken)
-      .then(() => {
+      .then((userFirebase) => {
         this.setState({
           loggedIn: true,
         });
+        //update fields if its the first time they are signing in
+        this.props.database.auth().currentUser?.updateProfile({
+          displayName: user.nickname,
+          photoURL: user.picture
+        });
+        this.props.database.auth().currentUser?.updateEmail(user.email);
+        console.log(user);
+        console.log(userFirebase);
       })
       .catch((error: firebase.auth.AuthError) => {
         this.setState({
