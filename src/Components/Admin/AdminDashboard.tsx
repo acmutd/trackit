@@ -172,6 +172,7 @@ class AdminDashboard extends React.Component<
             let progress = [];
             for (var x in snap.data().testProgress) {
               var user = decodeURIComponent(x).replace("%2E", ".");
+              console.log(user)
               students.push(user);
               progress.push(snap.data().testProgress[x]);
             }

@@ -223,10 +223,7 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
       <StudentBar
         TotalProgress={this.props.properties.Number_Of_Levels}
         Progress={this.props.data.Progress[index]}
-        Student_Name={item.substring(
-          0,
-          item.lastIndexOf("@")
-        )}
+        Student_Name={item}
         key={index}
       />
     ));
