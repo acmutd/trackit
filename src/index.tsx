@@ -13,7 +13,7 @@ ReactDOM.render(
   <Auth0Provider
     domain={process.env.REACT_APP_AUTH0_DOMAIN as string}
     clientId={process.env.REACT_APP_AUTH0_CLIENTID as string}
-    redirectUri={"http://localhost:3000/"}
+    redirectUri={window.location.href}
     audience={"https://harshasrikara.com/api"}
     scope={"read:current_user update:current_user_metadata"}
   >

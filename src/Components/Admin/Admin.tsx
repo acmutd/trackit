@@ -1,16 +1,19 @@
 import * as React from "react";
 import AdminAuth from "./AdminAuth";
 import AdminDashboard from "./AdminDashboard";
+import { userFirebase } from "../Config/interface";
 import {
-  userFirebase,
-} from "../Config/interface";
-import { loginAction, logoutAction, authInterface } from "../../actions/authentication";
+  loginAction,
+  logoutAction,
+  authInterface,
+} from "../../actions/authentication";
 import { connect } from "react-redux";
-import { withAuth0 } from '@auth0/auth0-react';
+import { withAuth0 } from "@auth0/auth0-react";
+import LandingPage from "../Pages/LandingPage";
 
 interface AdminProps {
   database: firebase.app.App;
-  auth0?: any
+  auth0?: any;
 }
 
 interface AdminState {
@@ -43,75 +46,103 @@ class Admin extends React.Component<AdminProps, AdminState> {
   }
 
   componentDidMount() {
-    // const { user, loading, isAuthenticated } = this.props.auth0;
-    // console.log(user);
-    // if(user) {
-    //   this.setState({
-    //     loggedIn: true
-    //   });
-    //   console.log(user);
-    // }
     this.loginListener = this.props.database
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
-        // user is signed in
         if (user) {
-          // get user data from Students collection to check if they are an admin
-          this.props.database
-            .firestore()
-            .collection("Student")
-            .doc(user.uid)
-            .get()
-            .then((doc: userFirebase) => {
-              // if the user has admin acess then set loggedIn to true
-              if (doc.data()?.isAdmin === true) {
-                this.setState({
-                  loggedIn: true,
-                });
-              } else {
-                this.setState({
-                  loginError: true,
-                });
-                // if the user had a valid login but was not an admin log them out (I dont think that this part of the code works)
-                this.signOutUser();
-              }
-            })
-            .catch((error: firebase.firestore.FirestoreError) => {
-              this.setState({
-                alert: true,
-                alertText: error + " Error occurred in login process",
-              });
-              this.signOutUser();
-              console.log(error + " error occurred in login process");
+          //only ACM Organization Officers have access to admin
+          if (user.email?.includes("@acmutd.co")) {
+            console.log("the email contains @acmutd.co" + user.email);
+            this.setState({
+              loggedIn: true,
             });
+          }
+          else {
+            this.signOutUser(); //sign out if the user logged into firebase is not ACM Organization Officer
+          }
+        } else {
+          this.setState({
+            loggedIn: false,
+          });
         }
       });
+  }
 
+  componentDidUpdate() {
+    const { isAuthenticated, isLoading } = this.props.auth0;
 
+    if (
+      !isLoading &&
+      isAuthenticated &&
+      !this.state.loggedIn &&
+      !this.state.loginError
+    ) {
+      this.authenticate();
+    }
   }
 
   /**
-   * This function is passed as props to the <AdminAuth /> Component which returns the username and password entered
-   * Signs in the user through firebase authentication
-   *
-   * @param {string} username is the username of the person logging in
-   * @param {string} password is the password of the person logging in
+   * This function runs if the user has authenticated themselves on auth0 but not on firebase
+   * Contacts firestore and authenticates the user
+   * Sets user data if user login works
+   * @param {string} email
+   * @param {string} password
    */
-  authenticate = (username: string, password: string) => {
+  authenticate = async () => {
+    //resets the state of login error to be false
     if (this.state.loginError) {
       this.setState({
         loginError: false,
       });
     }
-    this.props.database
-      .auth()
-      .signInWithEmailAndPassword(username, password)
-      .catch((error: firebase.auth.AuthError) => {
-        this.setState({
-          loginError: true,
-        });
-        console.log(error + " Invalid Email or Password");
+
+    const { getAccessTokenSilently, user } = this.props.auth0;
+
+    if (user.email.includes("@acmutd.co")) {
+      const accessToken = await getAccessTokenSilently({
+        audience: `https://harshasrikara.com/api`,
+        scope: "read:current_user",
       });
+      const response = await fetch(
+        `https://us-central1-trackit-271619.cloudfunctions.net/api/getCustomToken`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+      this.props.database
+        .auth()
+        .signInWithCustomToken(data.firebaseToken)
+        .then((userFirebase) => {
+          this.setState({
+            loggedIn: true,
+          });
+          if (this.props.database.auth().currentUser?.email !== null) {
+            //this user has signed in before (do nothing)
+          } else {
+            //update fields if its the first time they are signing in
+            this.props.database.auth().currentUser?.updateProfile({
+              displayName: user.nickname,
+              photoURL: user.picture,
+            });
+            this.props.database.auth().currentUser?.updateEmail(user.email);
+          }
+        })
+        .catch((error: firebase.auth.AuthError) => {
+          this.setState({
+            loginError: true,
+          });
+          console.log(error + " Invalid Credential");
+        });
+    } else {
+      this.setState({
+        loginError: true,
+      });
+      console.log("Only ACM Organization officers allowed access");
+    }
   };
 
   /**
@@ -166,10 +197,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
             resetAlertStatus={this.resetAlertStatus}
           />
         ) : (
-          <AdminAuth
-            authenticate={this.authenticate}
-            loginError={this.state.loginError}
-          />
+          <LandingPage />
         )}
       </div>
     );
@@ -178,7 +206,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
 
 const mapState = (state: any) => {
   return {
-    loggedIn: state.authenticateReducer.loggedIn
+    loggedIn: state.authenticateReducer.loggedIn,
   };
 };
 
@@ -192,7 +220,5 @@ const mapDispatch = (dispatch: (action: authInterface) => void) => {
     },
   };
 };
-
-
 
 export default connect(mapState, mapDispatch)(withAuth0(Admin));

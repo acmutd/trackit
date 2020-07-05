@@ -47,8 +47,6 @@ class User extends React.Component<UserProps, UserState> {
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
         if (user) {
-          console.log("logging in user");
-          // user is signed in
           this.setState({
             loggedIn: true,
           });
@@ -67,6 +65,7 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   /**
+   * This function runs if the user has authenticated themselves on auth0 but not on firebase
    * Contacts firestore and authenticates the user
    * Sets user data if user login works
    * @param {string} email
@@ -96,7 +95,6 @@ class User extends React.Component<UserProps, UserState> {
     );
 
     const data = await response.json();
-
     this.props.database
       .auth()
       .signInWithCustomToken(data.firebaseToken)
@@ -104,14 +102,16 @@ class User extends React.Component<UserProps, UserState> {
         this.setState({
           loggedIn: true,
         });
-        //update fields if its the first time they are signing in
-        this.props.database.auth().currentUser?.updateProfile({
-          displayName: user.nickname,
-          photoURL: user.picture
-        });
-        this.props.database.auth().currentUser?.updateEmail(user.email);
-        console.log(user);
-        console.log(userFirebase);
+        if (this.props.database.auth().currentUser?.email !== null) {
+          //this user has signed in before (do nothing)
+        } else {
+          //update fields if its the first time they are signing in
+          this.props.database.auth().currentUser?.updateProfile({
+            displayName: user.nickname,
+            photoURL: user.picture,
+          });
+          this.props.database.auth().currentUser?.updateEmail(user.email);
+        }
       })
       .catch((error: firebase.auth.AuthError) => {
         this.setState({
@@ -135,6 +135,7 @@ class User extends React.Component<UserProps, UserState> {
       });
     }
 
+    console.log(this.state.loggedIn);
     //read the workshop data if present else trigger a alert
     this.props.database
       .firestore()
@@ -142,6 +143,7 @@ class User extends React.Component<UserProps, UserState> {
       .doc(workshop)
       .get()
       .then((doc: workshopFirebase) => {
+        console.log("test 2");
         if (!doc.exists) {
           this.setState({
             loginError: true,

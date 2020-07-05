@@ -75,11 +75,15 @@ class AdminDashboard extends React.Component<
       disabled: true,
     };
 
+    let githubRedirect = () => {
+      window.location.href = "https://github.com/acmutd/TrackIT";
+    }
+
     let cthird = {
       title: "Social",
       subtitle: "Media Tools",
       description: "Access resources and social media",
-      links: [placeholderFunction, placeholderFunction, placeholderFunction], //functions
+      links: [githubRedirect, placeholderFunction, placeholderFunction], //functions
       linkText: ["Github", "LinkedIn", "Instagram"],
       disabled: true,
     };
@@ -172,7 +176,6 @@ class AdminDashboard extends React.Component<
             let progress = [];
             for (var x in snap.data().testProgress) {
               var user = decodeURIComponent(x).replace("%2E", ".");
-              console.log(user)
               students.push(user);
               progress.push(snap.data().testProgress[x]);
             }
