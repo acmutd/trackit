@@ -14,6 +14,9 @@ import LandingPage from "../Pages/LandingPage";
 interface AdminProps {
   database: firebase.app.App;
   auth0?: any;
+  loggedIn: any;
+  username: any;
+  login: any;
 }
 
 interface AdminState {
@@ -207,6 +210,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
 const mapState = (state: any) => {
   return {
     loggedIn: state.authenticateReducer.loggedIn,
+    username: state.authenticateReducer.username
   };
 };
 

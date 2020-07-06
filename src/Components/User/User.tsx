@@ -4,10 +4,16 @@ import WorkshopLogin from "./WorkshopLogin";
 import { workshopFirebase, workshop } from "../Config/interface";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../Pages/LandingPage";
+import { connect } from "react-redux";
+import { workshopAuthenticationAction, workshopDataAction } from "../../actions/user"
+import { StringDecoder } from "string_decoder";
 
 interface UserProps {
   database: firebase.app.App;
   auth0?: any;
+  workshop_data?:any;
+  updateData: any;
+  workshopID: any;
 }
 
 interface UserState {
@@ -18,7 +24,6 @@ interface UserState {
   dataLoaded: boolean;
   Enabled: boolean;
   loginError: boolean;
-  initialProgress: number;
 }
 
 class User extends React.Component<UserProps, UserState> {
@@ -30,7 +35,6 @@ class User extends React.Component<UserProps, UserState> {
     dataLoaded: false,
     Enabled: false,
     loginError: false,
-    initialProgress: 0,
   };
   loginListener?: firebase.Unsubscribe;
 
@@ -43,6 +47,7 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   componentDidMount() {
+    this.props.updateData('some new data')
     this.loginListener = this.props.database
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
@@ -127,6 +132,7 @@ class User extends React.Component<UserProps, UserState> {
    * @param {string} workshop
    */
   authenticateWorkshop = async (workshop: string) => {
+    console.log(this.props.workshopID)
     //reset the login error if any occurred during authentication
     //same variable gets reused to see if any errors happen in authenticating the workshop name
     if (this.state.loginError) {
@@ -143,7 +149,6 @@ class User extends React.Component<UserProps, UserState> {
       .doc(workshop)
       .get()
       .then((doc: workshopFirebase) => {
-        console.log("test 2");
         if (!doc.exists) {
           this.setState({
             loginError: true,
@@ -236,4 +241,19 @@ class User extends React.Component<UserProps, UserState> {
   }
 }
 
-export default withAuth0(User);
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    updateWorkshopID: (workshopID: string) => {
+      dispatch(workshopAuthenticationAction(workshopID));
+    },
+  }
+}
+ 
+const mapStateToProps = (state: any) => {
+  return {
+    workshopID: state.userReducer.workshopID,
+    username: state.authenticateReducer.username
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withAuth0(User));

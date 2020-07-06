@@ -6,7 +6,7 @@ import {
 
 const authenticateReducer = (
   state = { loggedIn: false, username: "" },
-  action: authInterface
+  action: any
 ) => {
   switch (action.type) {
     case LOGIN:
