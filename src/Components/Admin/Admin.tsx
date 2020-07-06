@@ -1,7 +1,5 @@
 import * as React from "react";
-import AdminAuth from "./AdminAuth";
 import AdminDashboard from "./AdminDashboard";
-import { userFirebase } from "../Config/interface";
 import {
   loginAction,
   logoutAction,
@@ -14,10 +12,13 @@ import LandingPage from "../Pages/LandingPage";
 interface AdminProps {
   database: firebase.app.App;
   auth0?: any;
+
+  loggedIn?: boolean; //redux
+  login(username: string): void; //redux
+  logout(): void; //redux
 }
 
 interface AdminState {
-  loggedIn: boolean;
   loginError: boolean;
   alert: boolean;
   alertText: string;
@@ -31,7 +32,6 @@ interface AdminState {
  */
 class Admin extends React.Component<AdminProps, AdminState> {
   state: AdminState = {
-    loggedIn: false, //once authentication happens this will toggle to true
     loginError: false,
     alert: false,
     alertText: "",
@@ -52,18 +52,12 @@ class Admin extends React.Component<AdminProps, AdminState> {
         if (user) {
           //only ACM Organization Officers have access to admin
           if (user.email?.includes("@acmutd.co")) {
-            console.log("the email contains @acmutd.co" + user.email);
-            this.setState({
-              loggedIn: true,
-            });
-          }
-          else {
+            this.props.login("random");
+          } else {
             this.signOutUser(); //sign out if the user logged into firebase is not ACM Organization Officer
           }
         } else {
-          this.setState({
-            loggedIn: false,
-          });
+          this.props.logout();
         }
       });
   }
@@ -74,7 +68,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
     if (
       !isLoading &&
       isAuthenticated &&
-      !this.state.loggedIn &&
+      !this.props.loggedIn &&
       !this.state.loginError
     ) {
       this.authenticate();
@@ -117,9 +111,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
         .auth()
         .signInWithCustomToken(data.firebaseToken)
         .then((userFirebase) => {
-          this.setState({
-            loggedIn: true,
-          });
+          this.props.login("random");
           if (this.props.database.auth().currentUser?.email !== null) {
             //this user has signed in before (do nothing)
           } else {
@@ -149,15 +141,14 @@ class Admin extends React.Component<AdminProps, AdminState> {
    * signs out the user
    */
   signOutUser = () => {
-    console.log("signing out");
     const { logout } = this.props.auth0;
     logout();
     this.props.database
       .auth()
       .signOut()
       .then(() => {
+        this.props.logout();
         this.setState({
-          loggedIn: false,
           loginError: false,
         });
       })
@@ -188,7 +179,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       <div>
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
-        {this.state.loggedIn ? (
+        {this.props.loggedIn ? (
           <AdminDashboard
             database={this.props.database}
             signOut={this.signOutUser}
