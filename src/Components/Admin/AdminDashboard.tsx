@@ -6,15 +6,18 @@ import WorkshopEdit from "../Workshop/WorkshopEdit";
 import CardTile from "../Workshop/CardTile";
 import Loading from "../Layout/Loading";
 import { Row, Col, Container, Alert } from "react-bootstrap";
-import { workshop, studentsAtWorkshop, CardData, studentsAtWorkshopFirebase, workshopFirebase } from "../Config/interface";
+import {
+  workshop,
+  studentsAtWorkshop,
+  CardData,
+  studentsAtWorkshopFirebase,
+  workshopFirebase,
+} from "../Config/interface";
 import * as FileSaver from "file-saver";
 
 interface AdminDashboardProps {
   database: firebase.app.App;
   signOut(): void;
-  alert: boolean;
-  alertText: string;
-  resetAlertStatus(): void;
 }
 
 interface AdminDashboardState {
@@ -54,8 +57,6 @@ class AdminDashboard extends React.Component<
       console.log("placeholder function triggered");
     };
 
-  
-
     //contains the text and functions for the <CardTile />
     let cfirst = {
       title: "Admin",
@@ -77,7 +78,7 @@ class AdminDashboard extends React.Component<
 
     let githubRedirect = () => {
       window.location.href = "https://github.com/acmutd/TrackIT";
-    }
+    };
 
     let cthird = {
       title: "Social",
@@ -106,7 +107,6 @@ class AdminDashboard extends React.Component<
   workshopListener?: firebase.Unsubscribe;
 
   componentDidMount() {
-    console.log("component mounted")
     this.readWorkshopData();
     this.readStudentData();
   }
@@ -121,7 +121,7 @@ class AdminDashboard extends React.Component<
     }
   }
 
-    /**
+  /**
    * Read workshop data from Workshops collection on firestore
    * Sets listener to see if any updates are being made
    * Calls readStudentData once it has finished reading the workshop data
@@ -149,12 +149,12 @@ class AdminDashboard extends React.Component<
         //save array in state
         this.setState({
           workshops: arr,
-          workshopsLoaded: true
+          workshopsLoaded: true,
         });
       });
   };
 
-    /**
+  /**
    * Reads Student progress information from StudentsAtWorkshop collection on firestore
    * Sets listener to monitor for updates
    */
@@ -520,7 +520,10 @@ class AdminDashboard extends React.Component<
     }
 
     //sets the date object as a string
-    let newObject = {...data, Date: new Date(data.Date.seconds as number * 1000).toDateString()};
+    let newObject = {
+      ...data,
+      Date: new Date((data.Date.seconds as number) * 1000).toDateString(),
+    };
 
     // Merging both workshop data and student data into one json object
     let export_data = {
@@ -564,7 +567,10 @@ class AdminDashboard extends React.Component<
       }
 
       //sets the date object as a string
-      let newObject = {...data, Date: new Date(data.Date.seconds as number * 1000).toDateString()};
+      let newObject = {
+        ...data,
+        Date: new Date((data.Date.seconds as number) * 1000).toDateString(),
+      };
 
       // Merging both workshop data and student data into one json object that is pushed to the main object
       big_data.push({
@@ -614,7 +620,9 @@ class AdminDashboard extends React.Component<
    * @param {*} Workshop_Object
    */
   addEditWorkshop = (Workshop_Object: workshop) => {
-    let workshopIndex: number = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
+    let workshopIndex: number = this.findWorkshopIndex(
+      Workshop_Object.Workshop_ID
+    );
     //the slice commands below ensure that when the workshop is saved then only the correct number of levels are passed back
     //For example if the workshop used to have 5 levels but was edited to only have 4 then the slice commands will remove the extra one
     Workshop_Object.Level_Titles = Workshop_Object.Level_Titles.slice(
@@ -662,7 +670,7 @@ class AdminDashboard extends React.Component<
     return studentIndex;
   };
 
-    /**
+  /**
    * Reset the alert status once it has been closed
    */
   resetAlertStatus = () => {
@@ -709,7 +717,7 @@ class AdminDashboard extends React.Component<
             ""
           )}
           {!this.state.studentsLoaded && this.state.workshopsLoaded ? (
-            <Loading /> 
+            <Loading />
           ) : (
             <>
               <div className="m-1 mt-3 m-lg-5">

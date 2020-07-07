@@ -19,9 +19,7 @@ interface AdminProps {
 }
 
 interface AdminState {
-  loginError: boolean;
-  alert: boolean;
-  alertText: string;
+
 }
 
 /**
@@ -31,11 +29,6 @@ interface AdminState {
  *
  */
 class Admin extends React.Component<AdminProps, AdminState> {
-  state: AdminState = {
-    loginError: false,
-    alert: false,
-    alertText: "",
-  };
 
   loginListener?: firebase.Unsubscribe;
   /**
@@ -68,8 +61,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
     if (
       !isLoading &&
       isAuthenticated &&
-      !this.props.loggedIn &&
-      !this.state.loginError
+      !this.props.loggedIn
     ) {
       this.authenticate();
     }
@@ -83,14 +75,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
    * @param {string} password
    */
   authenticate = async () => {
-    //resets the state of login error to be false
-    if (this.state.loginError) {
-      this.setState({
-        loginError: false,
-      });
-    }
-
-    const { getAccessTokenSilently, user } = this.props.auth0;
+    const { getAccessTokenSilently, user, logout } = this.props.auth0;
 
     if (user.email.includes("@acmutd.co")) {
       const accessToken = await getAccessTokenSilently({
@@ -124,16 +109,15 @@ class Admin extends React.Component<AdminProps, AdminState> {
           }
         })
         .catch((error: firebase.auth.AuthError) => {
-          this.setState({
-            loginError: true,
+          console.log({
+            message: "Firebase Auth Error when signing in",
+            error: error
           });
-          console.log(error + " Invalid Credential");
+          logout();
         });
     } else {
-      this.setState({
-        loginError: true,
-      });
-      console.log("Only ACM Organization officers allowed access");
+      logout();
+      console.log("Unauthorized! Only ACM Officers permitted access!");
     }
   };
 
@@ -153,22 +137,11 @@ class Admin extends React.Component<AdminProps, AdminState> {
         });
       })
       .catch((error: firebase.auth.AuthError) => {
-        this.setState({
-          alert: true,
-          alertText: error + " Error occurred in signing out the user",
+        console.log({
+          message: "Error signing user out",
+          error: error
         });
-        console.log(error + " error signing user out");
       });
-  };
-
-  /**
-   * Reset the alert status once it has been closed
-   */
-  resetAlertStatus = () => {
-    this.setState({
-      alert: false,
-      alertText: "Unknown error occurred",
-    });
   };
 
   /**
@@ -183,9 +156,6 @@ class Admin extends React.Component<AdminProps, AdminState> {
           <AdminDashboard
             database={this.props.database}
             signOut={this.signOutUser}
-            alert={this.state.alert}
-            alertText={this.state.alertText}
-            resetAlertStatus={this.resetAlertStatus}
           />
         ) : (
           <LandingPage />
