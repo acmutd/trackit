@@ -14,7 +14,7 @@ interface AdminProps {
   auth0?: any;
 
   loggedIn?: boolean; //redux
-  login(username: string): void; //redux
+  login(): void; //redux
   logout(): void; //redux
 }
 
@@ -45,7 +45,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
         if (user) {
           //only ACM Organization Officers have access to admin
           if (user.email?.includes("@acmutd.co")) {
-            this.props.login("random");
+            this.props.login();
           } else {
             this.signOutUser(); //sign out if the user logged into firebase is not ACM Organization Officer
           }
@@ -96,7 +96,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
         .auth()
         .signInWithCustomToken(data.firebaseToken)
         .then((userFirebase) => {
-          this.props.login("random");
+          this.props.login();
           if (this.props.database.auth().currentUser?.email !== null) {
             //this user has signed in before (do nothing)
           } else {
@@ -173,8 +173,8 @@ const mapState = (state: any) => {
 
 const mapDispatch = (dispatch: (action: authInterface) => void) => {
   return {
-    login: (username: string) => {
-      dispatch(loginAction(username));
+    login: () => {
+      dispatch(loginAction());
     },
     logout: () => {
       dispatch(logoutAction());

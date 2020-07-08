@@ -5,14 +5,13 @@ import {
 } from "../actions/authentication";
 
 const authenticateReducer = (
-  state = { loggedIn: false, username: "" },
+  state = { loggedIn: false },
   action: authInterface
 ) => {
   switch (action.type) {
     case LOGIN:
       return {
         loggedIn: true,
-        username: action.payload,
       };
     case LOGOUT:
       return {
