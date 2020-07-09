@@ -11,6 +11,7 @@ import {
 } from "../../actions/user";
 import { loginAction, logoutAction } from "../../actions/authentication";
 import app from "../Config/firebase";
+import DashProps from "./UserDash"
 
 interface UserProps {
   auth0?: any;
@@ -195,7 +196,7 @@ class User extends React.Component<UserProps, UserState> {
               loginError={this.state.loginError}
             />
           ) : (
-            <UserDash Level_Enabled={this.state.Level_Enabled} user={userID} />
+            <UserDash {...DashProps} /> 
           )
         ) : (
           <LandingPage />

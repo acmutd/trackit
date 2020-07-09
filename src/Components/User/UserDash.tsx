@@ -11,9 +11,7 @@ import Spinner from "../Layout/Loading";
 import app from "../Config/firebase";
 
 interface DashProps {
-  Level_Enabled: number;
   user: string;
-
   workshopID?: string;
   workshop_data?: workshop;
 }
