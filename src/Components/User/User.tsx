@@ -6,7 +6,7 @@ import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../Pages/LandingPage";
 import { connect } from "react-redux";
 import { workshopAuthenticationAction, workshopDataAction } from "../../actions/user"
-import { dbTokenAction, loginAction } from "../../actions/authentication"
+import { loginAction } from "../../actions/authentication"
 import { StringDecoder } from "string_decoder";
 
 interface UserProps {
@@ -16,7 +16,6 @@ interface UserProps {
   updateWorkshopID: any;
   workshopID?: any;
   updateWorkshopData: any;
-  updateDatabase: any;
   login: any;
 }
 
@@ -51,7 +50,6 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   componentDidMount() {
-    this.props.updateDatabase(this.props.database)
     this.loginListener = this.props.database
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
@@ -262,11 +260,8 @@ const mapDispatchToProps = (dispatch: any) => {
     updateWorkshopData: (workshop_data: workshopFirebase) => {
       dispatch(workshopDataAction(workshop_data));
     },
-    updateDatabase: (database: any) => {
-      dispatch(dbTokenAction(database));
-    },
     login: (username: string) => {
-      dispatch(loginAction(username))
+      dispatch(loginAction())
     }
   }
 }
