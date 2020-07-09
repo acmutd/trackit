@@ -196,7 +196,7 @@ class User extends React.Component<UserProps, UserState> {
               loginError={this.state.loginError}
             />
           ) : (
-            <UserDash {...DashProps} /> 
+            <UserDash user={userID} /> 
           )
         ) : (
           <LandingPage />
