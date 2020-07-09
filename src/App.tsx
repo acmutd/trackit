@@ -4,23 +4,20 @@ import User from "./Components/User/User";
 import Pricing from "./Components/Pages/Pricing";
 import Error404 from "./Components/Pages/Error404";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
-import app from "./Components/Config/firebase";
-import LandingPage from "./Components/Pages/LandingPage";
 
 function App() {
   return (
     <div>
       <BrowserRouter>
         <Switch>
-          <Route path="/landing" component={LandingPage} exact />
           <Route
             path="/"
-            render={(props) => <User database={app} />}
+            render={(props) => <User />}
             exact
           />
           <Route
             path="/admin"
-            render={(props) => <Admin database={app} />}
+            render={(props) => <Admin />}
             exact
           />
           <Route path="/pricing" component={Pricing} exact />

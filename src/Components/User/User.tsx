@@ -5,19 +5,22 @@ import { workshopFirebase, workshop } from "../Config/interface";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../Pages/LandingPage";
 import { connect } from "react-redux";
-import { workshopAuthenticationAction, workshopDataAction } from "../../actions/user"
-import { loginAction, logoutAction } from "../../actions/authentication"
+import {
+  workshopAuthenticationAction,
+  workshopDataAction,
+} from "../../actions/user";
+import { loginAction, logoutAction } from "../../actions/authentication";
+import app from "../Config/firebase";
 
 interface UserProps {
-  database: firebase.app.App;
   auth0?: any;
 
-  workshop_data?:any;
+  workshop_data?: any;
   updateWorkshopID: any;
   workshopID?: any;
   updateWorkshopData: any;
 
-  loggedIn: boolean
+  loggedIn: boolean;
   login(): void;
   logout(): void;
 }
@@ -51,7 +54,7 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   componentDidMount() {
-    this.loginListener = this.props.database
+    this.loginListener = app
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
         if (user) {
@@ -99,20 +102,20 @@ class User extends React.Component<UserProps, UserState> {
     );
 
     const data = await response.json();
-    this.props.database
+    app
       .auth()
       .signInWithCustomToken(data.firebaseToken)
       .then((userFirebase) => {
         this.props.login();
-        if (this.props.database.auth().currentUser?.email !== null) {
+        if (app.auth().currentUser?.email !== null) {
           //this user has signed in before (do nothing)
         } else {
           //update fields if its the first time they are signing in
-          this.props.database.auth().currentUser?.updateProfile({
+          app.auth().currentUser?.updateProfile({
             displayName: user.nickname,
             photoURL: user.picture,
           });
-          this.props.database.auth().currentUser?.updateEmail(user.email);
+          app.auth().currentUser?.updateEmail(user.email);
         }
       })
       .catch((error: firebase.auth.AuthError) => {
@@ -121,7 +124,7 @@ class User extends React.Component<UserProps, UserState> {
         });
         console.log({
           error: error,
-          message: "Invalid Credentials"
+          message: "Invalid Credentials",
         });
       });
   };
@@ -141,7 +144,7 @@ class User extends React.Component<UserProps, UserState> {
     }
 
     //read the workshop data if present else trigger a alert
-    await this.props.database
+    await app
       .firestore()
       .collection("Workshop")
       .doc(workshop)
@@ -160,7 +163,7 @@ class User extends React.Component<UserProps, UserState> {
             Workshop_ID: doc.data()?.Workshop_ID,
             Workshop_Name: doc.data()?.Workshop_Name,
           };
-          this.props.updateWorkshopData(workshopObject)
+          this.props.updateWorkshopData(workshopObject);
           this.props.updateWorkshopID(workshop);
           this.setState({
             workshop_data: workshopObject,
@@ -171,7 +174,7 @@ class User extends React.Component<UserProps, UserState> {
       .catch((error: firebase.firestore.FirestoreError) => {
         console.log({
           error: error,
-          message: "Error occurred in reading back the workshop information"
+          message: "Error occurred in reading back the workshop information",
         });
       });
   };
@@ -179,11 +182,9 @@ class User extends React.Component<UserProps, UserState> {
   render() {
     const { isAuthenticated, isLoading, user } = this.props.auth0;
 
+    let userID: string = "";
     if (!isLoading && isAuthenticated && user) {
-      var userID: any = user.email || "";
-      if (userID !== null) {
-        userID = userID.substring(0, userID.lastIndexOf("@"));
-      }
+      userID = user.email.substring(0, user.email.lastIndexOf("@"));
     }
     return (
       <div>
@@ -194,11 +195,7 @@ class User extends React.Component<UserProps, UserState> {
               loginError={this.state.loginError}
             />
           ) : (
-            <UserDash
-              database={this.props.database}
-              Level_Enabled={this.state.Level_Enabled}
-              user={userID}
-            />
+            <UserDash Level_Enabled={this.state.Level_Enabled} user={userID} />
           )
         ) : (
           <LandingPage />
@@ -222,9 +219,9 @@ const mapDispatchToProps = (dispatch: any) => {
     logout: () => {
       dispatch(logoutAction());
     },
-  }
-}
- 
+  };
+};
+
 const mapStateToProps = (state: any) => {
   return {
     workshopID: state.userReducer.workshopID,

@@ -14,9 +14,9 @@ import {
   workshopFirebase,
 } from "../Config/interface";
 import * as FileSaver from "file-saver";
+import app from "../Config/firebase"
 
 interface AdminDashboardProps {
-  database: firebase.app.App;
   signOut(): void;
 }
 
@@ -129,7 +129,7 @@ class AdminDashboard extends React.Component<
 
   readWorkshopData = () => {
     //set listener for updates
-    this.workshopListener = this.props.database
+    this.workshopListener = app
       .firestore()
       .collection("Workshop")
       .onSnapshot((snapshot: firebase.firestore.QuerySnapshot) => {
@@ -160,7 +160,7 @@ class AdminDashboard extends React.Component<
    */
 
   readStudentData = () => {
-    this.progressListener = this.props.database
+    this.progressListener = app
       .firestore()
       .collection("StudentsAtWorkshop")
       .onSnapshot(
@@ -205,7 +205,7 @@ class AdminDashboard extends React.Component<
    * @param {number} level
    */
   updateWorkshopLevel = (workshopID: string, level: number) => {
-    this.props.database
+    app
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(workshopID)
@@ -220,7 +220,10 @@ class AdminDashboard extends React.Component<
           alert: true,
           alertText: error + " Error occurred in updating workshop level",
         });
-        console.log(error + " error occurred in updating workshop level");
+        console.log({
+          error: error,
+          message: "Error occurred in udpating workshop level"
+        });
       });
   };
 
@@ -230,7 +233,7 @@ class AdminDashboard extends React.Component<
    * @param {number} status
    */
   updateWorkshopStatus = (workshopID: string, status: boolean) => {
-    this.props.database
+    app
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(workshopID)
@@ -245,7 +248,10 @@ class AdminDashboard extends React.Component<
           alert: true,
           alertText: error + " Error occurred in updating workshop status",
         });
-        console.log(error + " error occurred in updating workshop status");
+        console.log({
+          error: error,
+          message: "Error occurred in updating workshop status"
+        });
       });
   };
 
@@ -255,7 +261,7 @@ class AdminDashboard extends React.Component<
    * @param {string} workshopID
    */
   clearStudentsAtWorkshop = (workshopID: string) => {
-    this.props.database
+    app
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(workshopID)
@@ -270,7 +276,10 @@ class AdminDashboard extends React.Component<
           alert: true,
           alertText: error + " Error occurred in erasing student progress",
         });
-        console.log(error + " error occured in erasing student progress");
+        console.log({
+          error: error,
+          message: "Error occurred in erasing student progress"
+        });
       });
   };
 
@@ -280,7 +289,7 @@ class AdminDashboard extends React.Component<
    * @param {*} workshopObject
    */
   updateWorkshop = (workshopID: string, workshopObject: workshop) => {
-    this.props.database
+    app
       .firestore()
       .collection("Workshop")
       .doc(workshopID)
@@ -300,11 +309,14 @@ class AdminDashboard extends React.Component<
           alert: true,
           alertText: error + " Error occurred in updating workshop",
         });
-        console.log(error + " error occurred in updating workshop");
+        console.log({
+          error: error,
+          message: "Error occurred in updating workshop"
+        });
       });
 
     // when a workshop gets updated, its progress gets reset to 1
-    this.props.database
+    app
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(workshopID)
@@ -319,7 +331,10 @@ class AdminDashboard extends React.Component<
           alert: true,
           alertText: error + " Error occurred in reseting workshop level to 1",
         });
-        console.log(error + " error occurred in reseting workshop level to 1");
+        console.log({
+          error: error,
+          message: "Error occurred in reseting workshop level to 1"
+        });
       });
   };
 
@@ -337,7 +352,7 @@ class AdminDashboard extends React.Component<
       Level_Enabled: 1,
       testProgress: {},
     };
-    this.props.database
+    app
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(workshopObject.Workshop_ID)
@@ -352,13 +367,14 @@ class AdminDashboard extends React.Component<
             error +
             " Error occurred in adding empty students at workshop object",
         });
-        console.log(
-          error + " error occured in adding empty sudents at workshop object"
-        );
+        console.log({
+          error: error,
+          message: "Error occurred in adding empty students at workshop object"
+        });
       });
 
     //creates the new workshop here
-    this.props.database
+app
       .firestore()
       .collection("Workshop")
       .doc(workshopObject.Workshop_ID)
@@ -371,7 +387,10 @@ class AdminDashboard extends React.Component<
           alert: true,
           alertText: error + " Error occurred in creating new workshop",
         });
-        console.log(error + " error occurred in creating new workshop");
+        console.log({
+          error: error,
+          message: "Error occurred in creating new workshop"
+        });
       });
   };
 
@@ -380,7 +399,7 @@ class AdminDashboard extends React.Component<
    * @param {string} workshopID
    */
   deleteWorkshopFirebase = (workshopID: string) => {
-    this.props.database
+    app
       .firestore()
       .collection("StudentsAtWorkshop")
       .doc(workshopID)
@@ -393,10 +412,13 @@ class AdminDashboard extends React.Component<
           alert: true,
           alertText: error + " Error occurred in deleting students at workshop",
         });
-        console.log(error + " error occurred in deleting students at workshop");
+        console.log({
+          error: error,
+          message: "Error occurred in deleting students at workshop"
+        });
       });
 
-    this.props.database
+    app
       .firestore()
       .collection("Workshop")
       .doc(workshopID)
@@ -409,7 +431,10 @@ class AdminDashboard extends React.Component<
           alert: true,
           alertText: error + " Error occurred in deleting workshop",
         });
-        console.log(error + " error occurred in deleting workshop");
+        console.log({
+          error: error,
+          message: "Error occurred in deleting workshop"
+        });
       });
   };
 

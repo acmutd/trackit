@@ -8,9 +8,9 @@ import {
 import { connect } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../Pages/LandingPage";
+import app from "../Config/firebase";
 
 interface AdminProps {
-  database: firebase.app.App;
   auth0?: any;
 
   loggedIn: boolean; //redux
@@ -39,7 +39,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
   }
 
   componentDidMount() {
-    this.loginListener = this.props.database
+    this.loginListener = app
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
         if (user) {
@@ -92,20 +92,20 @@ class Admin extends React.Component<AdminProps, AdminState> {
       );
 
       const data = await response.json();
-      this.props.database
+      app
         .auth()
         .signInWithCustomToken(data.firebaseToken)
         .then((userFirebase) => {
           this.props.login();
-          if (this.props.database.auth().currentUser?.email !== null) {
+          if (app.auth().currentUser?.email !== null) {
             //this user has signed in before (do nothing)
           } else {
             //update fields if its the first time they are signing in
-            this.props.database.auth().currentUser?.updateProfile({
+            app.auth().currentUser?.updateProfile({
               displayName: user.nickname,
               photoURL: user.picture,
             });
-            this.props.database.auth().currentUser?.updateEmail(user.email);
+            app.auth().currentUser?.updateEmail(user.email);
           }
         })
         .catch((error: firebase.auth.AuthError) => {
@@ -127,7 +127,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
   signOutUser = () => {
     const { logout } = this.props.auth0;
     logout();
-    this.props.database
+    app
       .auth()
       .signOut()
       .then(() => {
@@ -154,7 +154,6 @@ class Admin extends React.Component<AdminProps, AdminState> {
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
         {this.props.loggedIn ? (
           <AdminDashboard
-            database={this.props.database}
             signOut={this.signOutUser}
           />
         ) : (
