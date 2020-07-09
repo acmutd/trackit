@@ -1,19 +1,23 @@
 import * as React from "react";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
-import { workshopFirebase, workshop } from "../Config/interface";
+import { workshopFirebase, workshop, userFirebase } from "../Config/interface";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../Pages/LandingPage";
 import { connect } from "react-redux";
 import { workshopAuthenticationAction, workshopDataAction } from "../../actions/user"
+import { dbTokenAction, loginAction } from "../../actions/authentication"
 import { StringDecoder } from "string_decoder";
 
 interface UserProps {
   database: firebase.app.App;
   auth0?: any;
   workshop_data?:any;
-  updateData: any;
-  workshopID: any;
+  updateWorkshopID: any;
+  workshopID?: any;
+  updateWorkshopData: any;
+  updateDatabase: any;
+  login: any;
 }
 
 interface UserState {
@@ -47,11 +51,13 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   componentDidMount() {
-    this.props.updateData('some new data')
+    this.props.updateDatabase(this.props.database)
     this.loginListener = this.props.database
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
-        if (user) {
+        if (user?.email) {
+          console.log(user.email)
+          this.props.login(this.props.database.auth().currentUser?.email)
           this.setState({
             loggedIn: true,
           });
@@ -107,6 +113,7 @@ class User extends React.Component<UserProps, UserState> {
         this.setState({
           loggedIn: true,
         });
+        console.log('finally logging in')
         if (this.props.database.auth().currentUser?.email !== null) {
           //this user has signed in before (do nothing)
         } else {
@@ -132,6 +139,7 @@ class User extends React.Component<UserProps, UserState> {
    * @param {string} workshop
    */
   authenticateWorkshop = async (workshop: string) => {
+    console.log(workshop)
     console.log(this.props.workshopID)
     //reset the login error if any occurred during authentication
     //same variable gets reused to see if any errors happen in authenticating the workshop name
@@ -143,7 +151,7 @@ class User extends React.Component<UserProps, UserState> {
 
     console.log(this.state.loggedIn);
     //read the workshop data if present else trigger a alert
-    this.props.database
+    await this.props.database
       .firestore()
       .collection("Workshop")
       .doc(workshop)
@@ -162,6 +170,9 @@ class User extends React.Component<UserProps, UserState> {
             Workshop_ID: doc.data()?.Workshop_ID,
             Workshop_Name: doc.data()?.Workshop_Name,
           };
+          console.log("dispatching evnts with " + workshopObject)
+          this.props.updateWorkshopData(workshopObject)
+          this.props.updateWorkshopID(workshop);
           this.setState({
             workshop_data: workshopObject,
             workshopID: workshop,
@@ -207,6 +218,10 @@ class User extends React.Component<UserProps, UserState> {
   };
 
   render() {
+    console.log("workshop data")
+    console.log(this.props.workshop_data)
+    console.log(this.props.workshopID)
+
     const { isAuthenticated, isLoading, user } = this.props.auth0;
 
     if (!isLoading && isAuthenticated && user) {
@@ -225,8 +240,6 @@ class User extends React.Component<UserProps, UserState> {
             />
           ) : (
             <UserDash
-              workshopID={this.state.workshopID}
-              workshop_data={this.state.workshop_data}
               database={this.props.database}
               Level_Enabled={this.state.Level_Enabled}
               signOut={this.signOutUser}
@@ -246,13 +259,22 @@ const mapDispatchToProps = (dispatch: any) => {
     updateWorkshopID: (workshopID: string) => {
       dispatch(workshopAuthenticationAction(workshopID));
     },
+    updateWorkshopData: (workshop_data: workshopFirebase) => {
+      dispatch(workshopDataAction(workshop_data));
+    },
+    updateDatabase: (database: any) => {
+      dispatch(dbTokenAction(database));
+    },
+    login: (username: string) => {
+      dispatch(loginAction(username))
+    }
   }
 }
  
 const mapStateToProps = (state: any) => {
   return {
     workshopID: state.userReducer.workshopID,
-    username: state.authenticateReducer.username
+    workshop_data: state.userReducer.workshop_data
   };
 };
 

@@ -5,11 +5,14 @@ import Loading from "../Layout/Loading";
 import UserProgressBar from "./UserProgressBar";
 import { Row, Col, Card, Button, Container, Alert } from "react-bootstrap";
 import { workshop, studentsAtWorkshopFirebase } from "../Config/interface"
+import { connect } from "react-redux";
+import { withAuth0 } from "@auth0/auth0-react";
+import Spinner from "../Layout/Loading"
 
 
 interface DashProps {
   workshopID:string,
-  workshop_data: workshop,
+  workshop_data?: workshop,
   database: firebase.app.App,
   Level_Enabled: number,
   signOut(): void,
@@ -159,7 +162,17 @@ class UserDash extends React.Component<DashProps, DashState> {
   };
 
   render() {
-    let workshop_levels = this.props.workshop_data.Level_Titles.map(
+    console.log(this.props.workshop_data)
+    if(this.props.workshop_data === undefined)
+    {
+      return (
+        <div>
+          <Spinner />
+        </div>
+      )
+    }
+
+    let workshop_levels = this.props.workshop_data?.Level_Titles !== undefined ? ( this.props.workshop_data?.Level_Titles.map(
       (item: string, index: number) => {
         if (this.state.currentPage === index) {
           return (
@@ -188,10 +201,10 @@ class UserDash extends React.Component<DashProps, DashState> {
         }
       },
       this.state
-    );
+    )) : "";
 
     // display workshop level descriptions with HTML formatting
-    let workshop_level_text = (
+    let workshop_level_text = this.props.workshop_data?.Level_Descriptions !== undefined ? (
       <div
         dangerouslySetInnerHTML={{
           __html: this.props.workshop_data.Level_Descriptions[
@@ -199,11 +212,11 @@ class UserDash extends React.Component<DashProps, DashState> {
           ],
         }}
       />
-    );
+    ) : "";
 
-    let workshop_level_title = this.props.workshop_data.Level_Titles[
+    let workshop_level_title = this.props.workshop_data?.Level_Titles !== undefined ? this.props.workshop_data.Level_Titles[
       this.state.currentPage
-    ];
+    ] : "";
 
     var displayNext =
       (this.state.Level_Enabled > this.state.userProgress &&
@@ -227,7 +240,7 @@ class UserDash extends React.Component<DashProps, DashState> {
 
     return (
       <div>
-        <NavBar dashboard={true} signOut={this.props.signOut} />
+        <NavBar />
         <Container fluid className="text-center p-3">
           {this.state.alert ? (
             <div className="m-1 mt-3">
@@ -311,4 +324,21 @@ class UserDash extends React.Component<DashProps, DashState> {
   }
 }
 
-export default UserDash;
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    // updateWorkshopID: (workshopID: string) => {
+    //   dispatch(workshopAuthenticationAction(workshopID));
+    // },
+    // updateWorkshopData: (workshop_data: workshopFirebase) => {
+    //   dispatch(workshopDataAction(workshop_data));
+    // }
+  }
+}
+ 
+const mapStateToProps = (state: any) => {
+  return {
+    workshopID: state.userReducer.workshopID,
+    workshop_data: state.userReducer.workshop_data
+  };
+}
+export default connect(mapStateToProps, mapDispatchToProps)(withAuth0(UserDash));

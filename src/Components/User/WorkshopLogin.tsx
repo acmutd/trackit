@@ -65,7 +65,7 @@ class WorkshopLogin extends React.Component<WorkshopLoginProps, WorkshopLoginSta
   render() {
     return (
       <div>
-        <NavBar dashboard={false} signOut={() => {console.log("placeholder function")}}/>
+        <NavBar />
         <Container fluid>
           <div className="m-1 mt-3 m-lg-5 mt-lg-5 p-5 floating-icon">
             {this.state.loginError ? (

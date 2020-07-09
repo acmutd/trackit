@@ -11,6 +11,7 @@ import {
     switch (action.type) {
       case WORKSHOP:
         return {
+          ...state,
           workshopID: action.payload,
         };
       case WORKSHOP_DATA:
