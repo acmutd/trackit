@@ -162,7 +162,6 @@ class UserDash extends React.Component<DashProps, DashState> {
   };
 
   render() {
-    console.log(this.props.workshop_data)
     if(this.props.workshop_data === undefined)
     {
       return (
@@ -172,7 +171,7 @@ class UserDash extends React.Component<DashProps, DashState> {
       )
     }
 
-    let workshop_levels = this.props.workshop_data?.Level_Titles !== undefined ? ( this.props.workshop_data?.Level_Titles.map(
+    let workshop_levels = this.props.workshop_data?.Level_Titles.map(
       (item: string, index: number) => {
         if (this.state.currentPage === index) {
           return (
@@ -201,10 +200,10 @@ class UserDash extends React.Component<DashProps, DashState> {
         }
       },
       this.state
-    )) : "";
+    )
 
     // display workshop level descriptions with HTML formatting
-    let workshop_level_text = this.props.workshop_data?.Level_Descriptions !== undefined ? (
+    let workshop_level_text = (
       <div
         dangerouslySetInnerHTML={{
           __html: this.props.workshop_data.Level_Descriptions[
@@ -212,11 +211,9 @@ class UserDash extends React.Component<DashProps, DashState> {
           ],
         }}
       />
-    ) : "";
+    )
 
-    let workshop_level_title = this.props.workshop_data?.Level_Titles !== undefined ? this.props.workshop_data.Level_Titles[
-      this.state.currentPage
-    ] : "";
+    let workshop_level_title = this.props.workshop_data.Level_Titles[this.state.currentPage]
 
     var displayNext =
       (this.state.Level_Enabled > this.state.userProgress &&
@@ -326,12 +323,7 @@ class UserDash extends React.Component<DashProps, DashState> {
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
-    // updateWorkshopID: (workshopID: string) => {
-    //   dispatch(workshopAuthenticationAction(workshopID));
-    // },
-    // updateWorkshopData: (workshop_data: workshopFirebase) => {
-    //   dispatch(workshopDataAction(workshop_data));
-    // }
+
   }
 }
  
