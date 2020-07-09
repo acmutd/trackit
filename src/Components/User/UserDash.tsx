@@ -6,7 +6,6 @@ import UserProgressBar from "./UserProgressBar";
 import { Row, Col, Card, Button, Container, Alert } from "react-bootstrap";
 import { workshop, studentsAtWorkshopFirebase } from "../Config/interface";
 import { connect } from "react-redux";
-import { withAuth0 } from "@auth0/auth0-react";
 import Spinner from "../Layout/Loading";
 import app from "../Config/firebase";
 
@@ -351,4 +350,4 @@ const mapStateToProps = (state: any) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withAuth0(UserDash));
+)(UserDash);
