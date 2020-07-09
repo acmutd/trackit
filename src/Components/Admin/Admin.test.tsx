@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import store from "../../store/store";
 
 describe("Render testing", () => {
-  it("shallow render without crashing", () => {
+  it("shallow render without crashing (doesn't actually do anything)", () => {
     // const component = shallow(<Admin database={firebase} />);
 
     // expect(component).toMatchSnapshot();
