@@ -4,7 +4,8 @@ import userReducer from "./user"
 
 export interface RootReducer {
   loggedIn: boolean;
-  username: string;
+  workshopID: string;
+  workshop_data: {};
 }
 
 const appState = combineReducers({

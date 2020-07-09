@@ -13,7 +13,7 @@ interface AdminProps {
   database: firebase.app.App;
   auth0?: any;
 
-  loggedIn?: boolean; //redux
+  loggedIn: boolean; //redux
   login(): void; //redux
   logout(): void; //redux
 }
@@ -167,8 +167,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
 
 const mapState = (state: any) => {
   return {
-    loggedIn: state.authenticateReducer.loggedIn,
-    username: state.authenticateReducer.username
+    loggedIn: state.authenticateReducer.loggedIn
   };
 };
 

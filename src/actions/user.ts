@@ -3,7 +3,7 @@ export const WORKSHOP_DATA = "WORKSHOP_DATA";
 
 export interface userInterface {
   type: typeof WORKSHOP | typeof WORKSHOP_DATA;
-  payload?: string;
+  payload: string;
 }
 
 export const workshopAuthenticationAction = (workshopID: any): userInterface => {

@@ -11,12 +11,12 @@ import Spinner from "../Layout/Loading"
 
 
 interface DashProps {
-  workshopID:string,
-  workshop_data?: workshop,
   database: firebase.app.App,
   Level_Enabled: number,
-  signOut(): void,
   user: string,
+
+  workshopID:string,
+  workshop_data?: workshop,
 }
 
 interface DashState {
@@ -112,7 +112,10 @@ class UserDash extends React.Component<DashProps, DashState> {
           alert: true,
           alertText: error + " Error occurred in updating user progress",
         });
-        console.log(error + "error occurred in updating user progress");
+        console.log({
+          error: error,
+          message: "Error occurred in updating student progress"
+        });
       });
   };
 
@@ -227,7 +230,6 @@ class UserDash extends React.Component<DashProps, DashState> {
     if (this.state.userProgress === -1) {
       return (
         <UserWelcome
-          signOut={this.props.signOut}
           Workshop_Name={this.props.workshop_data.Workshop_Name}
           user={this.props.user}
           markCompleted={this.markCompleted}

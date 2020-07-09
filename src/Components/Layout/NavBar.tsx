@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { logoutAction } from "../../actions/authentication";
-import { connect } from "react-redux"
+import { connect } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
 import app from "../../Components/Config/firebase";
 
@@ -22,10 +22,10 @@ interface NavBarProps {
 
 type navlink = {
   name: string;
-  link: string; 
+  link: string;
 };
 
-var Navlink = [
+var Navlink: navlink[] = [
   {
     name: "Home",
     link: "/",
@@ -38,39 +38,36 @@ var Navlink = [
     name: "Pricing",
     link: "/pricing",
   },
-]
+];
 let navlinks = Navlink.map((item, index) => (
   <Nav.Link href={item.link} key={index}>
     {item.name}
   </Nav.Link>
 ));
 
-// interface NavBarState {
-//   Navlink: navlink[];
-// }
-
 /**
  * This is the <NavBar /> used at the top, uses the bootstrap components but extracted it to a separate component
  */
 class NavBar extends React.Component<NavBarProps, {}> {
-
   signOut = () => {
-    console.log("signing Out");
-        const { logout } = this.props.auth0;
-        app.auth()
-          .signOut()
-          .then(() => {
-            logout();
-            this.props.signOutRedux();
-          })
-          .catch((error: firebase.firestore.FirestoreError) => {
-            console.log(error + " error signing user out");
-          });
-  }
+    const { logout } = this.props.auth0;
+    app
+      .auth()
+      .signOut()
+      .then(() => {
+        logout();
+        this.props.signOutRedux();
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        console.log({
+          error: error,
+          message: "Error signing out the user",
+        });
+      });
+  };
 
   render() {
-    console.log(this.props.database)
-    return(
+    return (
       <div>
         <Navbar bg="dark" variant="dark" expand="md">
           <Navbar.Brand>TrackIT</Navbar.Brand>
@@ -107,7 +104,7 @@ class NavBar extends React.Component<NavBarProps, {}> {
                 />
               </Nav.Link>
               {this.props.loggedIn ? (
-                <Button variant="dark" onClick={()=>this.signOut()}>
+                <Button variant="dark" onClick={() => this.signOut()}>
                   Sign Out
                 </Button>
               ) : (
@@ -117,22 +114,21 @@ class NavBar extends React.Component<NavBarProps, {}> {
           </Navbar.Collapse>
         </Navbar>
       </div>
-    )
+    );
   }
 }
 
 const mapDispatchToProps = (dispatch: any) => {
   return {
     signOutRedux: () => {
-      dispatch(logoutAction())
+      dispatch(logoutAction());
     },
-  }
-}
- 
+  };
+};
+
 const mapStateToProps = (state: any) => {
   return {
     loggedIn: state.authenticateReducer.loggedIn,
-    database: state.authenticateReducer.database
   };
 };
 
