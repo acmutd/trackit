@@ -6,32 +6,22 @@ import WorkshopEdit from "../Workshop/WorkshopEdit";
 import CardTile from "../Workshop/CardTile";
 import Loading from "../Layout/Loading";
 import { Row, Col, Container, Alert } from "react-bootstrap";
-import { workshop, studentsAtWorkshop, CardData } from "../Config/interface";
+import {
+  workshop,
+  studentsAtWorkshop,
+  CardData,
+  studentsAtWorkshopFirebase,
+  workshopFirebase,
+} from "../Config/interface";
 import * as FileSaver from "file-saver";
+import app from "../Config/firebase"
 
 interface AdminDashboardProps {
-  workshop_data: workshop[];
-  student_data: studentsAtWorkshop[];
-  readStudentData(): void;
-  readWorkshopData(): void;
-  updateWorkshop(workshopID: string, workshopObject: workshop): void;
-  updateLevel(workshopID: string, level: number): void;
-  createWorkshop(workshopObject: workshop): void;
-  deleteWorkshop(workshopID: string): void;
-  updateStatus(workshopID: string, status: boolean): void;
-  clearWorkshop(workshopID: string): void;
-  progressListener: firebase.Unsubscribe;
-  workshopListener: firebase.Unsubscribe;
   signOut(): void;
-  dataLoaded: boolean;
-  alert: boolean;
-  alertText: string;
-  resetAlertStatus(): void;
 }
 
 interface AdminDashboardState {
   workshops: workshop[];
-  dataLoaded: boolean;
   cards: CardData[];
   studentsAtWorkshop: studentsAtWorkshop[];
   viewWorkshop: boolean;
@@ -39,6 +29,8 @@ interface AdminDashboardState {
   addWorkshopDialogState: boolean;
   alert: boolean;
   alertText: string;
+  workshopsLoaded: boolean;
+  studentsLoaded: boolean;
 }
 
 /**
@@ -51,6 +43,7 @@ class AdminDashboard extends React.Component<
 > {
   constructor(props: AdminDashboardProps) {
     super(props);
+
     let openDialog = () => {
       this.showHideAddEditDialog();
     };
@@ -83,69 +76,367 @@ class AdminDashboard extends React.Component<
       disabled: true,
     };
 
+    let githubRedirect = () => {
+      window.location.href = "https://github.com/acmutd/TrackIT";
+    };
+
     let cthird = {
       title: "Social",
       subtitle: "Media Tools",
       description: "Access resources and social media",
-      links: [placeholderFunction, placeholderFunction, placeholderFunction], //functions
+      links: [githubRedirect, placeholderFunction, placeholderFunction], //functions
       linkText: ["Github", "LinkedIn", "Instagram"],
       disabled: true,
     };
 
     this.state = {
       workshops: [],
-      dataLoaded: false,
       cards: [cfirst, csecond, cthird],
       studentsAtWorkshop: [],
       viewWorkshop: false, //determines whether the expanded view is open or not
       workshopView: 1, //this determines the index of the workshop which has the expanded view
       addWorkshopDialogState: false, //determines whether the editing dialog is open or not
-
       alert: false,
       alertText: "Unknown error occurred",
+      workshopsLoaded: false,
+      studentsLoaded: false,
     };
   }
 
-  // if the data updates due to the listeners on the Workshop and StudentsAtWorkshop collection this gets called
-  componentDidUpdate(prevProps: AdminDashboardProps) {
-    if (this.props.student_data !== prevProps.student_data) {
-      this.setState({
-        studentsAtWorkshop: this.props.student_data,
-      });
-    }
-
-    if (this.props.workshop_data !== prevProps.workshop_data) {
-      this.setState({
-        workshops: this.props.workshop_data,
-      });
-    }
-    if (this.props.dataLoaded !== prevProps.dataLoaded) {
-      this.setState({
-        dataLoaded: this.props.dataLoaded,
-      });
-    }
-    if (this.props.alert !== prevProps.alert) {
-      this.setState({
-        alert: this.props.alert,
-        alertText: this.props.alertText,
-      });
-    }
-  }
+  progressListener?: firebase.Unsubscribe;
+  workshopListener?: firebase.Unsubscribe;
 
   componentDidMount() {
-    this.props.readWorkshopData();
-    this.props.readStudentData();
+    this.readWorkshopData();
+    this.readStudentData();
   }
 
   // remove the progress listeners if the page crashes or the user signs out
   componentWillUnmount() {
-    if (this.props.progressListener) {
-      this.props.progressListener();
+    if (this.progressListener) {
+      this.progressListener();
     }
-    if (this.props.workshopListener) {
-      this.props.workshopListener();
+    if (this.workshopListener) {
+      this.workshopListener();
     }
   }
+
+  /**
+   * Read workshop data from Workshops collection on firestore
+   * Sets listener to see if any updates are being made
+   * Calls readStudentData once it has finished reading the workshop data
+   */
+
+  readWorkshopData = () => {
+    //set listener for updates
+    this.workshopListener = app
+      .firestore()
+      .collection("Workshop")
+      .onSnapshot((snapshot: firebase.firestore.QuerySnapshot) => {
+        let arr: workshop[] = [];
+        //save each workshop into an array
+        snapshot.forEach((snap: workshopFirebase) => {
+          let workshopObject: workshop = {
+            Date: snap.data()?.Date,
+            Level_Descriptions: snap.data()?.Level_Descriptions,
+            Level_Titles: snap.data()?.Level_Titles,
+            Number_Of_Levels: snap.data()?.Number_Of_Levels,
+            Workshop_ID: snap.data()?.Workshop_ID,
+            Workshop_Name: snap.data()?.Workshop_Name,
+          };
+          arr.push(workshopObject);
+        });
+        //save array in state
+        this.setState({
+          workshops: arr,
+          workshopsLoaded: true,
+        });
+      });
+  };
+
+  /**
+   * Reads Student progress information from StudentsAtWorkshop collection on firestore
+   * Sets listener to monitor for updates
+   */
+
+  readStudentData = () => {
+    this.progressListener = app
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .onSnapshot(
+        (
+          snapshot: firebase.firestore.QuerySnapshot<
+            firebase.firestore.DocumentData
+          >
+        ) => {
+          let arr: studentsAtWorkshop[] = [];
+          snapshot.forEach((snap: studentsAtWorkshopFirebase) => {
+            //split map into two parallel arrays for easy use in front-end
+            let students = [];
+            let progress = [];
+            for (var x in snap.data().testProgress) {
+              var user = decodeURIComponent(x).replace("%2E", ".");
+              students.push(user);
+              progress.push(snap.data().testProgress[x]);
+            }
+
+            let studentsObject: studentsAtWorkshop = {
+              Students: students,
+              Progress: progress,
+              Enabled: snap.data().Enabled,
+              Workshop_ID: snap.data().Workshop_ID,
+              Level_Enabled: snap.data().Level_Enabled,
+            };
+            arr.push(studentsObject);
+          });
+
+          //save data in state
+          this.setState({
+            studentsAtWorkshop: arr,
+            studentsLoaded: true,
+          });
+        }
+      );
+  };
+
+  /**
+   * If workshop level gets incremented or decremented this function gets called to update Level_Enabled on firestore
+   * @param {string} workshopID
+   * @param {number} level
+   */
+  updateWorkshopLevel = (workshopID: string, level: number) => {
+    app
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(workshopID)
+      .update({
+        Level_Enabled: level,
+      })
+      .then(() => {
+        console.log("workshop level successfully updated");
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        this.setState({
+          alert: true,
+          alertText: error + " Error occurred in updating workshop level",
+        });
+        console.log({
+          error: error,
+          message: "Error occurred in udpating workshop level"
+        });
+      });
+  };
+
+  /**
+   * If workshop gets toggled between Enabled/Disabled this function gets called to update in firestore
+   * @param {string} workshopID
+   * @param {number} status
+   */
+  updateWorkshopStatus = (workshopID: string, status: boolean) => {
+    app
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(workshopID)
+      .update({
+        Enabled: status,
+      })
+      .then(() => {
+        console.log("workshop status successfully updated");
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        this.setState({
+          alert: true,
+          alertText: error + " Error occurred in updating workshop status",
+        });
+        console.log({
+          error: error,
+          message: "Error occurred in updating workshop status"
+        });
+      });
+  };
+
+  /**
+   * map<student, progress> on firestore gets cleared when this function gets called
+   * All students signed in for a given workshop have their progress erased and removed
+   * @param {string} workshopID
+   */
+  clearStudentsAtWorkshop = (workshopID: string) => {
+    app
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(workshopID)
+      .update({
+        testProgress: {},
+      })
+      .then(() => {
+        console.log("All student progress successfully cleared");
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        this.setState({
+          alert: true,
+          alertText: error + " Error occurred in erasing student progress",
+        });
+        console.log({
+          error: error,
+          message: "Error occurred in erasing student progress"
+        });
+      });
+  };
+
+  /**
+   * When a workshop gets updated, all fields saved on firestore get overwritten by the new edits
+   * @param {*} workshopID
+   * @param {*} workshopObject
+   */
+  updateWorkshop = (workshopID: string, workshopObject: workshop) => {
+    app
+      .firestore()
+      .collection("Workshop")
+      .doc(workshopID)
+      .set({
+        Date: workshopObject.Date,
+        Level_Descriptions: workshopObject.Level_Descriptions,
+        Level_Titles: workshopObject.Level_Titles,
+        Number_Of_Levels: workshopObject.Number_Of_Levels,
+        Workshop_Name: workshopObject.Workshop_Name,
+        Workshop_ID: workshopObject.Workshop_ID,
+      })
+      .then(() => {
+        console.log("updating workshop successful");
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        this.setState({
+          alert: true,
+          alertText: error + " Error occurred in updating workshop",
+        });
+        console.log({
+          error: error,
+          message: "Error occurred in updating workshop"
+        });
+      });
+
+    // when a workshop gets updated, its progress gets reset to 1
+    app
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(workshopID)
+      .update({
+        Level_Enabled: 1,
+      })
+      .then(() => {
+        console.log("workshop level successfully reset to 1");
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        this.setState({
+          alert: true,
+          alertText: error + " Error occurred in reseting workshop level to 1",
+        });
+        console.log({
+          error: error,
+          message: "Error occurred in reseting workshop level to 1"
+        });
+      });
+  };
+
+  /**
+   * creates a new workshop in Workshop collection on firestore
+   * Should fail if a workshop already exists with the same name
+   * @param {*} workshopObject
+   */
+  createNewWorkshop = (workshopObject: workshop) => {
+    //creates a blank object for the number of students in a workshop
+    //this happens first to avoid issues due to the async nature of the JS listener
+    let tempStudentWorkshop = {
+      Workshop_ID: workshopObject.Workshop_ID,
+      Enabled: false,
+      Level_Enabled: 1,
+      testProgress: {},
+    };
+    app
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(workshopObject.Workshop_ID)
+      .set(tempStudentWorkshop)
+      .then(() => {
+        console.log("empty students at workshop entry created");
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        this.setState({
+          alert: true,
+          alertText:
+            error +
+            " Error occurred in adding empty students at workshop object",
+        });
+        console.log({
+          error: error,
+          message: "Error occurred in adding empty students at workshop object"
+        });
+      });
+
+    //creates the new workshop here
+app
+      .firestore()
+      .collection("Workshop")
+      .doc(workshopObject.Workshop_ID)
+      .set(workshopObject)
+      .then(() => {
+        console.log("new workshop created");
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        this.setState({
+          alert: true,
+          alertText: error + " Error occurred in creating new workshop",
+        });
+        console.log({
+          error: error,
+          message: "Error occurred in creating new workshop"
+        });
+      });
+  };
+
+  /**
+   * deletes a workshop from both the workshop and the studentsAtworkshop collection
+   * @param {string} workshopID
+   */
+  deleteWorkshopFirebase = (workshopID: string) => {
+    app
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(workshopID)
+      .delete()
+      .then(() => {
+        console.log("successfully deleted students at workshop");
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        this.setState({
+          alert: true,
+          alertText: error + " Error occurred in deleting students at workshop",
+        });
+        console.log({
+          error: error,
+          message: "Error occurred in deleting students at workshop"
+        });
+      });
+
+    app
+      .firestore()
+      .collection("Workshop")
+      .doc(workshopID)
+      .delete()
+      .then(() => {
+        console.log("successfully deleted workshop");
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        this.setState({
+          alert: true,
+          alertText: error + " Error occurred in deleting workshop",
+        });
+        console.log({
+          error: error,
+          message: "Error occurred in deleting workshop"
+        });
+      });
+  };
 
   /**
    * Changes the viewWorkshop state to true/false, this function is passed in as props to the <WorkshopBar /> Component which will return the its respective Workshop_ID back as param
@@ -166,7 +457,7 @@ class AdminDashboard extends React.Component<
    * @param {string} Workshop_ID
    */
   enableWorkshop = (Workshop_ID: string) => {
-    this.props.updateStatus(Workshop_ID, true);
+    this.updateWorkshopStatus(Workshop_ID, true);
   };
 
   /**
@@ -174,7 +465,7 @@ class AdminDashboard extends React.Component<
    * @param {string} Workshop_ID
    */
   disableWorkshop = (Workshop_ID: string) => {
-    this.props.updateStatus(Workshop_ID, false);
+    this.updateWorkshopStatus(Workshop_ID, false);
   };
 
   /**
@@ -182,7 +473,7 @@ class AdminDashboard extends React.Component<
    * @param {string} Workshop_ID
    */
   clearAllStudents = (Workshop_ID: string) => {
-    this.props.clearWorkshop(Workshop_ID);
+    this.clearStudentsAtWorkshop(Workshop_ID);
   };
 
   /**
@@ -201,7 +492,7 @@ class AdminDashboard extends React.Component<
         workshops: workshopArray,
       },
       function (this: AdminDashboard) {
-        this.props.deleteWorkshop(Workshop_ID);
+        this.deleteWorkshopFirebase(Workshop_ID);
       }
     );
   };
@@ -212,7 +503,7 @@ class AdminDashboard extends React.Component<
    */
   incrementLevel = (Workshop_ID: string) => {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
-    this.props.updateLevel(
+    this.updateWorkshopLevel(
       Workshop_ID,
       this.state.studentsAtWorkshop[workshopIndex].Level_Enabled + 1
     );
@@ -224,7 +515,7 @@ class AdminDashboard extends React.Component<
    */
   decrementLevel = (Workshop_ID: string) => {
     let workshopIndex = this.findWorkshopIndex(Workshop_ID);
-    this.props.updateLevel(
+    this.updateWorkshopLevel(
       Workshop_ID,
       this.state.studentsAtWorkshop[workshopIndex].Level_Enabled - 1
     );
@@ -254,7 +545,10 @@ class AdminDashboard extends React.Component<
     }
 
     //sets the date object as a string
-    let newObject = {...data, Date: new Date(data.Date.seconds as number * 1000).toDateString()};
+    let newObject = {
+      ...data,
+      Date: new Date((data.Date.seconds as number) * 1000).toDateString(),
+    };
 
     // Merging both workshop data and student data into one json object
     let export_data = {
@@ -298,7 +592,10 @@ class AdminDashboard extends React.Component<
       }
 
       //sets the date object as a string
-      let newObject = {...data, Date: new Date(data.Date.seconds as number * 1000).toDateString()};
+      let newObject = {
+        ...data,
+        Date: new Date((data.Date.seconds as number) * 1000).toDateString(),
+      };
 
       // Merging both workshop data and student data into one json object that is pushed to the main object
       big_data.push({
@@ -348,7 +645,9 @@ class AdminDashboard extends React.Component<
    * @param {*} Workshop_Object
    */
   addEditWorkshop = (Workshop_Object: workshop) => {
-    let workshopIndex: number = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
+    let workshopIndex: number = this.findWorkshopIndex(
+      Workshop_Object.Workshop_ID
+    );
     //the slice commands below ensure that when the workshop is saved then only the correct number of levels are passed back
     //For example if the workshop used to have 5 levels but was edited to only have 4 then the slice commands will remove the extra one
     Workshop_Object.Level_Titles = Workshop_Object.Level_Titles.slice(
@@ -361,9 +660,9 @@ class AdminDashboard extends React.Component<
     );
     // if the workshop does not exist then create it else update it
     if (workshopIndex === -1) {
-      this.props.createWorkshop(Workshop_Object);
+      this.createNewWorkshop(Workshop_Object);
     } else {
-      this.props.updateWorkshop(Workshop_Object.Workshop_ID, Workshop_Object);
+      this.updateWorkshop(Workshop_Object.Workshop_ID, Workshop_Object);
     }
   };
 
@@ -396,6 +695,16 @@ class AdminDashboard extends React.Component<
     return studentIndex;
   };
 
+  /**
+   * Reset the alert status once it has been closed
+   */
+  resetAlertStatus = () => {
+    this.setState({
+      alert: false,
+      alertText: "Unknown error occurred",
+    });
+  };
+
   render() {
     //maps out the array into UI components, this is for the admin page that shows all workshops which is why expandState is set to false
     let workshopList = this.state.workshops.map((item, index) => (
@@ -417,13 +726,13 @@ class AdminDashboard extends React.Component<
 
     return (
       <div>
-        <NavBar dashboard={true} signOut={this.props.signOut} />
+        <NavBar />
         <Container fluid>
           {this.state.alert ? (
             <div className="m-1 mt-3 m-lg-5">
               <Alert
                 variant="danger"
-                onClose={() => this.props.resetAlertStatus()}
+                onClose={() => this.resetAlertStatus()}
                 dismissible
               >
                 {this.state.alertText}
@@ -432,7 +741,7 @@ class AdminDashboard extends React.Component<
           ) : (
             ""
           )}
-          {!this.state.dataLoaded ? (
+          {!this.state.studentsLoaded && this.state.workshopsLoaded ? (
             <Loading />
           ) : (
             <>

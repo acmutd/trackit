@@ -1,40 +1,48 @@
 import * as React from "react";
-import UserAuth from "./UserAuth";
 import UserDash from "./UserDash";
 import WorkshopLogin from "./WorkshopLogin";
-import { studentsAtWorkshopFirebase, workshopFirebase, workshop } from "../Config/interface"
+import { workshopFirebase, workshop } from "../Config/interface";
+import { withAuth0 } from "@auth0/auth0-react";
+import LandingPage from "../Pages/LandingPage";
+import { connect } from "react-redux";
+import {
+  workshopAuthenticationAction,
+  workshopDataAction,
+} from "../../actions/user";
+import { loginAction, logoutAction } from "../../actions/authentication";
+import app from "../Config/firebase";
 
 interface UserProps {
-  database: firebase.app.App,
+  auth0?: any;
+
+  workshop_data?: any;
+  updateWorkshopID: any;
+  workshopID?: any;
+  updateWorkshopData: any;
+
+  loggedIn: boolean;
+  login(): void;
+  logout(): void;
 }
 
 interface UserState {
-  loggedIn: boolean,
-  workshopID: string,
-  workshop_data: workshop | null, //null when unitialized, perhaps we may want to create a dummy workshop in the constructor (or as default props)
-  Level_Enabled: number,
-  dataLoaded: boolean,
-  Enabled: boolean,
-  loginError: boolean,
-  initialProgress: number,
-  alert: boolean,
-  alertText: string
+  workshopID: string;
+  workshop_data: workshop | null; //null when unitialized, perhaps we may want to create a dummy workshop in the constructor (or as default props)
+  Level_Enabled: number;
+  dataLoaded: boolean;
+  Enabled: boolean;
+  loginError: boolean;
 }
 
 class User extends React.Component<UserProps, UserState> {
   state: UserState = {
-    loggedIn: false, //once authentication happens this will toggle to true
     workshopID: "",
     workshop_data: null,
     Level_Enabled: 0,
     dataLoaded: false,
     Enabled: false,
     loginError: false,
-    initialProgress: 0,
-    alert: false,
-    alertText: "Unknown error occurred",
   };
-  progressListener?: firebase.Unsubscribe;
   loginListener?: firebase.Unsubscribe;
 
   /**
@@ -42,35 +50,35 @@ class User extends React.Component<UserProps, UserState> {
    */
   componentWillUnmount() {
     //remove progress listener
-    if (this.progressListener) this.progressListener();
     if (this.loginListener) this.loginListener();
   }
 
   componentDidMount() {
-    this.loginListener = this.props.database
+    this.loginListener = app
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
         if (user) {
-          console.log("logging in user");
-          // user is signed in
-          this.setState({
-            loggedIn: true,
-          });
+          this.props.login();
         } else {
-          this.setState({
-            loggedIn: false,
-          });
+          this.props.logout();
         }
       });
   }
+  componentDidUpdate() {
+    const { isAuthenticated, isLoading } = this.props.auth0;
+    if (!isLoading && isAuthenticated && !this.props.loggedIn) {
+      this.authenticate();
+    }
+  }
 
   /**
+   * This function runs if the user has authenticated themselves on auth0 but not on firebase
    * Contacts firestore and authenticates the user
    * Sets user data if user login works
    * @param {string} email
    * @param {string} password
    */
-  authenticate = (email: string, password: string) => {
+  authenticate = async () => {
     //resets the state of login error to be false
     if (this.state.loginError) {
       this.setState({
@@ -78,15 +86,46 @@ class User extends React.Component<UserProps, UserState> {
       });
     }
 
-    //attempts to authenticate the user
-    this.props.database
+    const { getAccessTokenSilently, user } = this.props.auth0;
+
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://harshasrikara.com/api`,
+      scope: "read:current_user",
+    });
+    const response = await fetch(
+      `https://us-central1-trackit-271619.cloudfunctions.net/api/getCustomToken`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+    app
       .auth()
-      .signInWithEmailAndPassword(email, password)
-      .catch((error: firebase.firestore.FirestoreError) => {
+      .signInWithCustomToken(data.firebaseToken)
+      .then((userFirebase) => {
+        this.props.login();
+        if (app.auth().currentUser?.email !== null) {
+          //this user has signed in before (do nothing)
+        } else {
+          //update fields if its the first time they are signing in
+          app.auth().currentUser?.updateProfile({
+            displayName: user.nickname,
+            photoURL: user.picture,
+          });
+          app.auth().currentUser?.updateEmail(user.email);
+        }
+      })
+      .catch((error: firebase.auth.AuthError) => {
         this.setState({
           loginError: true,
         });
-        console.log(error + " Invalid Email or Password");
+        console.log({
+          error: error,
+          message: "Invalid Credentials",
+        });
       });
   };
 
@@ -95,7 +134,7 @@ class User extends React.Component<UserProps, UserState> {
    * This will validate that said workshop exists, is enabled and if so will open up the user dashboard
    * @param {string} workshop
    */
-  authenticateWorkshop = (workshop: string) => {
+  authenticateWorkshop = async (workshop: string) => {
     //reset the login error if any occurred during authentication
     //same variable gets reused to see if any errors happen in authenticating the workshop name
     if (this.state.loginError) {
@@ -105,7 +144,7 @@ class User extends React.Component<UserProps, UserState> {
     }
 
     //read the workshop data if present else trigger a alert
-    this.props.database
+    await app
       .firestore()
       .collection("Workshop")
       .doc(workshop)
@@ -124,6 +163,8 @@ class User extends React.Component<UserProps, UserState> {
             Workshop_ID: doc.data()?.Workshop_ID,
             Workshop_Name: doc.data()?.Workshop_Name,
           };
+          this.props.updateWorkshopData(workshopObject);
+          this.props.updateWorkshopID(workshop);
           this.setState({
             workshop_data: workshopObject,
             workshopID: workshop,
@@ -131,161 +172,62 @@ class User extends React.Component<UserProps, UserState> {
         }
       })
       .catch((error: firebase.firestore.FirestoreError) => {
-        this.setState({
-          alert: true,
-          alertText: error + " Error occurred in reading back workshop information",
+        console.log({
+          error: error,
+          message: "Error occurred in reading back the workshop information",
         });
-        console.log(
-          error + " error occurred in reading back workshop information"
-        );
       });
   };
-
-  signInWorkshop = () => {
-    if (this.state.Enabled) this.updateUserProgress(0);
-  };
-
-  /**
-   * Read the progress of the current student from the StudentsAtWorkshop collection on firestore
-   * Additionally read whether a workshop is enabled or not and the progress of the admin
-   */
-  getProgressData = () => 
-  {    
-    // //convert .,@ and other weird symbols in emails to be of a proper format
-    let email: string = encodeURIComponent(this.props.database.auth().currentUser?.email as string).replace(/\./g, "%2E");
-    
-    //set listener on firestore
-    this.progressListener = this.props.database
-      .firestore()
-      .collection("StudentsAtWorkshop")
-      .doc(this.state.workshopID)
-      .onSnapshot((snapshot: studentsAtWorkshopFirebase | firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>) => { //query snapshot too strict of a definition, firebase does not verify if data is present
-        console.log("new values from listener");
-        if(snapshot !== undefined)
-        {
-          console.log(snapshot.data()?.testProgress[email]);
-        this.setState({
-          Level_Enabled: snapshot.data()?.Level_Enabled,
-          Enabled: snapshot.data()?.Enabled,
-        });
-        if (snapshot.data()?.testProgress[email]) {
-          //if the user is logging back onto a workshop
-          this.setState({
-            initialProgress: snapshot.data()?.testProgress[email],
-            dataLoaded: true,
-          });
-        } else {
-          //if a user is logging onto a workshop for the first time
-          this.setState({
-            initialProgress: -1,
-            dataLoaded: true,
-          });
-        }
-        }
-      });
-  };
-
-  /**
-   * Update the progress in firestore for a given student when they click markCompleted in the UI
-   * @param {number} progress
-   */
-  updateUserProgress = (progress: number) => {
-    let result: string = encodeURIComponent(this.props.database.auth().currentUser?.email as string).replace(/\./g, "%2E");
-
-    this.props.database
-      .firestore()
-      .collection("StudentsAtWorkshop")
-      .doc(this.state.workshopID)
-      .update({
-        ["testProgress." + result]: progress,
-      })
-      .then(() => {
-        console.log("user progress updated");
-      })
-      .catch((error: firebase.firestore.FirestoreError) => {
-        this.setState({
-          alert: true,
-          alertText: error + " Error occurred in updating user progress",
-        });
-        console.log(error + "error occurred in updating user progress");
-      });
-  };
-
-  /**
-   * Sign out the user when they click sign out
-   */
-  signOutUser = () => {
-    console.log("signing Out");
-    this.props.database
-      .auth()
-      .signOut()
-      .then(() => {
-        //reset the state
-        this.setState({
-          loggedIn: false,
-          workshopID: "",
-          workshop_data: null,
-          Level_Enabled: 0,
-          dataLoaded: false,
-          Enabled: false,
-        });
-      })
-      .catch((error: firebase.firestore.FirestoreError) => {
-        this.setState({
-          alert: true,
-          alertText: error + " Error occurred in signing out the user",
-        });
-        console.log(error + " error signing user out");
-      });
-  };
-
-  resetAlertStatus = () => {
-    this.setState({
-      alert: false,
-      alertText: "Unknown error occurred",
-    })
-  }
 
   render() {
-    var userID: any = this.props.database.auth().currentUser?.email || ""
-    if(userID !== null)
-    {
-      userID = userID.substring(
-        0, userID.lastIndexOf("@"))
+    const { isAuthenticated, isLoading, user } = this.props.auth0;
+
+    let userID: string = "";
+    if (!isLoading && isAuthenticated && user) {
+      userID = user.email.substring(0, user.email.lastIndexOf("@"));
     }
     return (
       <div>
-        {this.state.loggedIn ? (
+        {!isLoading && isAuthenticated && this.props.loggedIn ? (
           !this.state.workshop_data ? (
             <WorkshopLogin
               authenticate={this.authenticateWorkshop}
               loginError={this.state.loginError}
             />
           ) : (
-            <UserDash
-              workshop_data={this.state.workshop_data}
-              getProgressData={this.getProgressData}
-              updateUserProgress={this.updateUserProgress}
-              progressListener={this.progressListener}
-              Level_Enabled={this.state.Level_Enabled}
-              signOut={this.signOutUser}
-              savedProgress={this.state.initialProgress}
-              dataLoaded={this.state.dataLoaded}
-              user={userID}
-              alert={this.state.alert}
-              alertText={this.state.alertText}
-              resetAlertStatus={this.resetAlertStatus}
-            />
+            <UserDash user={userID}/> 
           )
         ) : (
-          <UserAuth
-            authenticate={this.authenticate}
-            loginError={this.state.loginError}
-          />
+          <LandingPage />
         )}
       </div>
     );
   }
 }
 
-export default User;
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    updateWorkshopID: (workshopID: string) => {
+      dispatch(workshopAuthenticationAction(workshopID));
+    },
+    updateWorkshopData: (workshop_data: workshopFirebase) => {
+      dispatch(workshopDataAction(workshop_data));
+    },
+    login: () => {
+      dispatch(loginAction());
+    },
+    logout: () => {
+      dispatch(logoutAction());
+    },
+  };
+};
+
+const mapStateToProps = (state: any) => {
+  return {
+    workshopID: state.userReducer.workshopID,
+    workshop_data: state.userReducer.workshop_data,
+    loggedIn: state.authenticateReducer.loggedIn,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withAuth0(User));

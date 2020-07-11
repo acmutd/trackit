@@ -6,54 +6,67 @@ import {
   faCreativeCommonsBy,
 } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { logoutAction } from "../../actions/authentication";
+import { connect } from "react-redux";
+import { withAuth0 } from "@auth0/auth0-react";
+import app from "../../Components/Config/firebase";
 
 // import { Avatar, deepOrange } from "@material-ui/core"; (later use)
 
 interface NavBarProps {
-  dashboard: boolean;
-  signOut(): void;
+  loggedIn: boolean;
+  auth0: any;
+  database: firebase.app.App;
+  signOutRedux: any;
 }
 
 type navlink = {
   name: string;
-  link: string; 
+  link: string;
 };
-interface NavBarState {
-  Navlink: navlink[];
-}
+
+var Navlink: navlink[] = [
+  {
+    name: "Home",
+    link: "/",
+  },
+  {
+    name: "Admin",
+    link: "/admin",
+  },
+  {
+    name: "Pricing",
+    link: "/pricing",
+  },
+];
+let navlinks = Navlink.map((item, index) => (
+  <Nav.Link href={item.link} key={index}>
+    {item.name}
+  </Nav.Link>
+));
 
 /**
  * This is the <NavBar /> used at the top, uses the bootstrap components but extracted it to a separate component
  */
-class NavBar extends React.Component<NavBarProps, NavBarState> {
-  state = {
-    Navlink: [
-      {
-        name: "Home",
-        link: "/",
-      },
-      {
-        name: "User",
-        link: "/user",
-      },
-      {
-        name: "Admin",
-        link: "/admin",
-      },
-      {
-        name: "Pricing",
-        link: "/pricing",
-      },
-    ],
+class NavBar extends React.Component<NavBarProps, {}> {
+  signOut = () => {
+    const { logout } = this.props.auth0;
+    app
+      .auth()
+      .signOut()
+      .then(() => {
+        logout();
+        this.props.signOutRedux();
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        console.log({
+          error: error,
+          message: "Error signing out the user",
+        });
+      });
   };
 
   render() {
-    // maps the links to be displayed at the top, eventually one of them can be like "Hello " + this.props.studentUsername
-    let navlinks = this.state.Navlink.map((item, index) => (
-      <Nav.Link href={item.link} key={index}>
-        {item.name}
-      </Nav.Link>
-    ));
     return (
       <div>
         <Navbar bg="dark" variant="dark" expand="md">
@@ -90,8 +103,8 @@ class NavBar extends React.Component<NavBarProps, NavBarState> {
                   size="lg"
                 />
               </Nav.Link>
-              {this.props.dashboard === true ? (
-                <Button variant="dark" onClick={()=>this.props.signOut()}>
+              {this.props.loggedIn ? (
+                <Button variant="dark" onClick={() => this.signOut()}>
                   Sign Out
                 </Button>
               ) : (
@@ -105,4 +118,18 @@ class NavBar extends React.Component<NavBarProps, NavBarState> {
   }
 }
 
-export default NavBar;
+const mapDispatchToProps = (dispatch: any) => {
+  return {
+    signOutRedux: () => {
+      dispatch(logoutAction());
+    },
+  };
+};
+
+const mapStateToProps = (state: any) => {
+  return {
+    loggedIn: state.authenticateReducer.loggedIn,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withAuth0(NavBar));

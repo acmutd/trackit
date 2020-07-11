@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@auth0/auth0-react": "^1.0.0",
     "@babel/preset-env": "^7.10.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-brands-svg-icons": "^5.13.0",
@@ -23,6 +24,7 @@
     "@types/node": "^14.0.12",
     "@types/react-datepicker": "^2.11.0",
     "@types/react-draft-wysiwyg": "^1.13.0",
+    "@types/react-redux": "^7.1.9",
     "bootstrap": "^4.5.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
@@ -38,10 +40,12 @@
     "react-datepicker": "^2.16.0",
     "react-dom": "^16.13.1",
     "react-draft-wysiwyg": "^1.14.5",
+    "react-redux": "^7.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.0",
     "react-test-renderer": "^16.13.1",
-    "serve": "^11.3.1",
+    "redux": "^4.0.5",
+    "serve": "^11.3.2",
     "ts-jest": "^26.0.0",
     "typescript": "^3.9.3"
   },
@@ -53,8 +57,8 @@
     "eject": "react-scripts eject",
     "heroku-postbuild": "npm run parcel-build",
     "webpack": "webpack-dev-server --config webpack.config.js",
-    "parcel": "parcel index.html -p 3000",
-    "parcel-build": "parcel build --out-dir build index.html",
+    "parcel": "parcel index.html -p 3000 --no-source-maps",
+    "parcel-build": "parcel build --out-dir build index.html --no-source-maps",
     "parcel-setup": "parcel watch index.html"
   },
   "eslintConfig": {

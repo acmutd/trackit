@@ -4,33 +4,24 @@ import UserWelcome from "./UserWelcome";
 import Loading from "../Layout/Loading";
 import UserProgressBar from "./UserProgressBar";
 import { Row, Col, Card, Button, Container, Alert } from "react-bootstrap";
-import { workshop } from "../Config/interface"
-
+import { workshop, studentsAtWorkshopFirebase } from "../Config/interface";
+import { connect } from "react-redux";
+import Spinner from "../Layout/Loading";
+import app from "../Config/firebase";
 
 interface DashProps {
-  workshop_data: workshop,
-  getProgressData(): void,
-  updateUserProgress: Function,
-  progressListener: firebase.Unsubscribe | undefined, //undefined in the event that 
-  Level_Enabled: number,
-  signOut(): void,
-  savedProgress: number,
-  dataLoaded: boolean,
-  user: string,
-  alert: boolean,
-  alertText: string,
-  resetAlertStatus(): void
+  user: string;
+  workshopID?: string;
+  workshop_data?: workshop;
 }
 
 interface DashState {
-  user: string,
-  workshop_data: workshop,
-  userProgress: number,
-  currentPage: number,
-  Level_Enabled: number,
-  dataLoaded: boolean,
-  alert: boolean,
-  alertText: string
+  userProgress: number;
+  currentPage: number;
+  Level_Enabled: number;
+  dataLoaded: boolean;
+  alert: boolean;
+  alertText: string;
 }
 
 /**
@@ -38,52 +29,128 @@ interface DashState {
  */
 class UserDash extends React.Component<DashProps, DashState> {
   state: DashState = {
-    user: this.props.user,
-    workshop_data: this.props.workshop_data,
-    userProgress: this.props.savedProgress,
-    currentPage: this.props.savedProgress - 1,
-    Level_Enabled: this.props.Level_Enabled,
-    dataLoaded: this.props.dataLoaded,
+    userProgress: -5,
+    currentPage: -5,
+    Level_Enabled: -5,
+    dataLoaded: false,
     alert: false,
     alertText: "Unknown error occurred",
   };
+
+  progressListener?: firebase.Unsubscribe;
 
   /**
    * Remove progress listener if the page crashes
    */
   componentWillUnmount() {
-    if (this.props.progressListener) this.props.progressListener();
+    if (this.progressListener) this.progressListener();
   }
 
   componentDidMount() {
-    this.props.getProgressData();
+    this.getProgressData();
   }
 
-  // lifecycle method that is invoked anytime the component props are updated
-  componentDidUpdate(prevProps: DashProps) {
-    if (this.props.savedProgress !== prevProps.savedProgress) {
-      this.setState({
-        userProgress: this.props.savedProgress,
-        currentPage: this.props.savedProgress - 1,
-      });
-    }
-    if (this.props.Level_Enabled !== prevProps.Level_Enabled) {
-      this.setState({
-        Level_Enabled: this.props.Level_Enabled,
-      });
-    }
-    if (this.props.dataLoaded !== prevProps.dataLoaded) {
-      this.setState({
-        dataLoaded: this.props.dataLoaded,
-      });
-    }
-    if (this.props.alert !== prevProps.alert) {
-      this.setState({
-        alert: this.props.alert,
-        alertText: this.props.alertText,
+  getProgressData = () => {
+    // //convert .,@ and other weird symbols in emails to be of a proper format
+    let email: string = encodeURIComponent(this.props.user).replace(
+      /\./g,
+      "%2E"
+    );
+
+    //set listener on firestore
+    this.progressListener = app
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(this.props.workshopID)
+      .onSnapshot(
+        (
+          snapshot:
+            | studentsAtWorkshopFirebase
+            | firebase.firestore.DocumentSnapshot<
+                firebase.firestore.DocumentData
+              >
+        ) => {
+          //query snapshot too strict of a definition, firebase does not verify if data is present
+          if (snapshot !== undefined) {
+            this.setState({
+              Level_Enabled: snapshot.data()?.Level_Enabled,
+              // Enabled: snapshot.data()?.Enabled,
+            });
+            if (snapshot.data()?.testProgress[email] !== undefined) {
+              //console.log('progress is true')
+              //if the user is logging back onto a workshop
+              this.setState(
+                {
+                  userProgress: snapshot.data()?.testProgress[email],
+                },
+                this.isDataLoaded
+              );
+            } else {
+              //console.log('progress is false')
+
+              //if a user is logging onto a workshop for the first time
+              this.setState(
+                {
+                  userProgress: -1,
+                },
+                this.isDataLoaded
+              );
+            }
+          }
+        }
+      );
+  };
+
+  /**
+   * Update the progress in firestore for a given student when they click markCompleted in the UI
+   * @param {number} progress
+   */
+  updateUserProgress = (progress: number) => {
+    let result: string = encodeURIComponent(this.props.user).replace(
+      /\./g,
+      "%2E"
+    );
+
+    app
+      .firestore()
+      .collection("StudentsAtWorkshop")
+      .doc(this.props.workshopID)
+      .update({
+        ["testProgress." + result]: progress,
       })
+      .then(() => {
+        //user progress updated
+      })
+      .catch((error: firebase.firestore.FirestoreError) => {
+        this.setState({
+          alert: true,
+          alertText: error + " Error occurred in updating user progress",
+        });
+        console.log({
+          error: error,
+          message: "Error occurred in updating student progress",
+        });
+      });
+  };
+
+  isDataLoaded = () => {
+    if (!this.state.dataLoaded) {
+      if (this.props.workshop_data !== null && this.state.userProgress !== -5) {
+        console.log("setting data to true");
+        this.setState((state) => ({
+          currentPage: state.userProgress,
+          dataLoaded: true,
+        }));
+      }
     }
-  }
+  };
+
+  resetAlertStatus = () => {
+    this.setState({
+      alert: false,
+      alertText: "Unknown error occurred",
+    });
+  };
 
   // increments current level by 1. This is not their overall progress, but the stage which they are viewing.
   nextLevel = () => {
@@ -106,12 +173,20 @@ class UserDash extends React.Component<DashProps, DashState> {
       (state) => ({
         userProgress: state.userProgress + 1,
       }),
-      this.props.updateUserProgress(this.state.userProgress + 1)
+      () => this.updateUserProgress(this.state.userProgress)
     );
   };
 
   render() {
-    let workshop_levels = this.state.workshop_data.Level_Titles.map(
+    if (this.props.workshop_data === undefined) {
+      return (
+        <div>
+          <Spinner />
+        </div>
+      );
+    }
+
+    let workshop_levels = this.props.workshop_data?.Level_Titles.map(
       (item: string, index: number) => {
         if (this.state.currentPage === index) {
           return (
@@ -146,14 +221,14 @@ class UserDash extends React.Component<DashProps, DashState> {
     let workshop_level_text = (
       <div
         dangerouslySetInnerHTML={{
-          __html: this.state.workshop_data.Level_Descriptions[
+          __html: this.props.workshop_data.Level_Descriptions[
             this.state.currentPage
           ],
         }}
       />
     );
 
-    let workshop_level_title = this.state.workshop_data.Level_Titles[
+    let workshop_level_title = this.props.workshop_data.Level_Titles[
       this.state.currentPage
     ];
 
@@ -169,9 +244,8 @@ class UserDash extends React.Component<DashProps, DashState> {
     if (this.state.userProgress === -1) {
       return (
         <UserWelcome
-          signOut={this.props.signOut}
-          Workshop_Name={this.state.workshop_data.Workshop_Name}
-          user={this.state.user}
+          Workshop_Name={this.props.workshop_data.Workshop_Name}
+          user={this.props.user}
           markCompleted={this.markCompleted}
         />
       );
@@ -179,13 +253,13 @@ class UserDash extends React.Component<DashProps, DashState> {
 
     return (
       <div>
-        <NavBar dashboard={true} signOut={this.props.signOut} />
+        <NavBar />
         <Container fluid className="text-center p-3">
           {this.state.alert ? (
             <div className="m-1 mt-3">
               <Alert
                 variant="danger"
-                onClose={() => this.props.resetAlertStatus()}
+                onClose={() => this.resetAlertStatus()}
                 dismissible
               >
                 {this.state.alertText}
@@ -201,13 +275,13 @@ class UserDash extends React.Component<DashProps, DashState> {
               <Row className="m-3 mb-5">{workshop_levels}</Row>
               <UserProgressBar
                 userProgress={this.state.userProgress}
-                Number_Of_Levels={this.state.workshop_data.Number_Of_Levels}
+                Number_Of_Levels={this.props.workshop_data.Number_Of_Levels}
                 Level_Enabled={this.state.Level_Enabled}
               />
               <Card className="mt-4 floating-icon">
                 <Card.Header className="text-left p-3 mt-2">
                   {this.state.currentPage ===
-                  this.state.workshop_data.Number_Of_Levels
+                  this.props.workshop_data.Number_Of_Levels
                     ? "Workshop Complete!"
                     : workshop_level_title}
                 </Card.Header>
@@ -263,4 +337,17 @@ class UserDash extends React.Component<DashProps, DashState> {
   }
 }
 
-export default UserDash;
+const mapDispatchToProps = (dispatch: any) => {
+  return {};
+};
+
+const mapStateToProps = (state: any) => {
+  return {
+    workshopID: state.userReducer.workshopID,
+    workshop_data: state.userReducer.workshop_data,
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserDash);
