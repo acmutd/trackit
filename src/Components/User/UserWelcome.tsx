@@ -3,7 +3,6 @@ import NavBar from "../Layout/NavBar";
 import { Container, Card, Button, Image } from "react-bootstrap";
 
 interface WelcomeProps {
-  signOut(): void,
   Workshop_Name: string,
   user: string,
   markCompleted(): void
@@ -12,7 +11,7 @@ interface WelcomeProps {
 const UserWelcome = (props: WelcomeProps) => {
   return (
     <div>
-      <NavBar dashboard={true} signOut={props.signOut} />
+      <NavBar />
       <Container fluid>
         <Card className="m-5 p-5 floating-icon">
           <h1>Welcome to the {props.Workshop_Name} workshop!</h1>
