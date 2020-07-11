@@ -15,6 +15,7 @@ Developer version: checkout [dev](https://github.com/acmutd/TrackIT/tree/dev)
 ##### Quick Start
 
 - `npm install`
+- create `.env` file and add firebase Development API Keys (request from team)
 - `npm run dev`
 - [optional to run test cases] `npm run test`
 
@@ -32,7 +33,7 @@ Developer version: checkout [dev](https://github.com/acmutd/TrackIT/tree/dev)
 
 #### Production
 
-This is only required testing optimized build or when managing heroku pipeline
+This is only required testing optimized build or when managing heroku pipeline. Production environments need to use the Production API Keys. These can be set as config vars on heroku.
 
 - `npm install`
 - `npm run build --if-present`
@@ -42,56 +43,86 @@ Note: The process to deploy to heroku and firebase is not the same. Heroku deplo
 
 ## Directory Structure
 
-General information about where information can be found
+#### Guide
  - `App.tsx` contains routing and access to firebase configuration
  - `setupTests.ts` contains test configuration for Enzyme
+ - `jest.config.js` contains custom jest configuration
+ - `tsconfig.json` contains configuration for using typescript
+ - `webpack.config.json` not used by project currently
  - `index.tsx` connects `.tsx react` code to DOM
  - `App.test.tsx` contains all test cases for rendering application
  - `index.css` contains all custom styles
 
+#### Repo structure
+
 ```
-src
-├── App.test.tsx
-├── App.tsx
-├── Components
-│   ├── Admin
-│   │   ├── Admin.tsx
-│   │   ├── AdminAuth.tsx
-│   │   └── AdminDashboard.tsx
-│   ├── Firebase
-│   │   ├── firebase.ts
-│   │   └── interface.ts
-│   ├── Layout
-│   │   ├── ConfirmationDialog.tsx
-│   │   ├── Loading.tsx
-│   │   ├── NavBar.tsx
-│   │   └── WorkshopEditor.tsx
-│   ├── Pages
-│   │   ├── Error404.tsx
-│   │   ├── LandingPage.tsx
-│   │   └── Pricing.tsx
-│   ├── User
-│   │   ├── User.tsx
-│   │   ├── UserAuth.tsx
-│   │   ├── UserDash.tsx
-│   │   ├── UserProgressBar.tsx
-│   │   ├── UserWelcome.tsx
-│   │   └── WorkshopLogin.tsx
-│   └── Workshop
-│       ├── CardTile.tsx
-│       ├── StudentBar.tsx
-│       ├── Workshop.tsx
-│       ├── WorkshopBar.tsx
-│       ├── WorkshopEdit.tsx
-│       └── WorkshopLevelBar.tsx
-├── assets
-│   ├── 404.png
-│   ├── acm-fav.png
-│   ├── canvasjs.min.js
-│   └── canvasjs.react.js
-├── index.css
-├── index.tsx
-└── setupTests.ts
+TrackIT
+├── README.md
+├── SECURITY.md
+├── admin.html
+├── firebase.json
+├── handbook.md
+├── index.html
+├── jest.config.js
+├── package-lock.json
+├── package.json
+├── pricing.html
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   └── robots.txt
+├── src
+│   ├── App.test.tsx
+│   ├── App.tsx
+│   ├── Components
+│   │   ├── Admin
+│   │   │   ├── Admin.test.tsx
+│   │   │   ├── Admin.tsx
+│   │   │   ├── AdminAuth.tsx
+│   │   │   ├── AdminDashboard.tsx
+│   │   │   └── __snapshots__
+│   │   │       └── Admin.test.tsx.snap
+│   │   ├── Config
+│   │   │   ├── firebase.ts
+│   │   │   └── interface.ts
+│   │   ├── Layout
+│   │   │   ├── ConfirmationDialog.tsx
+│   │   │   ├── Loading.tsx
+│   │   │   ├── NavBar.tsx
+│   │   │   └── WorkshopEditor.tsx
+│   │   ├── Pages
+│   │   │   ├── Error404.tsx
+│   │   │   ├── LandingPage.tsx
+│   │   │   └── Pricing.tsx
+│   │   ├── User
+│   │   │   ├── User.tsx
+│   │   │   ├── UserAuth.tsx
+│   │   │   ├── UserDash.tsx
+│   │   │   ├── UserProgressBar.tsx
+│   │   │   ├── UserWelcome.tsx
+│   │   │   └── WorkshopLogin.tsx
+│   │   └── Workshop
+│   │       ├── CardTile.tsx
+│   │       ├── StudentBar.tsx
+│   │       ├── Workshop.tsx
+│   │       ├── WorkshopBar.tsx
+│   │       ├── WorkshopEdit.tsx
+│   │       └── WorkshopLevelBar.tsx
+│   ├── __snapshots__
+│   │   └── App.test.tsx.snap
+│   ├── assets
+│   │   ├── 404.png
+│   │   ├── acm-fav.png
+│   │   ├── canvasjs.min.js
+│   │   └── canvasjs.react.js
+│   ├── index.css
+│   ├── index.tsx
+│   └── setupTests.ts
+├── tsconfig.json
+└── webpack.config.js
 ```
 
 ## Pull Request Guide
@@ -125,7 +156,7 @@ src
 - `Internal` neeeds to be added for any changes to the continuous integration, continuous deployment pipelines or the configuration of the product
 - `Test` needs to be added when adding new jest/enzyme test cases
 
-Note: The same labels also apply to issues
+Note: The same labels also apply to issues. When creating issues use the available templates to appropriately document required information.
 
 #### Merging Pull Request
 
@@ -160,7 +191,7 @@ Typescript, typescript and more typescript all the way!
 - Keep UI Components in their own distinct components and render them with one major component that puts everything together
 - Use these classNames from react-bootstrap to handle layout and separation between components ---> "m-1", "m-2", "m-3", "m-4", "m-5" (stick to using m-3 and above, m represents margin)
 - Use className="m-5" for vertical spacing between different elements
-- User className="floating-icon" to keep up with the design pattern being used of everything looking like floating action buttons and tiles
+- Use `className="floating-icon"` to keep up with the design pattern being used of everything looking like floating action buttons and tiles
 
 ## Contributors
 
