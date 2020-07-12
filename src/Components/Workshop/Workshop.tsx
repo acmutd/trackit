@@ -4,7 +4,7 @@ import StudentBar from "./StudentBar";
 import WorkshopLevelBar from "./WorkshopLevelBar";
 import ConfirmationDialog from "../Layout/ConfirmationDialog";
 import WorkshopEdit from "./WorkshopEdit";
-import { workshop, studentsAtWorkshop } from "../Config/interface"
+import { workshop, studentsAtWorkshop } from "../../config/interface"
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 

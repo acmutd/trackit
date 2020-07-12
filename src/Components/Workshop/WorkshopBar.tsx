@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Nav, ProgressBar } from "react-bootstrap";
-import { workshop, studentsAtWorkshop } from "../Config/interface"
+import { workshop, studentsAtWorkshop } from "../../config/interface"
 
 /**
  * The is a workshop bar that shows a minimized view of the information in a workshop

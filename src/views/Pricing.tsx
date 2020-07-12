@@ -1,5 +1,5 @@
 import * as React from "react";
-import Navbar from "../Layout/NavBar";
+import Navbar from "../components/Layout/NavBar";
 import {
   Button,
   Container,
@@ -74,12 +74,7 @@ class Pricing extends React.Component<{}, PricingState> {
 
     return (
       <div>
-        <Navbar 
-          dashboard = {false}
-          signOut={() => {
-            console.log("placeholder function");
-          }}
-        />
+        <Navbar />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
             <h1>Pricing</h1>

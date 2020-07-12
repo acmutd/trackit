@@ -1,5 +1,5 @@
 import * as React from "react";
-import { workshop } from "../Config/interface"
+import { workshop } from "../../config/interface"
 
 
 import {

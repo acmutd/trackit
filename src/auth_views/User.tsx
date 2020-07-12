@@ -1,16 +1,16 @@
 import * as React from "react";
-import UserDash from "./UserDash";
-import WorkshopLogin from "./WorkshopLogin";
-import { workshopFirebase, workshop } from "../Config/interface";
+import UserDash from "../views/UserDash";
+import WorkshopLogin from "../components/User/WorkshopLogin";
+import { workshopFirebase, workshop } from "../config/interface";
 import { withAuth0 } from "@auth0/auth0-react";
-import LandingPage from "../Pages/LandingPage";
+import LandingPage from "../views/LandingPage";
 import { connect } from "react-redux";
 import {
   workshopAuthenticationAction,
   workshopDataAction,
-} from "../../actions/user";
-import { loginAction, logoutAction } from "../../actions/authentication";
-import app from "../Config/firebase";
+} from "../actions/user";
+import { loginAction, logoutAction } from "../actions/authentication";
+import app from "../config/firebase";
 
 interface UserProps {
   auth0?: any;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import Navbar from "../Layout/NavBar";
+import Navbar from "../components/Layout/NavBar";
 import { Container } from "react-bootstrap";
 //const error404 = require("../../assets/404.png");
 
@@ -10,12 +10,7 @@ export class Error404 extends React.Component {
   render() {
     return (
       <div>
-        <Navbar
-          dashboard={false}
-          signOut={() => {
-            console.log("placeholder function");
-          }}
-        />
+        <Navbar />
         <Container fluid>
           <div className="m-5 p-5 floating-icon">
             <h1>Whoops...</h1>

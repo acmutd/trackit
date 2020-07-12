@@ -1,9 +1,8 @@
 import * as React from "react";
 import { shallow, mount } from "enzyme";
 import { Button } from "react-bootstrap";
-import Admin from "./Admin";
-import AdminAuth from "./AdminAuth";
-import firebase from "../Config/firebase";
+import Admin from "../../auth_views/Admin";
+import firebase from "../../config/firebase";
 import { Provider } from "react-redux";
 import store from "../../store/store";
 

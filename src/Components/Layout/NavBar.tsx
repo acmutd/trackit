@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { logoutAction } from "../../actions/authentication";
 import { connect } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
-import app from "../../Components/Config/firebase";
+import app from "../../config/firebase";
 
 // import { Avatar, deepOrange } from "@material-ui/core"; (later use)
 
