@@ -14,7 +14,7 @@ ReactDOM.render(
     domain={process.env.REACT_APP_AUTH0_DOMAIN as string}
     clientId={process.env.REACT_APP_AUTH0_CLIENTID as string}
     redirectUri={window.location.href}
-    audience={"https://harshasrikara.com/api"}
+    audience={process.env.REACT_APP_AUTH0_AUDIENCE as string}
     scope={"read:current_user update:current_user_metadata"}
   >
     <Provider store={store}>
