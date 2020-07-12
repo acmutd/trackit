@@ -5,7 +5,7 @@ import { Container, Card, Button, Image } from "react-bootstrap";
 interface WelcomeProps {
   Workshop_Name: string,
   user: string,
-  markCompleted(): void
+  markCompleted(): void,
 }
 
 const UserWelcome = (props: WelcomeProps) => {
@@ -20,7 +20,7 @@ const UserWelcome = (props: WelcomeProps) => {
             button below.
           </p>
           <br />
-          <Button
+          <Button 
             variant="primary"
             onClick={() => {
               props.markCompleted();

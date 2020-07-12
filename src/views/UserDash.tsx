@@ -157,6 +157,7 @@ class UserDash extends React.Component<DashProps, DashState> {
     this.setState((state) => ({
       currentPage: state.currentPage + 1,
     }));
+    console.log('next level going')
   };
 
   // decrements current level by 1. This is not their overall progress, but the stage which they are viewing.
@@ -177,7 +178,14 @@ class UserDash extends React.Component<DashProps, DashState> {
     );
   };
 
+  welcomeDashWrapper = () => 
+  {
+    this.nextLevel();
+    this.markCompleted();
+  }
+
   render() {
+    console.log(this.state.currentPage)
     if (this.props.workshop_data === undefined) {
       return (
         <div>
@@ -246,7 +254,7 @@ class UserDash extends React.Component<DashProps, DashState> {
         <UserWelcome
           Workshop_Name={this.props.workshop_data.Workshop_Name}
           user={this.props.user}
-          markCompleted={this.markCompleted}
+          markCompleted={this.welcomeDashWrapper}
         />
       );
     }
