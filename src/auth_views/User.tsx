@@ -3,7 +3,7 @@ import UserDash from "../views/UserDash";
 import WorkshopLogin from "../components/User/WorkshopLogin";
 import { workshopFirebase, workshop } from "../config/interface";
 import { withAuth0 } from "@auth0/auth0-react";
-import LandingPage from "../views/LandingPage"
+import LandingPage from "../views/LandingPage";
 import { connect } from "react-redux";
 import {
   workshopAuthenticationAction,
@@ -197,7 +197,7 @@ class User extends React.Component<UserProps, UserState> {
               loginError={this.state.loginError}
             />
           ) : (
-            <UserDash user={userID}/> 
+            <UserDash user={userID} />
           )
         ) : (
           <LandingPage />

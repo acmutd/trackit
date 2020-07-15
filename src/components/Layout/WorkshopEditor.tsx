@@ -8,7 +8,7 @@ import {
 } from "draft-js";
 // import draftToHtml from "draftjs-to-html";
 import { Button } from "@material-ui/core";
-import draftToHtml = require('draftjs-to-html'); //ran into error and solved using --> https://stackoverflow.com/questions/57960016/what-does-can-only-be-default-imported-using-the-esmoduleinterop-flag-mean
+import draftToHtml = require("draftjs-to-html"); //ran into error and solved using --> https://stackoverflow.com/questions/57960016/what-does-can-only-be-default-imported-using-the-esmoduleinterop-flag-mean
 
 interface WorkshopEditorProps {
   closeWindow(newText: string): void;
