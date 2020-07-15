@@ -3,7 +3,7 @@ import UserDash from "../views/UserDash";
 import WorkshopLogin from "../components/User/WorkshopLogin";
 import { workshopFirebase, workshop } from "../config/interface";
 import { withAuth0 } from "@auth0/auth0-react";
-import LandingPage from "../views/LandingPage";
+import LandingPage from "../views/LandingPage"
 import { connect } from "react-redux";
 import {
   workshopAuthenticationAction,
@@ -134,7 +134,7 @@ class User extends React.Component<UserProps, UserState> {
    * This will validate that said workshop exists, is enabled and if so will open up the user dashboard
    * @param {string} workshop
    */
-  authenticateWorkshop = async (workshop: string) => {
+  authenticateWorkshop = (workshop: string) => {
     //reset the login error if any occurred during authentication
     //same variable gets reused to see if any errors happen in authenticating the workshop name
     if (this.state.loginError) {
@@ -144,7 +144,7 @@ class User extends React.Component<UserProps, UserState> {
     }
 
     //read the workshop data if present else trigger a alert
-    await app
+    app
       .firestore()
       .collection("Workshop")
       .doc(workshop)
@@ -163,6 +163,7 @@ class User extends React.Component<UserProps, UserState> {
             Workshop_ID: doc.data()?.Workshop_ID,
             Workshop_Name: doc.data()?.Workshop_Name,
           };
+          // update redux
           this.props.updateWorkshopData(workshopObject);
           this.props.updateWorkshopID(workshop);
           this.setState({
@@ -186,6 +187,7 @@ class User extends React.Component<UserProps, UserState> {
     if (!isLoading && isAuthenticated && user) {
       userID = user.email.substring(0, user.email.lastIndexOf("@"));
     }
+
     return (
       <div>
         {!isLoading && isAuthenticated && this.props.loggedIn ? (
