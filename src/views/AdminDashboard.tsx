@@ -1,10 +1,10 @@
 import * as React from "react";
-import WorkshopBar from "../Workshop/WorkshopBar";
-import NavBar from "../Layout/NavBar";
-import Workshop from "../Workshop/Workshop";
-import WorkshopEdit from "../Workshop/WorkshopEdit";
-import CardTile from "../Workshop/CardTile";
-import Loading from "../Layout/Loading";
+import WorkshopBar from "../components/Workshop/WorkshopBar";
+import NavBar from "../components/Layout/NavBar";
+import Workshop from "../components/Workshop/Workshop";
+import WorkshopEdit from "../components/Workshop/WorkshopEdit";
+import CardTile from "../components/Workshop/CardTile";
+import Loading from "../components/Layout/Loading";
 import { Row, Col, Container, Alert } from "react-bootstrap";
 import {
   workshop,
@@ -12,9 +12,9 @@ import {
   CardData,
   studentsAtWorkshopFirebase,
   workshopFirebase,
-} from "../Config/interface";
+} from "../config/interface";
 import * as FileSaver from "file-saver";
-import app from "../Config/firebase"
+import app from "../config/firebase"
 
 interface AdminDashboardProps {
   signOut(): void;

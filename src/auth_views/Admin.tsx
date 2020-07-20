@@ -1,14 +1,14 @@
 import * as React from "react";
-import AdminDashboard from "./AdminDashboard";
+import AdminDashboard from "../views/AdminDashboard";
 import {
   loginAction,
   logoutAction,
   authInterface,
-} from "../../actions/authentication";
+} from "../actions/authentication";
 import { connect } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
-import LandingPage from "../Pages/LandingPage";
-import app from "../Config/firebase";
+import LandingPage from "../views/LandingPage";
+import app from "../config/firebase";
 
 interface AdminProps {
   auth0?: any;

@@ -1,8 +1,8 @@
 import * as React from "react";
-import Admin from "./Components/Admin/Admin";
-import User from "./Components/User/User";
-import Pricing from "./Components/Pages/Pricing";
-import Error404 from "./Components/Pages/Error404";
+import Admin from "./auth_views/Admin";
+import User from "./auth_views/User";
+import Pricing from "./views/Pricing";
+import Error404 from "./views/Error404";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
 
 function App() {
