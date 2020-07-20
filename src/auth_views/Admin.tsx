@@ -27,6 +27,7 @@ interface AdminState {}
  *
  */
 class Admin extends React.Component<AdminProps, AdminState> {
+
   loginListener?: firebase.Unsubscribe;
   /**
    * If the page crashes then the user gets automatically logged out
@@ -146,7 +147,9 @@ class Admin extends React.Component<AdminProps, AdminState> {
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
         {this.props.loggedIn ? (
-          <AdminDashboard signOut={this.signOutUser} />
+          <AdminDashboard
+            signOut={this.signOutUser}
+          />
         ) : (
           <LandingPage />
         )}

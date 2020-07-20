@@ -79,24 +79,12 @@ class UserDash extends React.Component<DashProps, DashState> {
             if (snapshot.data()?.testProgress[email] !== undefined) {
               //console.log('progress is true')
               //if the user is logging back onto a workshop
-              // if(snapshot.data()?.Level_Enabled >= snapshot.data()?.testProgress[email])
-              // {
-              //   this.setState(
-              //     {
-              //       userProgress: snapshot.data()?.Level_Enabled,
-              //     },
-              //     this.isDataLoaded
-              //   );
-              // }
-              // else
-              // {
-                this.setState(
-                  {
-                    userProgress: snapshot.data()?.testProgress[email],
-                  },
-                  this.isDataLoaded
-                );
-         //     }
+              this.setState(
+                {
+                  userProgress: snapshot.data()?.testProgress[email],
+                },
+                this.isDataLoaded
+              );
             } else {
               //console.log('progress is false')
 
@@ -179,7 +167,6 @@ class UserDash extends React.Component<DashProps, DashState> {
     this.setState((state) => ({
       currentPage: state.currentPage + 1,
     }));
-    console.log('next level going')
   };
 
   // decrements current level by 1. This is not their overall progress, but the stage which they are viewing.

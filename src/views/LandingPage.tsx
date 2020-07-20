@@ -6,7 +6,7 @@ import { Container, Button } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const LandingPage = () => {
-  const { loginWithRedirect, isAuthenticated, isLoading } = useAuth0();
+  const { loginWithRedirect, isAuthenticated, is } = useAuth0();
 
   /**
    * Imitates lifecycle method, method only gets called when the value of isAuthenticated changes
