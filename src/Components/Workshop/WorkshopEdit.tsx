@@ -42,6 +42,11 @@ interface WorkshopEditProps {
   newWorkshop: boolean;
 }
 
+interface workshopEditorReturn {
+  content: string, //html text
+  file: any //uploaded files
+}
+
 class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState> {
   state: WorkshopEditState = {
     Workshop: {
@@ -236,11 +241,14 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
     }));
   };
 
+
+
   /**
    * @param {string} newText
    */
-  closeWorkshopEdit = (newText: string) => {
-    if (newText) this.setWorkshopLevelDescription(newText);
+  closeWorkshopEdit = (data: workshopEditorReturn) => {
+    if (data.content) this.setWorkshopLevelDescription(data.content);
+    if (data.file) { console.log(data.file) }
     this.setState({
       editWindow: false,
       hasBeenEdited: true,
@@ -278,8 +286,8 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
       lvlTitl.push(i + "");
       lvlDesc.push(i + "-level");
     }
-    let lvlTitleFields = lvlTitl.map((item, i) => (
-      <DialogContent key={i}>
+    let lvlTitleFields = lvlTitl.map((item, index) => (
+      <DialogContent key={index}>
         <form>
           <Row>
             <Col>
@@ -291,7 +299,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
                 placeholder="Level Name"
                 className="mr-5"
                 onChange={(event) => this.setWorkshopLevelName(event)}
-                value={this.state.Workshop.Level_Titles[i] || ""}
+                value={this.state.Workshop.Level_Titles[index] || ""}
               />
             </Col>
             <Col>
