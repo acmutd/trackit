@@ -54,6 +54,11 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   componentDidMount() {
+    // const { isAuthenticated, isLoading } = this.props.auth0;
+    // if (!isLoading && isAuthenticated && !this.props.loggedIn) {
+    //   console.log('running authenticate')
+    //   this.authenticate();
+    // }
     this.loginListener = app
       .auth()
       .onAuthStateChanged((user: firebase.User | null) => {
@@ -67,6 +72,7 @@ class User extends React.Component<UserProps, UserState> {
   componentDidUpdate() {
     const { isAuthenticated, isLoading } = this.props.auth0;
     if (!isLoading && isAuthenticated && !this.props.loggedIn) {
+      console.log('running authenticate')
       this.authenticate();
     }
   }
@@ -92,6 +98,7 @@ class User extends React.Component<UserProps, UserState> {
       audience: `https://harshasrikara.com/api`,
       scope: "read:current_user",
     });
+    console.log(accessToken)
     const response = await fetch(
       `https://us-central1-trackit-271619.cloudfunctions.net/api/getCustomToken`,
       {
@@ -100,6 +107,7 @@ class User extends React.Component<UserProps, UserState> {
         },
       }
     );
+    console.log(response)
 
     const data = await response.json();
     app

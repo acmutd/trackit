@@ -79,12 +79,24 @@ class UserDash extends React.Component<DashProps, DashState> {
             if (snapshot.data()?.testProgress[email] !== undefined) {
               //console.log('progress is true')
               //if the user is logging back onto a workshop
-              this.setState(
-                {
-                  userProgress: snapshot.data()?.testProgress[email],
-                },
-                this.isDataLoaded
-              );
+              // if(snapshot.data()?.Level_Enabled >= snapshot.data()?.testProgress[email])
+              // {
+              //   this.setState(
+              //     {
+              //       userProgress: snapshot.data()?.Level_Enabled,
+              //     },
+              //     this.isDataLoaded
+              //   );
+              // }
+              // else
+              // {
+                this.setState(
+                  {
+                    userProgress: snapshot.data()?.testProgress[email],
+                  },
+                  this.isDataLoaded
+                );
+         //     }
             } else {
               //console.log('progress is false')
 
@@ -137,10 +149,20 @@ class UserDash extends React.Component<DashProps, DashState> {
     if (!this.state.dataLoaded) {
       if (this.props.workshop_data !== null && this.state.userProgress !== -5) {
         console.log("setting data to true");
-        this.setState((state) => ({
-          currentPage: state.userProgress,
-          dataLoaded: true,
-        }));
+        if(this.state.Level_Enabled === this.state.userProgress)
+        {
+          this.setState((state) => ({
+            currentPage: state.userProgress - 1,
+            dataLoaded: true,
+          }))
+        }
+        else
+        {
+          this.setState((state) => ({
+            currentPage: state.userProgress,
+            dataLoaded: true,
+          }));
+        }
       }
     }
   };
@@ -186,6 +208,8 @@ class UserDash extends React.Component<DashProps, DashState> {
 
   render() {
     console.log(this.state.currentPage)
+    console.log('userp rog ' + this.state.userProgress)
+    console.log('level anvbled ' + this.state.Level_Enabled)
     if (this.props.workshop_data === undefined) {
       return (
         <div>
