@@ -207,9 +207,6 @@ class UserDash extends React.Component<DashProps, DashState> {
   }
 
   render() {
-    console.log(this.state.currentPage)
-    console.log('userp rog ' + this.state.userProgress)
-    console.log('level anvbled ' + this.state.Level_Enabled)
     if (this.props.workshop_data === undefined) {
       return (
         <div>
