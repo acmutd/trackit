@@ -134,6 +134,7 @@ class User extends React.Component<UserProps, UserState> {
    * This will validate that said workshop exists, is enabled and if so will open up the user dashboard
    * @param {string} workshop
    */
+            
   authenticateWorkshop = async (workshop: string) => {
     //reset the login error if any occurred during authentication
     //same variable gets reused to see if any errors happen in authenticating the workshop name
@@ -163,6 +164,7 @@ class User extends React.Component<UserProps, UserState> {
             Workshop_ID: doc.data()?.Workshop_ID,
             Workshop_Name: doc.data()?.Workshop_Name,
           };
+
           this.props.updateWorkshopData(workshopObject);
           this.props.updateWorkshopID(workshop);
           this.setState({
@@ -186,6 +188,7 @@ class User extends React.Component<UserProps, UserState> {
     if (!isLoading && isAuthenticated && user) {
       userID = user.email.substring(0, user.email.lastIndexOf("@"));
     }
+    
     return (
       <div>
         {!isLoading && isAuthenticated && this.props.loggedIn ? (
@@ -195,7 +198,8 @@ class User extends React.Component<UserProps, UserState> {
               loginError={this.state.loginError}
             />
           ) : (
-            <UserDash user={userID}/> 
+            <UserDash user={userID} />
+
           )
         ) : (
           <LandingPage />

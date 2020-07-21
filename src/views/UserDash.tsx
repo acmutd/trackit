@@ -137,10 +137,20 @@ class UserDash extends React.Component<DashProps, DashState> {
     if (!this.state.dataLoaded) {
       if (this.props.workshop_data !== null && this.state.userProgress !== -5) {
         console.log("setting data to true");
-        this.setState((state) => ({
-          currentPage: state.userProgress,
-          dataLoaded: true,
-        }));
+        if(this.state.Level_Enabled === this.state.userProgress)
+        {
+          this.setState((state) => ({
+            currentPage: state.userProgress - 1,
+            dataLoaded: true,
+          }))
+        }
+        else
+        {
+          this.setState((state) => ({
+            currentPage: state.userProgress,
+            dataLoaded: true,
+          }));
+        }
       }
     }
   };
@@ -176,6 +186,12 @@ class UserDash extends React.Component<DashProps, DashState> {
       () => this.updateUserProgress(this.state.userProgress)
     );
   };
+
+  welcomeDashWrapper = () => 
+  {
+    this.nextLevel();
+    this.markCompleted();
+  }
 
   render() {
     if (this.props.workshop_data === undefined) {
@@ -246,7 +262,7 @@ class UserDash extends React.Component<DashProps, DashState> {
         <UserWelcome
           Workshop_Name={this.props.workshop_data.Workshop_Name}
           user={this.props.user}
-          markCompleted={this.markCompleted}
+          markCompleted={this.welcomeDashWrapper}
         />
       );
     }

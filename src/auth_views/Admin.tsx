@@ -18,9 +18,7 @@ interface AdminProps {
   logout(): void; //redux
 }
 
-interface AdminState {
-
-}
+interface AdminState {}
 
 /**
  * This component is designed to strictly be backend only
@@ -58,11 +56,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
   componentDidUpdate() {
     const { isAuthenticated, isLoading } = this.props.auth0;
 
-    if (
-      !isLoading &&
-      isAuthenticated &&
-      !this.props.loggedIn
-    ) {
+    if (!isLoading && isAuthenticated && !this.props.loggedIn) {
       this.authenticate();
     }
   }
@@ -111,7 +105,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
         .catch((error: firebase.auth.AuthError) => {
           console.log({
             message: "Firebase Auth Error when signing in",
-            error: error
+            error: error,
           });
           logout();
         });
@@ -139,7 +133,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
       .catch((error: firebase.auth.AuthError) => {
         console.log({
           message: "Error signing user out",
-          error: error
+          error: error,
         });
       });
   };
@@ -166,7 +160,7 @@ class Admin extends React.Component<AdminProps, AdminState> {
 
 const mapState = (state: any) => {
   return {
-    loggedIn: state.authenticateReducer.loggedIn
+    loggedIn: state.authenticateReducer.loggedIn,
   };
 };
 
