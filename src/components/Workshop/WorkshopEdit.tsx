@@ -15,8 +15,7 @@ import DatePicker from "react-datepicker";
 import WorksdopEditor from "../Layout/WorkshopEditor";
 import { Row, Col, Alert } from "react-bootstrap";
 import { workshop, DateType } from "../../config/interface"
-
-
+import storage from "../../config/firebase";
 /**
  * Opens up a dialog modal for the workshop data to be edited or a new workshop informatin to be added
  * Pretty important because this is where all the crud operations take place for a given workshop
@@ -31,6 +30,7 @@ interface WorkshopEditState {
   currLevel: number;
   hasBeenEdited: boolean;
   alertText: string;
+  Files: Array<Array<File>>;
 }
 
 interface WorkshopEditProps {
@@ -43,8 +43,8 @@ interface WorkshopEditProps {
 }
 
 interface workshopEditorReturn {
-  content: string, //html text
-  file: any //uploaded files
+  content: string; //html text
+  file: any; //uploaded files
 }
 
 class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState> {
@@ -56,11 +56,13 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
       Level_Descriptions: [],
       Number_Of_Levels: 1,
       Date: new Date(),
+      Files: [],
     },
     editWindow: false,
     currLevel: -1,
     hasBeenEdited: false,
     alertText: "Workshop has been modified, submit to save changes",
+    Files: [],
   };
 
   /**
@@ -76,6 +78,17 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
         ...this.props.workshop, //creates deep copy
         Date: temp,
       };
+      if (this.props.workshop.Files === undefined) {
+        console.log(this.state.Workshop.Files)
+        if(this.state.Workshop.Files === undefined)
+        {
+          tempX.Files = [...Array(this.props.workshop.Number_Of_Levels)].map((e) => Array());
+          console.log('initiaslizing')
+          this.setState({
+            Files: [...Array(this.props.workshop.Number_Of_Levels)].map((e) => Array()),
+          })
+        }
+      } 
       this.setState({
         Workshop: tempX,
       });
@@ -95,6 +108,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
         Level_Descriptions: [],
         Number_Of_Levels: 1,
         Date: new Date(),
+        Files: [],
       },
       hasBeenEdited: false,
     });
@@ -116,6 +130,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
         alertText: "Workshop title cannot be null",
       });
     } else {
+      this.uploadContent();
       console.log(this.state.Workshop);
       this.props.submit(this.state.Workshop, true);
       //sets to null to prepare for the next time the component may get used
@@ -127,6 +142,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
           Level_Descriptions: [],
           Number_Of_Levels: 1,
           Date: new Date(),
+          Files: [],
         },
         hasBeenEdited: false,
       });
@@ -203,6 +219,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * @param {string} event
    */
   setWorkshopLevelDescription = (newText: string) => {
+    console.log('workshop desc ' + this.state.currLevel)
     let tempArray = this.state.Workshop.Level_Descriptions;
     tempArray[this.state.currLevel] = newText;
 
@@ -215,6 +232,43 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
     }));
   };
 
+  /**
+   * 
+   * Files = [[level1],[level2],  ]
+   */
+
+  setWorkshopFiles = (files: any[]) => {
+    console.log('files')
+    console.log(files)
+    if (files.length === 0) return;
+    let tempArray = this.state.Workshop.Files;
+    let fileArr: string[] = tempArray[this.state.currLevel];
+    console.log(this.state.currLevel)
+    console.log(fileArr)
+    let tempFileArr = this.state.Files;
+    files.forEach((element: any) => {
+      if (element !== null && !fileArr.includes(element.name)) {
+        tempFileArr[this.state.currLevel].push(element);
+        fileArr.push(element.name);
+        console.log('added element')
+      }
+    });
+    console.log(fileArr)
+    console.log(tempFileArr)
+    tempArray[this.state.currLevel] = fileArr;
+    console.log(tempArray)
+    this.setState(
+      (state) => ({
+        Workshop: {
+          ...state.Workshop,
+          Files: tempArray,
+        },
+        Files: tempFileArr,
+        hasBeenEdited: true,
+      }),
+      () => console.log(this.state.Workshop)
+    );
+  };
   /**
    * Opens the editing panel for a specific workshop
    * @param {number} level
@@ -248,14 +302,47 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    */
   closeWorkshopEdit = (data: workshopEditorReturn) => {
     if (data.content) this.setWorkshopLevelDescription(data.content);
-    if (data.file) { console.log(data.file) }
+    if (data.file) {
+      this.setWorkshopFiles(data.file);
+    }
     this.setState({
       editWindow: false,
       hasBeenEdited: true,
     });
   };
 
+  uploadContent = () => {
+    console.log('uploading file2')
+    var tempArr = this.state.Workshop.Files;
+    this.state.Files.forEach((arr, index) => {
+      arr.forEach((file) => {
+        if (!this.uploadFile(file)) {
+          var val = tempArr[index].indexOf(file.name);
+          tempArr[index].splice(val, 1);
+        }
+      });
+    })
+  };
+
+  uploadFile = async (file: any) => {
+    await storage
+      .storage()
+      .ref()
+      .child(this.state.Workshop.Workshop_ID + "/" + file.name)
+      .put(file)
+      .then(() => {
+        return true;
+      })
+      .catch((err: any) => {
+        console.log(err);
+        return false;
+      });
+      return false;
+  }
+
   render() {
+    console.log('render files')
+    console.log(this.state.Workshop.Files)
     if (this.state.editWindow) {
       return (
         <Dialog
@@ -306,7 +393,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
               <Button
                 className="mr-5"
                 onClick={() => {
-                  this.openWorkshopEdit(i);
+                  this.openWorkshopEdit(index);
                 }}
               >
                 Edit Level Info

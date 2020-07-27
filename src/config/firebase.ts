@@ -32,6 +32,6 @@ else {
   firebaseConfig = prod_firebaseConfig;
 }
 
-let app = firebase.initializeApp(firebaseConfig);
-
+const app = firebase.initializeApp(firebaseConfig);
+export const storage: any = firebase.storage().ref();
 export default app;
