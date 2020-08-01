@@ -56,7 +56,7 @@ export interface workshop {
   Number_Of_Levels: number;
   Workshop_ID: string;
   Workshop_Name: string;
-  Files: Array<Array<string>>;
+  Files?: Array<Array<string>>;
 }
 
 export interface CardData {

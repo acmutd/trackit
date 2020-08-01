@@ -1,10 +1,10 @@
 import * as React from "react";
-import WorkshopBar from "../components/Workshop/WorkshopBar";
-import NavBar from "../components/Layout/NavBar";
-import Workshop from "../components/Workshop/Workshop";
-import WorkshopEdit from "../components/Workshop/WorkshopEdit";
-import CardTile from "../components/Workshop/CardTile";
-import Loading from "../components/Layout/Loading";
+import WorkshopBar from "../Components/Workshop/WorkshopBar";
+import NavBar from "../Components/Layout/NavBar";
+import Workshop from "../Components/Workshop/Workshop";
+import WorkshopEdit from "../Components/Workshop/WorkshopEdit";
+import CardTile from "../Components/Workshop/CardTile";
+import Loading from "../Components/Layout/Loading";
 import { Row, Col, Container, Alert } from "react-bootstrap";
 import {
   workshop,
@@ -289,6 +289,7 @@ class AdminDashboard extends React.Component<
    * @param {*} workshopObject
    */
   updateWorkshop = (workshopID: string, workshopObject: workshop) => {
+    console.log('upading workshop')
     app
       .firestore()
       .collection("Workshop")
@@ -300,6 +301,7 @@ class AdminDashboard extends React.Component<
         Number_Of_Levels: workshopObject.Number_Of_Levels,
         Workshop_Name: workshopObject.Workshop_Name,
         Workshop_ID: workshopObject.Workshop_ID,
+        Files: workshopObject.Files,
       })
       .then(() => {
         console.log("updating workshop successful");

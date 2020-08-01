@@ -1,5 +1,5 @@
 import * as React from "react";
-import Navbar from "../components/Layout/NavBar";
+import Navbar from "../Components/Layout/NavBar";
 import {
   Button,
   Container,

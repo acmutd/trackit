@@ -80,14 +80,14 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
       };
       if (this.props.workshop.Files === undefined) {
         console.log(this.state.Workshop.Files)
-        if(this.state.Workshop.Files === undefined)
-        {
+        if (this.state.Workshop.Files?.length !== this.props.workshop.Number_Of_Levels) {
           tempX.Files = [...Array(this.props.workshop.Number_Of_Levels)].map((e) => Array());
           console.log('initiaslizing')
           this.setState({
             Files: [...Array(this.props.workshop.Number_Of_Levels)].map((e) => Array()),
           })
         }
+        else tempX.Files = this.state.Workshop.Files;
       } 
       this.setState({
         Workshop: tempX,
@@ -242,9 +242,9 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
     console.log(files)
     if (files.length === 0) return;
     let tempArray = this.state.Workshop.Files;
-    let fileArr: string[] = tempArray[this.state.currLevel];
-    console.log(this.state.currLevel)
-    console.log(fileArr)
+    let fileArr: string[];
+    if(tempArray !== undefined)
+      fileArr = tempArray[this.state.currLevel];
     let tempFileArr = this.state.Files;
     files.forEach((element: any) => {
       if (element !== null && !fileArr.includes(element.name)) {
@@ -253,8 +253,6 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
         console.log('added element')
       }
     });
-    console.log(fileArr)
-    console.log(tempFileArr)
     tempArray[this.state.currLevel] = fileArr;
     console.log(tempArray)
     this.setState(

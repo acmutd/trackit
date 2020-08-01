@@ -16,10 +16,10 @@ import app from "../../config/firebase";
 interface NavBarProps {
   loggedIn: boolean;
   auth0: any;
-  database: firebase.app.App;
+  database?: firebase.app.App;
   signOutRedux: any;
 }
-
+   
 type navlink = {
   name: string;
   link: string;

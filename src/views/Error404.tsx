@@ -1,5 +1,5 @@
 import * as React from "react";
-import Navbar from "../components/Layout/NavBar";
+import Navbar from "../Components/Layout/NavBar";
 import { Container } from "react-bootstrap";
 //const error404 = require("../../assets/404.png");
 

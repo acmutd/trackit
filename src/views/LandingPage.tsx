@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect } from "react";
-import Navbar from "../components/Layout/NavBar";
+import Navbar from "../Components/Layout/NavBar";
 import { Container, Button } from "react-bootstrap";
 import { useAuth0 } from '@auth0/auth0-react';
 

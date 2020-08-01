@@ -1,12 +1,12 @@
 import * as React from "react";
-import NavBar from "../components/Layout/NavBar";
-import UserWelcome from "../components/User/UserWelcome";
-import Loading from "../components/Layout/Loading";
-import UserProgressBar from "../components/User/UserProgressBar";
+import NavBar from "../Components/Layout/NavBar";
+import UserWelcome from "../Components/User/UserWelcome";
+import Loading from "../Components/Layout/Loading";
+import UserProgressBar from "../Components/User/UserProgressBar";
 import { Row, Col, Card, Button, Container, Alert } from "react-bootstrap";
 import { workshop, studentsAtWorkshopFirebase } from "../config/interface";
 import { connect } from "react-redux";
-import Spinner from "../components/Layout/Loading";
+import Spinner from "../Components/Layout/Loading";
 import app from "../config/firebase";
 
 interface DashProps {

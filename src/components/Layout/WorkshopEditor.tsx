@@ -3,9 +3,8 @@ import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertToRaw, convertFromHTML, ContentState } from "draft-js";
 // import draftToHtml from "draftjs-to-html";
 import { Button, Input } from "@material-ui/core";
-import draftToHtml = require("draftjs-to-html"); //ran into error and solved using --> https://stackoverflow.com/questions/57960016/what-does-can-only-be-default-imported-using-the-esmoduleinterop-flag-mean
 import { DropzoneArea } from "material-ui-dropzone";
-
+import draftToHtml from "draftjs-to-html"; //ran into error and solved using --> https://stackoverflow.com/questions/57960016/what-does-can-only-be-default-imported-using-the-esmoduleinterop-flag-mean
 interface WorkshopEditorProps {
   closeWindow(data: any): void;
   content: string;

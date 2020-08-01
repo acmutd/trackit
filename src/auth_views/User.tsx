@@ -1,6 +1,6 @@
 import * as React from "react";
 import UserDash from "../views/UserDash";
-import WorkshopLogin from "../components/User/WorkshopLogin";
+import WorkshopLogin from "../Components/User/WorkshopLogin";
 import { workshopFirebase, workshop } from "../config/interface";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../views/LandingPage";
@@ -34,7 +34,7 @@ interface UserState {
   loginError: boolean;
 }
 
-class User extends React.Component<UserProps, UserState> {
+class User extends React.Component<any, UserState> {
   state: UserState = {
     workshopID: "",
     workshop_data: null,
