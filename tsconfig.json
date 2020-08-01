@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+      "outDir": "./build/",        // path to output directory
+      "sourceMap": true,          // allow sourcemap support
+      "module": "commonjs",            // specify module code generation
+      "jsx": "react",             // use typescript to transpile jsx to js
+      "target": "es6",            // specify ECMAScript target version
+      "allowJs": true,             // allow a partial TypeScript and JavaScript codebase
+      "moduleResolution": "node",
+      "strict": true
+  },
+  "include": [
+      "./src/",
+      "./src/assets"
+  ],
+  "types": [
+    "node",
+    "webpack",
+    "react",
+    "react-dom",
+    "boostrap"
+  ],
+}
