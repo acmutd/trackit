@@ -1,7 +1,7 @@
 import * as React from "react";
 import Navbar from "../components/Layout/NavBar";
 import {
-  Button,
+  Image,
   Container,
   Card,
   CardDeck,
@@ -68,7 +68,6 @@ class Pricing extends React.Component<{}, PricingState> {
           <ListGroupItem>{item.perks[1]}</ListGroupItem>
           <ListGroupItem>{item.perks[2]}</ListGroupItem>
         </ListGroup>
-        <Button>Sign Up!</Button>
       </Card>
     ));
 
@@ -88,6 +87,11 @@ class Pricing extends React.Component<{}, PricingState> {
             </p>
             <br />
             <CardDeck>{tierCards}</CardDeck>
+            <br />
+            <Image
+              src="https://www.acmutd.co/brand/Development/Banners/light_dark_background.png"
+              fluid
+            />
           </div>
         </Container>
       </div>
