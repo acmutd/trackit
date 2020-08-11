@@ -20,6 +20,7 @@ interface StudentBarProps {
 
 class StudentBar extends React.Component<StudentBarProps, {}> {
   render() {
+    console.log("hi")
     //makes the data dynamic by calculating how much is complete, how much is being worked on and how much is left to be finished
     //probably extract this into a function and just load 3 values into render in the future
     let maxProgress = this.props.TotalProgress;
@@ -45,6 +46,7 @@ class StudentBar extends React.Component<StudentBarProps, {}> {
                   striped
                   variant="success"
                   animated
+                  label={this.props.Progress}
                   now={percentCurrentProgress}
                   key={1}
                 />
@@ -52,6 +54,7 @@ class StudentBar extends React.Component<StudentBarProps, {}> {
                   striped
                   variant="warning"
                   animated
+                  label={this.props.Progress + 1}
                   now={percentWorkingProgress}
                   key={2}
                 />

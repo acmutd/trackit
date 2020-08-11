@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import Navbar from "../components/Layout/NavBar";
 import Loading from "../components/Layout/Loading";
-import { Container, Button } from "react-bootstrap";
+import { Container, Button, Image } from "react-bootstrap";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const LandingPage = () => {
@@ -36,7 +36,7 @@ const LandingPage = () => {
               Interactive real-time solution to remotely delivering event
               content and tracking user progress
             </p>
-            <Button onClick={loginWithRedirect}>sign in with acm</Button>
+            <Image onClick={loginWithRedirect} src="https://www.acmutd.co/brand/Development/Raw_Assets/btn.png" fluid style={{width: 150}}></Image>
           </div>
         </Container>
       </div>
