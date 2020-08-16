@@ -31,10 +31,6 @@ var Navlink: navlink[] = [
     link: "/",
   },
   {
-    name: "Admin",
-    link: "/admin",
-  },
-  {
     name: "Pricing",
     link: "/pricing",
   },

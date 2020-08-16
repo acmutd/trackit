@@ -45,6 +45,7 @@ class StudentBar extends React.Component<StudentBarProps, {}> {
                   striped
                   variant="success"
                   animated
+                  label={this.props.Progress}
                   now={percentCurrentProgress}
                   key={1}
                 />
@@ -52,6 +53,7 @@ class StudentBar extends React.Component<StudentBarProps, {}> {
                   striped
                   variant="warning"
                   animated
+                  label={this.props.Progress + 1}
                   now={percentWorkingProgress}
                   key={2}
                 />
