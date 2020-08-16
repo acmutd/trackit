@@ -25,7 +25,7 @@ type navlink = {
   link: string;
 };
 
-var Navlink: navlink[] = [
+const Navlink: navlink[] = [
   {
     name: "Home",
     link: "/",

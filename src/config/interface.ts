@@ -51,12 +51,16 @@ export interface DateType extends Date {
 
 export interface workshop {
   Date: DateType;
-  Level_Descriptions: string[];
-  Level_Titles: string[];
   Number_Of_Levels: number;
   Workshop_ID: string;
   Workshop_Name: string;
-  Files?: Array<Array<string>>;
+  Levels: workshopPart[];
+}
+
+export interface workshopPart {
+  Level_Description: string;
+  Level_Title: string;
+  Files?: string[];
 }
 
 export interface CardData {

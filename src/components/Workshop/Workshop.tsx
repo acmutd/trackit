@@ -77,6 +77,7 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
    * @param {WorkshopProps} prevProps 
    */
   componentDidUpdate(prevProps: WorkshopProps) {
+    console.log('component updated, recalculating graph')
     if (this.props.data !== prevProps.data) {
       var dps = [];
 
@@ -172,22 +173,19 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
    * Link button to function passed in as props
    * Only called if submit was pressed
    */
-  receiveAddEditWorkshopInformationFromDialog = (
-    Workshop_Object: workshop,
-    wasSubmitPressed: boolean
-  ) => {
+  receiveAddEditWorkshopInformationFromDialog = (Workshop_Object: workshop, wasSubmitPressed: boolean) => {
     this.showHideAddEditDialog();
     if (wasSubmitPressed) {
       this.props.addEditWorkshop(Workshop_Object);
     }
-  }
+  };
 
   /**
    * Link button to function passed in as props
    */
   exportWorkshop = () => {
     this.props.exportWorkshop(this.props.data.Workshop_ID);
-  }
+  };
 
   /**
    * Open up the confirmation dialog for deletion

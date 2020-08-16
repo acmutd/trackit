@@ -8,15 +8,15 @@ import { workshop, studentsAtWorkshop } from "../../config/interface"
  */
 
 interface WorkshopBarState {
-  expandView: boolean,
-  refresh: boolean
+  expandView: boolean;
+  refresh: boolean;
 }
 
 interface WorkshopBarProps {
-  expandWindow(Workshop_ID: string): void,
-  expandState: boolean,
-  students: studentsAtWorkshop, // studentsAtWorkshop object
-  data: workshop, // workshop data object
+  expandWindow(Workshop_ID: string): void;
+  expandState: boolean;
+  students: studentsAtWorkshop; // studentsAtWorkshop object
+  data: workshop; // workshop data object
 }
 
 class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
@@ -50,7 +50,7 @@ class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
     let month = null;
     let year = null;
     let day = null;
-    let temp = new Date(this.props.data.Date?.seconds as number * 1000); //forces it to be number instead of being number | undefined
+    let temp = new Date((this.props.data.Date?.seconds as number) * 1000); //forces it to be number instead of being number | undefined
     if (temp != null) {
       date = temp.getDate();
 
@@ -74,15 +74,7 @@ class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
       year = temp.getFullYear();
 
       day = temp.getDay();
-      let daysOfWeek: string[] = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ];
+      let daysOfWeek: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       day = daysOfWeek[day];
     }
 

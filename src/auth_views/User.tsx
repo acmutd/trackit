@@ -146,7 +146,7 @@ class User extends React.Component<any, UserState> {
     //read the workshop data if present else trigger a alert
     await app
       .firestore()
-      .collection("Workshop")
+      .collection("NewWorkshop")
       .doc(workshop)
       .get()
       .then((doc: workshopFirebase) => {
@@ -157,8 +157,7 @@ class User extends React.Component<any, UserState> {
         } else {
           let workshopObject: workshop = {
             Date: doc.data()?.Date,
-            Level_Descriptions: doc.data()?.Level_Descriptions,
-            Level_Titles: doc.data()?.Level_Titles,
+            Levels: doc.data()?.Levels,
             Number_Of_Levels: doc.data()?.Number_Of_Levels,
             Workshop_ID: doc.data()?.Workshop_ID,
             Workshop_Name: doc.data()?.Workshop_Name,

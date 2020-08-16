@@ -4,7 +4,7 @@ import UserWelcome from "../Components/User/UserWelcome";
 import Loading from "../Components/Layout/Loading";
 import UserProgressBar from "../Components/User/UserProgressBar";
 import { Row, Col, Card, Button, Container, Alert } from "react-bootstrap";
-import { workshop, studentsAtWorkshopFirebase } from "../config/interface";
+import { workshop, studentsAtWorkshopFirebase, workshopPart } from "../config/interface";
 import { connect } from "react-redux";
 import Spinner from "../Components/Layout/Loading";
 import app from "../config/firebase";
@@ -60,7 +60,7 @@ class UserDash extends React.Component<DashProps, DashState> {
     //set listener on firestore
     this.progressListener = app
       .firestore()
-      .collection("StudentsAtWorkshop")
+      .collection("StudentsAtWorkshopNew")
       .doc(this.props.workshopID)
       .onSnapshot(
         (
@@ -113,7 +113,7 @@ class UserDash extends React.Component<DashProps, DashState> {
 
     app
       .firestore()
-      .collection("StudentsAtWorkshop")
+      .collection("StudentsAtWorkshopNew")
       .doc(this.props.workshopID)
       .update({
         ["testProgress." + result]: progress,
@@ -186,13 +186,13 @@ class UserDash extends React.Component<DashProps, DashState> {
       );
     }
 
-    let workshop_levels = this.props.workshop_data?.Level_Titles.map(
-      (item: string, index: number) => {
+    let workshop_levels = this.props.workshop_data?.Levels.map(
+      (item: workshopPart, index: number) => {
         if (this.state.currentPage === index) {
           return (
             <Col key={index}>
               <Card className="floating-icon" bg="primary">
-                <Card.Header>{item}</Card.Header>
+                <Card.Header>{item.Level_Title}</Card.Header>
               </Card>
             </Col>
           );
@@ -200,7 +200,7 @@ class UserDash extends React.Component<DashProps, DashState> {
           return (
             <Col key={index}>
               <Card bg="success">
-                <Card.Header>{item}</Card.Header>
+                <Card.Header>{item.Level_Title}</Card.Header>
               </Card>
             </Col>
           );
@@ -208,7 +208,7 @@ class UserDash extends React.Component<DashProps, DashState> {
           return (
             <Col key={index}>
               <Card>
-                <Card.Header>{item}</Card.Header>
+                <Card.Header>{item.Level_Title}</Card.Header>
               </Card>
             </Col>
           );
@@ -221,25 +221,21 @@ class UserDash extends React.Component<DashProps, DashState> {
     let workshop_level_text = (
       <div
         dangerouslySetInnerHTML={{
-          __html: this.props.workshop_data.Level_Descriptions[
-            this.state.currentPage
-          ],
+          __html: this.props.workshop_data.Levels[this.state.currentPage]?.Level_Description || "",
         }}
       />
     );
 
-    let workshop_level_title = this.props.workshop_data.Level_Titles[
-      this.state.currentPage
-    ];
+    let workshop_level_title: string = this.props.workshop_data.Levels[this.state.currentPage]?.Level_Title || "";
 
-    var displayNext =
+    let displayNext =
       (this.state.Level_Enabled > this.state.userProgress &&
         this.state.userProgress > this.state.currentPage) ||
       (this.state.Level_Enabled === this.state.userProgress &&
         this.state.currentPage < this.state.userProgress - 1);
+
     var displayPrevious = this.state.currentPage > 0;
-    var displayMarkCompleted =
-      this.state.userProgress === this.state.currentPage && !displayNext;
+    var displayMarkCompleted = this.state.userProgress === this.state.currentPage && !displayNext;
 
     if (this.state.userProgress === -1) {
       return (
@@ -257,11 +253,7 @@ class UserDash extends React.Component<DashProps, DashState> {
         <Container fluid className="text-center p-3">
           {this.state.alert ? (
             <div className="m-1 mt-3">
-              <Alert
-                variant="danger"
-                onClose={() => this.resetAlertStatus()}
-                dismissible
-              >
+              <Alert variant="danger" onClose={() => this.resetAlertStatus()} dismissible>
                 {this.state.alertText}
               </Alert>
             </div>
@@ -347,7 +339,4 @@ const mapStateToProps = (state: any) => {
     workshop_data: state.userReducer.workshop_data,
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserDash);
+export default connect(mapStateToProps, mapDispatchToProps)(UserDash);

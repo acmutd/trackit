@@ -37,10 +37,7 @@ interface AdminDashboardState {
  * UI component that manages how the admin dashboard looks like
  *
  */
-class AdminDashboard extends React.Component<
-  AdminDashboardProps,
-  AdminDashboardState
-> {
+class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboardState> {
   constructor(props: AdminDashboardProps) {
     super(props);
 
@@ -131,18 +128,17 @@ class AdminDashboard extends React.Component<
     //set listener for updates
     this.workshopListener = app
       .firestore()
-      .collection("Workshop")
+      .collection("NewWorkshop")
       .onSnapshot((snapshot: firebase.firestore.QuerySnapshot) => {
         let arr: workshop[] = [];
         //save each workshop into an array
         snapshot.forEach((snap: workshopFirebase) => {
           let workshopObject: workshop = {
             Date: snap.data()?.Date,
-            Level_Descriptions: snap.data()?.Level_Descriptions,
-            Level_Titles: snap.data()?.Level_Titles,
             Number_Of_Levels: snap.data()?.Number_Of_Levels,
             Workshop_ID: snap.data()?.Workshop_ID,
             Workshop_Name: snap.data()?.Workshop_Name,
+            Levels: snap.data()?.Levels,
           };
           arr.push(workshopObject);
         });
@@ -162,13 +158,8 @@ class AdminDashboard extends React.Component<
   readStudentData = () => {
     this.progressListener = app
       .firestore()
-      .collection("StudentsAtWorkshop")
-      .onSnapshot(
-        (
-          snapshot: firebase.firestore.QuerySnapshot<
-            firebase.firestore.DocumentData
-          >
-        ) => {
+      .collection("StudentsAtWorkshopNew")
+      .onSnapshot((snapshot: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
           let arr: studentsAtWorkshop[] = [];
           snapshot.forEach((snap: studentsAtWorkshopFirebase) => {
             //split map into two parallel arrays for easy use in front-end
@@ -207,7 +198,7 @@ class AdminDashboard extends React.Component<
   updateWorkshopLevel = (workshopID: string, level: number) => {
     app
       .firestore()
-      .collection("StudentsAtWorkshop")
+      .collection("StudentsAtWorkshopNew")
       .doc(workshopID)
       .update({
         Level_Enabled: level,
@@ -235,7 +226,7 @@ class AdminDashboard extends React.Component<
   updateWorkshopStatus = (workshopID: string, status: boolean) => {
     app
       .firestore()
-      .collection("StudentsAtWorkshop")
+      .collection("StudentsAtWorkshopNew")
       .doc(workshopID)
       .update({
         Enabled: status,
@@ -263,7 +254,7 @@ class AdminDashboard extends React.Component<
   clearStudentsAtWorkshop = (workshopID: string) => {
     app
       .firestore()
-      .collection("StudentsAtWorkshop")
+      .collection("StudentsAtWorkshopNew")
       .doc(workshopID)
       .update({
         testProgress: {},
@@ -289,19 +280,17 @@ class AdminDashboard extends React.Component<
    * @param {*} workshopObject
    */
   updateWorkshop = (workshopID: string, workshopObject: workshop) => {
-    console.log('upading workshop')
+    console.log('updating workshop')
     app
       .firestore()
-      .collection("Workshop")
+      .collection("NewWorkshop")
       .doc(workshopID)
       .set({
         Date: workshopObject.Date,
-        Level_Descriptions: workshopObject.Level_Descriptions,
-        Level_Titles: workshopObject.Level_Titles,
+        Levels: workshopObject.Levels,
         Number_Of_Levels: workshopObject.Number_Of_Levels,
         Workshop_Name: workshopObject.Workshop_Name,
         Workshop_ID: workshopObject.Workshop_ID,
-        Files: workshopObject.Files,
       })
       .then(() => {
         console.log("updating workshop successful");
@@ -320,7 +309,7 @@ class AdminDashboard extends React.Component<
     // when a workshop gets updated, its progress gets reset to 1
     app
       .firestore()
-      .collection("StudentsAtWorkshop")
+      .collection("StudentsAtWorkshopNew")
       .doc(workshopID)
       .update({
         Level_Enabled: 1,
@@ -356,7 +345,7 @@ class AdminDashboard extends React.Component<
     };
     app
       .firestore()
-      .collection("StudentsAtWorkshop")
+      .collection("StudentsAtWorkshopNew")
       .doc(workshopObject.Workshop_ID)
       .set(tempStudentWorkshop)
       .then(() => {
@@ -376,9 +365,9 @@ class AdminDashboard extends React.Component<
       });
 
     //creates the new workshop here
-app
+    app
       .firestore()
-      .collection("Workshop")
+      .collection("NewWorkshop")
       .doc(workshopObject.Workshop_ID)
       .set(workshopObject)
       .then(() => {
@@ -403,7 +392,7 @@ app
   deleteWorkshopFirebase = (workshopID: string) => {
     app
       .firestore()
-      .collection("StudentsAtWorkshop")
+      .collection("StudentsAtWorkshopNew")
       .doc(workshopID)
       .delete()
       .then(() => {
@@ -422,7 +411,7 @@ app
 
     app
       .firestore()
-      .collection("Workshop")
+      .collection("NewWorkshop")
       .doc(workshopID)
       .delete()
       .then(() => {
@@ -647,19 +636,11 @@ app
    * @param {*} Workshop_Object
    */
   addEditWorkshop = (Workshop_Object: workshop) => {
-    let workshopIndex: number = this.findWorkshopIndex(
-      Workshop_Object.Workshop_ID
-    );
+    let workshopIndex: number = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
     //the slice commands below ensure that when the workshop is saved then only the correct number of levels are passed back
     //For example if the workshop used to have 5 levels but was edited to only have 4 then the slice commands will remove the extra one
-    Workshop_Object.Level_Titles = Workshop_Object.Level_Titles.slice(
-      0,
-      Workshop_Object.Number_Of_Levels
-    );
-    Workshop_Object.Level_Descriptions = Workshop_Object.Level_Descriptions.slice(
-      0,
-      Workshop_Object.Number_Of_Levels
-    );
+    Workshop_Object.Levels = Workshop_Object.Levels.slice(0, Workshop_Object.Number_Of_Levels);
+
     // if the workshop does not exist then create it else update it
     if (workshopIndex === -1) {
       this.createNewWorkshop(Workshop_Object);
@@ -759,9 +740,7 @@ app
                       expandState={true}
                       expandWindow={this.openWorkshopWindow}
                       data={this.state.workshops[this.state.workshopView]}
-                      students={
-                        this.state.studentsAtWorkshop[this.state.workshopView]
-                      }
+                      students={this.state.studentsAtWorkshop[this.state.workshopView]}
                     />
                     <Workshop
                       incrementLevel={this.incrementLevel}
@@ -773,9 +752,7 @@ app
                       addEditWorkshop={this.addEditWorkshop}
                       exportWorkshop={this.exportWorkshop}
                       properties={this.state.workshops[this.state.workshopView]}
-                      data={
-                        this.state.studentsAtWorkshop[this.state.workshopView]
-                      }
+                      data={this.state.studentsAtWorkshop[this.state.workshopView]}
                     />
                   </div>
                 ) : (

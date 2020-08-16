@@ -9,7 +9,7 @@ import { CardData } from "../../config/interface"
  */
 
 interface CardProps {
-  data: CardData
+  data: CardData;
 }
 
 class CardTile extends React.Component<CardProps, {}> {
