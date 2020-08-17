@@ -6,9 +6,10 @@ Latest release deployed to production environments will be kept fully uptodate w
 
 | Version     | Supported          | Additional Information |
 | ----------- | ------------------ | ---------------------- |
-| 1.2.0 [beta]| :x:                | unstable dev branch    |
-| 1.1.x       | :white_check_mark: | latest release         |
-| < 1.1       | :x:                | outdated               |
+| 2.0.0 [beta]| :x:                | Unstable dev branch    |
+| 1.2.0       | :white_check_mark: | Latest release         |
+| 1.1.x       | :white_check_mark: | MVP release            |
+| < 1.1       | :x:                | Outdated               |
 
 ## Reporting a Vulnerability
 

@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../views/LandingPage";
 import app from "../config/firebase";
-import { AnyARecord } from "dns";
 
 interface AdminProps {
   auth0?: any;
