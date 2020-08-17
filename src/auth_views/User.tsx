@@ -1,18 +1,16 @@
 import * as React from "react";
 import UserDash from "../views/UserDash";
-import WorkshopLogin from "../Components/User/WorkshopLogin";
+import WorkshopLogin from "../components/User/WorkshopLogin";
 import { workshopFirebase, workshop } from "../config/interface";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../views/LandingPage";
 import { connect } from "react-redux";
-import {
-  workshopAuthenticationAction,
-  workshopDataAction,
-} from "../actions/user";
+import { workshopAuthenticationAction, workshopDataAction } from "../actions/user";
 import { loginAction, logoutAction } from "../actions/authentication";
 import app from "../config/firebase";
 
 interface UserProps {
+  withAuth0?: any;
   auth0?: any;
 
   workshop_data?: any;
@@ -54,15 +52,13 @@ class User extends React.Component<any, UserState> {
   }
 
   componentDidMount() {
-    this.loginListener = app
-      .auth()
-      .onAuthStateChanged((user: firebase.User | null) => {
-        if (user) {
-          this.props.login();
-        } else {
-          this.props.logout();
-        }
-      });
+    this.loginListener = app.auth().onAuthStateChanged((user: firebase.User | null) => {
+      if (user) {
+        this.props.login();
+      } else {
+        this.props.logout();
+      }
+    });
   }
   componentDidUpdate() {
     const { isAuthenticated, isLoading } = this.props.auth0;
@@ -92,14 +88,11 @@ class User extends React.Component<any, UserState> {
       audience: `https://harshasrikara.com/api`,
       scope: "read:current_user",
     });
-    const response = await fetch(
-      `https://us-central1-trackit-271619.cloudfunctions.net/api/getCustomToken`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await fetch(`https://us-central1-trackit-271619.cloudfunctions.net/api/getCustomToken`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
     const data = await response.json();
     app
@@ -155,7 +148,7 @@ class User extends React.Component<any, UserState> {
             loginError: true,
           });
         } else {
-          let workshopObject: workshop = {
+          const workshopObject: workshop = {
             Date: doc.data()?.Date,
             Levels: doc.data()?.Levels,
             Number_Of_Levels: doc.data()?.Number_Of_Levels,
@@ -181,7 +174,7 @@ class User extends React.Component<any, UserState> {
   render() {
     const { isAuthenticated, isLoading, user } = this.props.auth0;
 
-    let userID: string = "";
+    let userID = "";
     if (!isLoading && isAuthenticated && user) {
       userID = user.email.substring(0, user.email.lastIndexOf("@"));
     }
@@ -189,12 +182,9 @@ class User extends React.Component<any, UserState> {
       <div>
         {!isLoading && isAuthenticated && this.props.loggedIn ? (
           !this.state.workshop_data ? (
-            <WorkshopLogin
-              authenticate={this.authenticateWorkshop}
-              loginError={this.state.loginError}
-            />
+            <WorkshopLogin authenticate={this.authenticateWorkshop} loginError={this.state.loginError} />
           ) : (
-            <UserDash user={userID}/> 
+            <UserDash user={userID} />
           )
         ) : (
           <LandingPage />

@@ -1,10 +1,6 @@
 import * as React from "react";
 import AdminDashboard from "../views/AdminDashboard";
-import {
-  loginAction,
-  logoutAction,
-  authInterface,
-} from "../actions/authentication";
+import { loginAction, logoutAction, authInterface } from "../actions/authentication";
 import { connect } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../views/LandingPage";
@@ -15,12 +11,8 @@ interface AdminProps {
   auth0?: any;
 
   loggedIn?: boolean; //redux
-  login: () => void;  //redux
-  logout: () => void;  //redux
-}
-
-interface AdminState {
-
+  login: () => void; //redux
+  logout: () => void; //redux
 }
 
 /**
@@ -29,8 +21,7 @@ interface AdminState {
  * This component will also handle authentication and security related contraints
  *
  */
-class Admin extends React.Component<any, AdminState> {
-
+class Admin extends React.Component<any, any> {
   loginListener?: firebase.Unsubscribe;
   /**
    * If the page crashes then the user gets automatically logged out
@@ -40,30 +31,24 @@ class Admin extends React.Component<any, AdminState> {
   }
 
   componentDidMount() {
-    this.loginListener = app
-      .auth()
-      .onAuthStateChanged((user: firebase.User | null) => {
-        if (user) {
-          //only ACM Organization Officers have access to admin
-          if (user.email?.includes("@acmutd.co")) {
-            this.props.login();
-          } else {
-            this.signOutUser(); //sign out if the user logged into firebase is not ACM Organization Officer
-          }
+    this.loginListener = app.auth().onAuthStateChanged((user: firebase.User | null) => {
+      if (user) {
+        //only ACM Organization Officers have access to admin
+        if (user.email?.includes("@acmutd.co")) {
+          this.props.login();
         } else {
-          this.props.logout();
+          this.signOutUser(); //sign out if the user logged into firebase is not ACM Organization Officer
         }
-      });
+      } else {
+        this.props.logout();
+      }
+    });
   }
 
   componentDidUpdate() {
     const { isAuthenticated, isLoading } = this.props.auth0;
 
-    if (
-      !isLoading &&
-      isAuthenticated &&
-      !this.props.loggedIn
-    ) {
+    if (!isLoading && isAuthenticated && !this.props.loggedIn) {
       this.authenticate();
     }
   }
@@ -83,14 +68,11 @@ class Admin extends React.Component<any, AdminState> {
         audience: `https://harshasrikara.com/api`,
         scope: "read:current_user",
       });
-      const response = await fetch(
-        `https://us-central1-trackit-271619.cloudfunctions.net/api/getCustomToken`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await fetch(`https://us-central1-trackit-271619.cloudfunctions.net/api/getCustomToken`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       const data = await response.json();
       app
@@ -112,7 +94,7 @@ class Admin extends React.Component<any, AdminState> {
         .catch((error: firebase.auth.AuthError) => {
           console.log({
             message: "Firebase Auth Error when signing in",
-            error: error
+            error: error,
           });
           logout();
         });
@@ -140,7 +122,7 @@ class Admin extends React.Component<any, AdminState> {
       .catch((error: firebase.auth.AuthError) => {
         console.log({
           message: "Error signing user out",
-          error: error
+          error: error,
         });
       });
   };
@@ -153,13 +135,7 @@ class Admin extends React.Component<any, AdminState> {
       <div>
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
         {/* <AdminAuth /> Component receives the authenticate function as props, AdminDashboard will eventually receive the data read back from firebase */}
-        {this.props.loggedIn ? (
-          <AdminDashboard
-            signOut={this.signOutUser}
-          />
-        ) : (
-          <LandingPage />
-        )}
+        {this.props.loggedIn ? <AdminDashboard signOut={this.signOutUser} /> : <LandingPage />}
       </div>
     );
   }
@@ -167,7 +143,7 @@ class Admin extends React.Component<any, AdminState> {
 
 const mapState = (state: any) => {
   return {
-    loggedIn: state.authenticateReducer.loggedIn
+    loggedIn: state.authenticateReducer.loggedIn,
   };
 };
 

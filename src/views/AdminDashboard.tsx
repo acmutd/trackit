@@ -1,10 +1,10 @@
 import * as React from "react";
-import WorkshopBar from "../Components/Workshop/WorkshopBar";
-import NavBar from "../Components/Layout/NavBar";
-import Workshop from "../Components/Workshop/Workshop";
-import WorkshopEdit from "../Components/Workshop/WorkshopEdit";
-import CardTile from "../Components/Workshop/CardTile";
-import Loading from "../Components/Layout/Loading";
+import WorkshopBar from "../components/Workshop/WorkshopBar";
+import NavBar from "../components/Layout/NavBar";
+import Workshop from "../components/Workshop/Workshop";
+import WorkshopEdit from "../components/Workshop/WorkshopEdit";
+import CardTile from "../components/Workshop/CardTile";
+import Loading from "../components/Layout/Loading";
 import { Row, Col, Container, Alert } from "react-bootstrap";
 import {
   workshop,
@@ -14,7 +14,7 @@ import {
   workshopFirebase,
 } from "../config/interface";
 import * as FileSaver from "file-saver";
-import app from "../config/firebase"
+import app from "../config/firebase";
 
 interface AdminDashboardProps {
   signOut(): void;
@@ -41,21 +41,21 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
   constructor(props: AdminDashboardProps) {
     super(props);
 
-    let openDialog = () => {
+    const openDialog = () => {
       this.showHideAddEditDialog();
     };
 
-    let downloadAllWorkshops = () => {
+    const downloadAllWorkshops = () => {
       this.downloadAllWorkshops();
     };
 
     //more hard coded data here, this is for the texts present in the cards present on the dashboard
-    let placeholderFunction = () => {
+    const placeholderFunction = () => {
       console.log("placeholder function triggered");
     };
 
     //contains the text and functions for the <CardTile />
-    let cfirst = {
+    const cfirst = {
       title: "Admin",
       subtitle: "Administrative Tools",
       description: "Configuration tool for setting up new workshops",
@@ -64,7 +64,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
       disabled: false,
     };
 
-    let csecond = {
+    const csecond = {
       title: "Development",
       subtitle: "Development Tools",
       description: "Try out beta tools for customizing trackit",
@@ -73,11 +73,11 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
       disabled: true,
     };
 
-    let githubRedirect = () => {
+    const githubRedirect = () => {
       window.location.href = "https://github.com/acmutd/TrackIT";
     };
 
-    let cthird = {
+    const cthird = {
       title: "Social",
       subtitle: "Media Tools",
       description: "Access resources and social media",
@@ -103,13 +103,13 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
   progressListener?: firebase.Unsubscribe;
   workshopListener?: firebase.Unsubscribe;
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.readWorkshopData();
     this.readStudentData();
   }
 
   // remove the progress listeners if the page crashes or the user signs out
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     if (this.progressListener) {
       this.progressListener();
     }
@@ -124,16 +124,16 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Calls readStudentData once it has finished reading the workshop data
    */
 
-  readWorkshopData = () => {
+  readWorkshopData = (): void => {
     //set listener for updates
     this.workshopListener = app
       .firestore()
       .collection("NewWorkshop")
       .onSnapshot((snapshot: firebase.firestore.QuerySnapshot) => {
-        let arr: workshop[] = [];
+        const arr: workshop[] = [];
         //save each workshop into an array
         snapshot.forEach((snap: workshopFirebase) => {
-          let workshopObject: workshop = {
+          const workshopObject: workshop = {
             Date: snap.data()?.Date,
             Number_Of_Levels: snap.data()?.Number_Of_Levels,
             Workshop_ID: snap.data()?.Workshop_ID,
@@ -155,39 +155,38 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Sets listener to monitor for updates
    */
 
-  readStudentData = () => {
+  readStudentData = (): void => {
     this.progressListener = app
       .firestore()
       .collection("StudentsAtWorkshopNew")
       .onSnapshot((snapshot: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
-          let arr: studentsAtWorkshop[] = [];
-          snapshot.forEach((snap: studentsAtWorkshopFirebase) => {
-            //split map into two parallel arrays for easy use in front-end
-            let students = [];
-            let progress = [];
-            for (var x in snap.data().testProgress) {
-              var user = decodeURIComponent(x).replace("%2E", ".");
-              students.push(user);
-              progress.push(snap.data().testProgress[x]);
-            }
+        const arr: studentsAtWorkshop[] = [];
+        snapshot.forEach((snap: studentsAtWorkshopFirebase) => {
+          //split map into two parallel arrays for easy use in front-end
+          const students = [];
+          const progress = [];
+          for (const x in snap.data().testProgress) {
+            const user = decodeURIComponent(x).replace("%2E", ".");
+            students.push(user);
+            progress.push(snap.data().testProgress[x]);
+          }
 
-            let studentsObject: studentsAtWorkshop = {
-              Students: students,
-              Progress: progress,
-              Enabled: snap.data().Enabled,
-              Workshop_ID: snap.data().Workshop_ID,
-              Level_Enabled: snap.data().Level_Enabled,
-            };
-            arr.push(studentsObject);
-          });
+          const studentsObject: studentsAtWorkshop = {
+            Students: students,
+            Progress: progress,
+            Enabled: snap.data().Enabled,
+            Workshop_ID: snap.data().Workshop_ID,
+            Level_Enabled: snap.data().Level_Enabled,
+          };
+          arr.push(studentsObject);
+        });
 
-          //save data in state
-          this.setState({
-            studentsAtWorkshop: arr,
-            studentsLoaded: true,
-          });
-        }
-      );
+        //save data in state
+        this.setState({
+          studentsAtWorkshop: arr,
+          studentsLoaded: true,
+        });
+      });
   };
 
   /**
@@ -195,7 +194,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * @param {string} workshopID
    * @param {number} level
    */
-  updateWorkshopLevel = (workshopID: string, level: number) => {
+  updateWorkshopLevel = (workshopID: string, level: number): void => {
     app
       .firestore()
       .collection("StudentsAtWorkshopNew")
@@ -213,7 +212,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
         });
         console.log({
           error: error,
-          message: "Error occurred in udpating workshop level"
+          message: "Error occurred in udpating workshop level",
         });
       });
   };
@@ -223,7 +222,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * @param {string} workshopID
    * @param {number} status
    */
-  updateWorkshopStatus = (workshopID: string, status: boolean) => {
+  updateWorkshopStatus = (workshopID: string, status: boolean): void => {
     app
       .firestore()
       .collection("StudentsAtWorkshopNew")
@@ -241,7 +240,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
         });
         console.log({
           error: error,
-          message: "Error occurred in updating workshop status"
+          message: "Error occurred in updating workshop status",
         });
       });
   };
@@ -251,7 +250,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * All students signed in for a given workshop have their progress erased and removed
    * @param {string} workshopID
    */
-  clearStudentsAtWorkshop = (workshopID: string) => {
+  clearStudentsAtWorkshop = (workshopID: string): void => {
     app
       .firestore()
       .collection("StudentsAtWorkshopNew")
@@ -269,7 +268,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
         });
         console.log({
           error: error,
-          message: "Error occurred in erasing student progress"
+          message: "Error occurred in erasing student progress",
         });
       });
   };
@@ -279,8 +278,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * @param {*} workshopID
    * @param {*} workshopObject
    */
-  updateWorkshop = (workshopID: string, workshopObject: workshop) => {
-    console.log('updating workshop')
+  updateWorkshop = (workshopID: string, workshopObject: workshop): void => {
     app
       .firestore()
       .collection("NewWorkshop")
@@ -302,7 +300,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
         });
         console.log({
           error: error,
-          message: "Error occurred in updating workshop"
+          message: "Error occurred in updating workshop",
         });
       });
 
@@ -324,7 +322,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
         });
         console.log({
           error: error,
-          message: "Error occurred in reseting workshop level to 1"
+          message: "Error occurred in reseting workshop level to 1",
         });
       });
   };
@@ -334,10 +332,10 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Should fail if a workshop already exists with the same name
    * @param {*} workshopObject
    */
-  createNewWorkshop = (workshopObject: workshop) => {
+  createNewWorkshop = (workshopObject: workshop): void => {
     //creates a blank object for the number of students in a workshop
     //this happens first to avoid issues due to the async nature of the JS listener
-    let tempStudentWorkshop = {
+    const tempStudentWorkshop = {
       Workshop_ID: workshopObject.Workshop_ID,
       Enabled: false,
       Level_Enabled: 1,
@@ -354,13 +352,11 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
       .catch((error: firebase.firestore.FirestoreError) => {
         this.setState({
           alert: true,
-          alertText:
-            error +
-            " Error occurred in adding empty students at workshop object",
+          alertText: error + " Error occurred in adding empty students at workshop object",
         });
         console.log({
           error: error,
-          message: "Error occurred in adding empty students at workshop object"
+          message: "Error occurred in adding empty students at workshop object",
         });
       });
 
@@ -380,7 +376,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
         });
         console.log({
           error: error,
-          message: "Error occurred in creating new workshop"
+          message: "Error occurred in creating new workshop",
         });
       });
   };
@@ -389,7 +385,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * deletes a workshop from both the workshop and the studentsAtworkshop collection
    * @param {string} workshopID
    */
-  deleteWorkshopFirebase = (workshopID: string) => {
+  deleteWorkshopFirebase = (workshopID: string): void => {
     app
       .firestore()
       .collection("StudentsAtWorkshopNew")
@@ -405,7 +401,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
         });
         console.log({
           error: error,
-          message: "Error occurred in deleting students at workshop"
+          message: "Error occurred in deleting students at workshop",
         });
       });
 
@@ -424,7 +420,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
         });
         console.log({
           error: error,
-          message: "Error occurred in deleting workshop"
+          message: "Error occurred in deleting workshop",
         });
       });
   };
@@ -435,8 +431,8 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * @param {string} Workshop_ID is the name of the workshop that needs to be expanded, received from <WorkshopBar /> Component
    */
 
-  openWorkshopWindow = (Workshop_ID: string) => {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
+  openWorkshopWindow = (Workshop_ID: string): void => {
+    const workshopIndex = this.findWorkshopIndex(Workshop_ID);
     this.setState((state) => ({
       viewWorkshop: !state.viewWorkshop,
       workshopView: workshopIndex,
@@ -447,7 +443,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Call function to access firestore from props
    * @param {string} Workshop_ID
    */
-  enableWorkshop = (Workshop_ID: string) => {
+  enableWorkshop = (Workshop_ID: string): void => {
     this.updateWorkshopStatus(Workshop_ID, true);
   };
 
@@ -455,7 +451,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Call function to access firestore from props
    * @param {string} Workshop_ID
    */
-  disableWorkshop = (Workshop_ID: string) => {
+  disableWorkshop = (Workshop_ID: string): void => {
     this.updateWorkshopStatus(Workshop_ID, false);
   };
 
@@ -463,7 +459,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Call function to access firestore from props
    * @param {string} Workshop_ID
    */
-  clearAllStudents = (Workshop_ID: string) => {
+  clearAllStudents = (Workshop_ID: string): void => {
     this.clearStudentsAtWorkshop(Workshop_ID);
   };
 
@@ -471,9 +467,9 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Call function to access firestore from props
    * @param {string} Workshop_ID
    */
-  deleteWorkshop = (Workshop_ID: string) => {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
-    let workshopArray = this.state.workshops;
+  deleteWorkshop = (Workshop_ID: string): void => {
+    const workshopIndex: number = this.findWorkshopIndex(Workshop_ID);
+    const workshopArray = this.state.workshops;
     //removes the one workshop element from the array locally before removing from db
     //avoids unexpected read errors due to progress listeners
     workshopArray.splice(workshopIndex, 1);
@@ -492,43 +488,33 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Call function to access firestore from props
    * @param {*} Workshop_ID
    */
-  incrementLevel = (Workshop_ID: string) => {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
-    this.updateWorkshopLevel(
-      Workshop_ID,
-      this.state.studentsAtWorkshop[workshopIndex].Level_Enabled + 1
-    );
+  incrementLevel = (Workshop_ID: string): void => {
+    const workshopIndex: number = this.findWorkshopIndex(Workshop_ID);
+    this.updateWorkshopLevel(Workshop_ID, this.state.studentsAtWorkshop[workshopIndex].Level_Enabled + 1);
   };
 
   /**
    * Call function to access firestore from props
    * @param {*} Workshop_ID
    */
-  decrementLevel = (Workshop_ID: string) => {
-    let workshopIndex = this.findWorkshopIndex(Workshop_ID);
-    this.updateWorkshopLevel(
-      Workshop_ID,
-      this.state.studentsAtWorkshop[workshopIndex].Level_Enabled - 1
-    );
+  decrementLevel = (Workshop_ID: string): void => {
+    const workshopIndex: number = this.findWorkshopIndex(Workshop_ID);
+    this.updateWorkshopLevel(Workshop_ID, this.state.studentsAtWorkshop[workshopIndex].Level_Enabled - 1);
   };
 
   /**
    * Call function to access firestore from props
    * @param {*} Workshop_ID
    */
-  exportWorkshop = (Workshop_ID: string) => {
+  exportWorkshop = (Workshop_ID: string): void => {
     const index = this.findWorkshopIndex(Workshop_ID);
-    let data = { ...this.state.workshops[index] };
+    const data = { ...this.state.workshops[index] };
 
     // Convert parallel arrays from state to objects for neater export
-    let student_data = [];
-    for (
-      let i = 0;
-      i < this.state.studentsAtWorkshop[index].Students.length;
-      i++
-    ) {
-      let student = this.state.studentsAtWorkshop[index].Students[i];
-      let progress = this.state.studentsAtWorkshop[index].Progress[i];
+    const student_data = [];
+    for (let i = 0; i < this.state.studentsAtWorkshop[index].Students.length; i++) {
+      const student = this.state.studentsAtWorkshop[index].Students[i];
+      const progress = this.state.studentsAtWorkshop[index].Progress[i];
       student_data.push({
         student,
         progress,
@@ -536,13 +522,13 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
     }
 
     //sets the date object as a string
-    let newObject = {
+    const newObject = {
       ...data,
       Date: new Date((data.Date.seconds as number) * 1000).toDateString(),
     };
 
     // Merging both workshop data and student data into one json object
-    let export_data = {
+    const export_data = {
       workshop_data: newObject,
       student_data: student_data,
     };
@@ -560,22 +546,18 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
   /**
    * Call function to download all workshop data
    */
-  downloadAllWorkshops = () => {
-    let big_data = [];
+  downloadAllWorkshops = (): void => {
+    const big_data = [];
 
     // Loop through workshops
     for (let i = 0; i < this.state.workshops.length; i++) {
-      let data = { ...this.state.workshops[i] };
+      const data = { ...this.state.workshops[i] };
 
-      let student_data = [];
+      const student_data = [];
       // Convert parallel arrays from state to objects for neater export
-      for (
-        let k = 0;
-        k < this.state.studentsAtWorkshop[i].Students.length;
-        k++
-      ) {
-        let student = this.state.studentsAtWorkshop[i].Students[k];
-        let progress = this.state.studentsAtWorkshop[i].Progress[k];
+      for (let k = 0; k < this.state.studentsAtWorkshop[i].Students.length; k++) {
+        const student = this.state.studentsAtWorkshop[i].Students[k];
+        const progress = this.state.studentsAtWorkshop[i].Progress[k];
         student_data.push({
           student,
           progress,
@@ -583,7 +565,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
       }
 
       //sets the date object as a string
-      let newObject = {
+      const newObject = {
         ...data,
         Date: new Date((data.Date.seconds as number) * 1000).toDateString(),
       };
@@ -608,7 +590,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
   /**
    * Opens or closes the workshop editing dialog
    */
-  showHideAddEditDialog = () => {
+  showHideAddEditDialog = (): void => {
     this.setState((state) => ({
       addWorkshopDialogState: !state.addWorkshopDialogState,
     }));
@@ -620,10 +602,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * @param {*} Workshop_Object
    * @param {*} wasSubmitPressed
    */
-  receiveAddEditWorkshopInformationFromDialog = (
-    Workshop_Object: workshop,
-    wasSubmitPressed: boolean
-  ) => {
+  receiveAddEditWorkshopInformationFromDialog = (Workshop_Object: workshop, wasSubmitPressed: boolean) => {
     this.showHideAddEditDialog();
     if (wasSubmitPressed) {
       this.addEditWorkshop(Workshop_Object);
@@ -635,8 +614,8 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Will perform some modifications to the data before calling the parent functions from props to update/create in firestore
    * @param {*} Workshop_Object
    */
-  addEditWorkshop = (Workshop_Object: workshop) => {
-    let workshopIndex: number = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
+  addEditWorkshop = (Workshop_Object: workshop): void => {
+    const workshopIndex: number = this.findWorkshopIndex(Workshop_Object.Workshop_ID);
     //the slice commands below ensure that when the workshop is saved then only the correct number of levels are passed back
     //For example if the workshop used to have 5 levels but was edited to only have 4 then the slice commands will remove the extra one
     Workshop_Object.Levels = Workshop_Object.Levels.slice(0, Workshop_Object.Number_Of_Levels);
@@ -653,10 +632,10 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Loop through array to find the index of the workshop
    * @param {*} Workshop_ID
    */
-  findWorkshopIndex = (Workshop_ID: string) => {
+  findWorkshopIndex = (Workshop_ID: string): number => {
     let workshopIndex = -1;
     // loops through array looking for the index that contains inforamtion on that specific workshop, saves that index in workshopView state which then will be passed in as props to the <Workshop /> Component
-    for (var i = 0; i < this.state.workshops.length; i++) {
+    for (let i = 0; i < this.state.workshops.length; i++) {
       if (this.state.workshops[i].Workshop_ID === Workshop_ID) {
         workshopIndex = i;
       }
@@ -668,9 +647,9 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * loops through the student array to find the index of a specific student
    * @param {*} Workshop_ID
    */
-  findStudentIndex = (Workshop_ID: string) => {
-    var studentIndex = -1;
-    for (var i = 0; i < this.state.studentsAtWorkshop.length; i++) {
+  findStudentIndex = (Workshop_ID: string): number => {
+    let studentIndex = -1;
+    for (let i = 0; i < this.state.studentsAtWorkshop.length; i++) {
       if (this.state.studentsAtWorkshop[i].Workshop_ID === Workshop_ID) {
         studentIndex = i;
       }
@@ -681,16 +660,16 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
   /**
    * Reset the alert status once it has been closed
    */
-  resetAlertStatus = () => {
+  resetAlertStatus = (): void => {
     this.setState({
       alert: false,
       alertText: "Unknown error occurred",
     });
   };
 
-  render() {
+  render(): JSX.Element {
     //maps out the array into UI components, this is for the admin page that shows all workshops which is why expandState is set to false
-    let workshopList = this.state.workshops.map((item, index) => (
+    const workshopList = this.state.workshops.map((item, index) => (
       <WorkshopBar
         expandState={false}
         expandWindow={this.openWorkshopWindow}
@@ -701,7 +680,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
     ));
 
     //maps out the array into UI components to be displayed in the tiles at the top
-    let tiles = this.state.cards.map((item, index) => (
+    const tiles = this.state.cards.map((item, index) => (
       <Col key={index}>
         <CardTile data={item} />
       </Col>
@@ -713,11 +692,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
         <Container fluid>
           {this.state.alert ? (
             <div className="m-1 mt-3 m-lg-5">
-              <Alert
-                variant="danger"
-                onClose={() => this.resetAlertStatus()}
-                dismissible
-              >
+              <Alert variant="danger" onClose={() => this.resetAlertStatus()} dismissible>
                 {this.state.alertText}
               </Alert>
             </div>
