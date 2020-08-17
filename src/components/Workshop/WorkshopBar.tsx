@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Nav, ProgressBar } from "react-bootstrap";
-import { workshop, studentsAtWorkshop } from "../../config/interface"
+import { workshop, studentsAtWorkshop } from "../../config/interface";
 
 /**
  * The is a workshop bar that shows a minimized view of the information in a workshop
@@ -27,11 +27,11 @@ class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
 
   /**
    * Updates the workshop state if the props change
-   * @param {WorkshopBarProps} prevProps 
+   * @param {WorkshopBarProps} prevProps
    */
-  componentDidUpdate(prevProps: WorkshopBarProps) {
+  componentDidUpdate(prevProps: WorkshopBarProps): void {
     if (this.props.students !== prevProps.students) {
-      this.setState(state  => ({
+      this.setState((state) => ({
         refresh: !state.refresh, //will cause it to refresh since state changes
       }));
     }
@@ -40,22 +40,22 @@ class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
   /**
    * Toggles whether the expanded view is open or not
    */
-  switchView = () => {
+  switchView = (): void => {
     this.props.expandWindow(this.props.data.Workshop_ID);
-  }
+  };
 
-  render() {
+  render(): JSX.Element {
     //extract the day, month, year from the date Object
     let date = null;
     let month = null;
     let year = null;
     let day = null;
-    let temp = new Date((this.props.data.Date?.seconds as number) * 1000); //forces it to be number instead of being number | undefined
+    const temp = new Date((this.props.data.Date?.seconds as number) * 1000); //forces it to be number instead of being number | undefined
     if (temp != null) {
       date = temp.getDate();
 
       month = temp.getMonth();
-      let monthsOfYear: string[] = [
+      const monthsOfYear: string[] = [
         "January",
         "February",
         "March",
@@ -74,23 +74,22 @@ class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
       year = temp.getFullYear();
 
       day = temp.getDay();
-      let daysOfWeek: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const daysOfWeek: string[] = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
       day = daysOfWeek[day];
     }
 
     //compute number of students behind and at the same level of progress as admin
-    let studentsAtLevel: number = 0;
-    let studentsBehindLevel: number = 0;
-    for(var i = 0; i < this.props.students.Progress.length; i++) {
-      if(this.props.students.Progress[i] < this.props.students.Level_Enabled) {
+    let studentsAtLevel = 0;
+    let studentsBehindLevel = 0;
+    for (let i = 0; i < this.props.students.Progress.length; i++) {
+      if (this.props.students.Progress[i] < this.props.students.Level_Enabled) {
         studentsBehindLevel++;
-      }
-      else {
+      } else {
         studentsAtLevel++;
       }
     }
-    let percentAtLevel = (studentsAtLevel/this.props.students.Progress.length)*100;
-    let percentBehindLevel = (studentsBehindLevel/this.props.students.Progress.length)*100;
+    const percentAtLevel = (studentsAtLevel / this.props.students.Progress.length) * 100;
+    const percentBehindLevel = (studentsBehindLevel / this.props.students.Progress.length) * 100;
 
     return (
       <div>
@@ -101,20 +100,8 @@ class WorkshopBar extends React.Component<WorkshopBarProps, WorkshopBarState> {
             </Nav.Item>
             <Nav.Item className="mt-3">
               <ProgressBar>
-                <ProgressBar
-                  striped
-                  variant="success"
-                  animated
-                  now={percentAtLevel}
-                  key={1}
-                />
-                <ProgressBar
-                  striped
-                  variant="warning"
-                  animated
-                  now={percentBehindLevel}
-                  key={2}
-                />
+                <ProgressBar striped variant="success" animated now={percentAtLevel} key={1} />
+                <ProgressBar striped variant="warning" animated now={percentBehindLevel} key={2} />
                 <ProgressBar
                   striped
                   variant="danger"

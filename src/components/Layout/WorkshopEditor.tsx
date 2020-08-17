@@ -13,13 +13,13 @@ interface WorkshopEditorProps {
 interface WorkshopEditorState {
   editorState: EditorState;
   savedState: string;
-  uploadedFiles: any;
+  uploadedFiles: File[];
 }
 
 class WorkshopEditor extends React.Component<WorkshopEditorProps, WorkshopEditorState> {
   constructor(props: WorkshopEditorProps) {
     super(props);
-    var defaultState: EditorState;
+    let defaultState: EditorState;
     console.log(this.props.content);
     if (this.props.content) {
       const blocksFromHTML = convertFromHTML(this.props.content);
@@ -37,15 +37,15 @@ class WorkshopEditor extends React.Component<WorkshopEditorProps, WorkshopEditor
     this.closeWindow = this.closeWindow.bind(this);
   }
 
-  onEditorStateChange = (editorState: any) => {
+  onEditorStateChange = (editorState: EditorState): void => {
     this.setState({
       editorState: editorState,
     });
   };
 
-  saveCurrentContent() {
-    var rawContentState = convertToRaw(this.state.editorState.getCurrentContent());
-    var markup = draftToHtml(rawContentState);
+  saveCurrentContent(): void {
+    const rawContentState = convertToRaw(this.state.editorState.getCurrentContent());
+    const markup = draftToHtml(rawContentState);
     this.setState(
       {
         savedState: markup,
@@ -54,20 +54,20 @@ class WorkshopEditor extends React.Component<WorkshopEditorProps, WorkshopEditor
     );
   }
 
-  uploadFiles = (files: any) => {
+  uploadFiles = (files: File[]): void => {
     this.setState({
-      uploadedFiles: files
-    })
-  }
+      uploadedFiles: files,
+    });
+  };
 
-  closeWindow() {
+  closeWindow(): void {
     this.props.closeWindow({
       content: this.state.savedState,
-      file: this.state.uploadedFiles
+      file: this.state.uploadedFiles,
     });
   }
 
-  render() {
+  render(): JSX.Element {
     const { editorState } = this.state;
     return (
       <div>

@@ -4,9 +4,9 @@ import StudentBar from "./StudentBar";
 import WorkshopLevelBar from "./WorkshopLevelBar";
 import ConfirmationDialog from "../Layout/ConfirmationDialog";
 import WorkshopEdit from "./WorkshopEdit";
-import { workshop, studentsAtWorkshop } from "../../config/interface"
+import { workshop, studentsAtWorkshop } from "../../config/interface";
 
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
+const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 /**
  * This component displays the expanded view for a workshop when "Show View" is selected on a <WorkshopBar />
@@ -15,50 +15,50 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
  */
 
 interface WorkshopProps {
-  incrementLevel(Workshop_ID: string): void,
-  decrementLevel(Workshop_ID: string): void,
-  enableWorkshop(Workshop_ID: string): void,
-  disableWorkshop(Workshop_ID: string): void,
-  clearAllStudents(Workshop_ID: string): void,
-  deleteWorkshop(Workshop_ID: string): void,
-  addEditWorkshop(Workshop_Object: workshop): void,
-  exportWorkshop(Workshop_ID: string): void,
-  properties: workshop, // workshop object
-  data: studentsAtWorkshop // students at workshop object
+  incrementLevel(Workshop_ID: string): void;
+  decrementLevel(Workshop_ID: string): void;
+  enableWorkshop(Workshop_ID: string): void;
+  disableWorkshop(Workshop_ID: string): void;
+  clearAllStudents(Workshop_ID: string): void;
+  deleteWorkshop(Workshop_ID: string): void;
+  addEditWorkshop(Workshop_Object: workshop): void;
+  exportWorkshop(Workshop_ID: string): void;
+  properties: workshop; // workshop object
+  data: studentsAtWorkshop; // students at workshop object
 }
 
- interface GraphData {
-   label: string,
-   y: number
- }
+interface GraphData {
+  label: string;
+  y: number;
+}
 
- interface WorkshopState {
-   dataArray: GraphData[],
-   confirmationDialog: boolean,
-   addEditWorkshopDialog: boolean
- }
+interface WorkshopState {
+  dataArray: GraphData[];
+  confirmationDialog: boolean;
+  addEditWorkshopDialog: boolean;
+}
 
 class Workshop extends React.Component<WorkshopProps, WorkshopState> {
   constructor(props: WorkshopProps) {
     super(props);
 
     //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph
-    let dps: GraphData[] = [];
+    const dps: GraphData[] = [];
 
-    let xValues: string[] = [];
-    let yValues: number[] = [];
+    const xValues: string[] = [];
+    const yValues: number[] = [];
 
-    for (var i = 0; i < this.props.properties.Number_Of_Levels; i++) {
-      let a = i + 1; //make the index start from 0 instead of 1
+    for (let i = 0; i < this.props.properties.Number_Of_Levels; i++) {
+      const a = i + 1; //make the index start from 0 instead of 1
       xValues.push(a + ""); //convert to string to represent as a label instead of coordinate
       yValues.push(0); //initial count for aggregate
     }
 
-    for (var k = 0; k < this.props.data.Progress.length; k++) {
+    for (let k = 0; k < this.props.data.Progress.length; k++) {
       yValues[this.props.data.Progress[k] - 1] += 1;
     }
 
-    for (var j = 0; j < xValues.length; j++) {
+    for (let j = 0; j < xValues.length; j++) {
       dps.push({
         label: xValues[j],
         y: yValues[j],
@@ -74,27 +74,27 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
 
   /**
    * Refreshes all the information displayed when the props change
-   * @param {WorkshopProps} prevProps 
+   * @param {WorkshopProps} prevProps
    */
-  componentDidUpdate(prevProps: WorkshopProps) {
-    console.log('component updated, recalculating graph')
+  componentDidUpdate(prevProps: WorkshopProps): void {
+    console.log("component updated, recalculating graph");
     if (this.props.data !== prevProps.data) {
-      var dps = [];
+      const dps = [];
 
-      var xValues = [];
-      var yValues = [];
+      const xValues = [];
+      const yValues = [];
 
-      for (var i = 0; i < this.props.properties.Number_Of_Levels; i++) {
-        let a = i + 1; //make the index start from 0 instead of 1
+      for (let i = 0; i < this.props.properties.Number_Of_Levels; i++) {
+        const a = i + 1; //make the index start from 0 instead of 1
         xValues.push(a + ""); //convert to string to represent as a label instead of coordinate
         yValues.push(0); //initial count for aggregate
       }
 
-      for (var k = 0; k < this.props.data.Progress.length; k++) {
+      for (let k = 0; k < this.props.data.Progress.length; k++) {
         yValues[this.props.data.Progress[k] - 1] += 1;
       }
 
-      for (var j = 0; j < xValues.length; j++) {
+      for (let j = 0; j < xValues.length; j++) {
         dps.push({
           label: xValues[j],
           y: yValues[j],
@@ -109,71 +109,71 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
   //this adds the person name and their progress as (label, y) format datapoints for the CanvasJS graph
   //code for parsing and adding dynamic data from here --> http://jsfiddle.net/canvasjs/acf0dx6d/
   //this function does not actually get called
-  parseDataPoints = () => {
-    var dps = [];
-    for (var i = dps.length; i < this.props.data.Students.length; i++)
+  parseDataPoints = (): void => {
+    const dps = [];
+    for (let i = dps.length; i < this.props.data.Students.length; i++)
       dps.push({
         label: this.props.data.Students[i],
         y: this.props.data.Progress[i],
       });
 
     this.setState({ dataArray: dps });
-  }
+  };
 
   /**
    * Link button to function passed in as props
    */
-  enableWorkshop = () => {
+  enableWorkshop = (): void => {
     this.props.enableWorkshop(this.props.data.Workshop_ID);
-  }
+  };
 
   /**
    * Link button to function passed in as props
    */
-  disableWorkshop = () => {
+  disableWorkshop = (): void => {
     this.props.disableWorkshop(this.props.data.Workshop_ID);
-  }
+  };
 
   /**
    * Link button to function passed in as props
    */
-  clearAllStudents = () => {
+  clearAllStudents = (): void => {
     this.props.clearAllStudents(this.props.data.Workshop_ID);
-  }
+  };
 
   /**
    * Link button to function passed in as props
    */
-  deleteWorkshop = () => {
+  deleteWorkshop = (): void => {
     this.showHideDeleteConfirmation();
-  }
+  };
 
   /**
    * Link button to function passed in as props
    */
-  incrementLevel = () => {
+  incrementLevel = (): void => {
     this.props.incrementLevel(this.props.data.Workshop_ID);
-  }
+  };
 
   /**
    * Link button to function passed in as props
    */
-  decrementLevel = () => {
+  decrementLevel = (): void => {
     this.props.decrementLevel(this.props.data.Workshop_ID);
-  }
+  };
 
   /**
    * Link button to function passed in as props
    */
-  addEditWorkshop = () => {
+  addEditWorkshop = (): void => {
     this.showHideAddEditDialog();
-  }
+  };
 
   /**
    * Link button to function passed in as props
    * Only called if submit was pressed
    */
-  receiveAddEditWorkshopInformationFromDialog = (Workshop_Object: workshop, wasSubmitPressed: boolean) => {
+  receiveAddEditWorkshopInformationFromDialog = (Workshop_Object: workshop, wasSubmitPressed: boolean): void => {
     this.showHideAddEditDialog();
     if (wasSubmitPressed) {
       this.props.addEditWorkshop(Workshop_Object);
@@ -183,41 +183,41 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
   /**
    * Link button to function passed in as props
    */
-  exportWorkshop = () => {
+  exportWorkshop = (): void => {
     this.props.exportWorkshop(this.props.data.Workshop_ID);
   };
 
   /**
    * Open up the confirmation dialog for deletion
    */
-  showHideDeleteConfirmation = () => {
-    this.setState(state => ({
+  showHideDeleteConfirmation = (): void => {
+    this.setState((state) => ({
       confirmationDialog: !state.confirmationDialog,
     }));
-  }
+  };
 
   /**
    * Open up the workshop editing dialog
    */
-  showHideAddEditDialog = () => {
-    this.setState(state => ({
+  showHideAddEditDialog = (): void => {
+    this.setState((state) => ({
       addEditWorkshopDialog: !state.addEditWorkshopDialog,
     }));
-  }
+  };
 
   /**
    * Get response from the confirmation dialog on whether to delete the workshop
    */
-  getDialogResponse = (bool: boolean) => {
+  getDialogResponse = (bool: boolean): void => {
     this.showHideDeleteConfirmation();
     if (bool) {
       this.props.deleteWorkshop(this.props.data.Workshop_ID);
     }
-  }
+  };
 
-  render() {
+  render(): JSX.Element {
     //mapping student array into <StudentBar />
-    let student_progress = this.props.data.Students.map((item: string, index: number) => (
+    const student_progress = this.props.data.Students.map((item: string, index: number) => (
       <StudentBar
         TotalProgress={this.props.properties.Number_Of_Levels}
         Progress={this.props.data.Progress[index]}
@@ -249,9 +249,8 @@ class Workshop extends React.Component<WorkshopProps, WorkshopState> {
     };
 
     //confirmation dialog setup
-    let titleText: string = "Confirmation";
-    let messageText: string =
-      "Are you sure about performing this action? This action cannot be reversed.";
+    const titleText = "Confirmation";
+    const messageText = "Are you sure about performing this action? This action cannot be reversed.";
 
     return (
       <div>
