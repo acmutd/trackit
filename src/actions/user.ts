@@ -16,6 +16,6 @@ export const workshopAuthenticationAction = (workshopID: any): userInterface => 
 export const workshopDataAction = (workshop_data: any): userInterface => {
   return {
     type: WORKSHOP_DATA,
-    payload: workshop_data
+    payload: workshop_data,
   };
 };

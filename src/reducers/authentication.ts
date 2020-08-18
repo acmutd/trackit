@@ -1,13 +1,6 @@
-import {
-  LOGIN,
-  LOGOUT,
-  authInterface,
-} from "../actions/authentication";
+import { LOGIN, LOGOUT, authInterface } from "../actions/authentication";
 
-const authenticateReducer = (
-  state = { loggedIn: false },
-  action: authInterface
-) => {
+const authenticateReducer = (state = { loggedIn: false }, action: authInterface) => {
   switch (action.type) {
     case LOGIN:
       return {
@@ -18,7 +11,7 @@ const authenticateReducer = (
         loggedIn: false,
       };
     default:
-        return state;
+      return state;
   }
 };
 

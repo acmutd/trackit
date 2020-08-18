@@ -12,7 +12,6 @@ import app from "../../config/firebase";
 interface NavBarProps {
   loggedIn: boolean;
   auth0: any;
-  database?: firebase.app.App;
   signOutRedux: any;
 }
 
@@ -58,7 +57,7 @@ class NavBar extends React.Component<NavBarProps, Record<string, unknown>> {
       });
   };
 
-  render() {
+  render(): JSX.Element {
     return (
       <div>
         <Navbar bg="dark" variant="dark" expand="md">

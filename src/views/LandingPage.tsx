@@ -14,6 +14,7 @@ const LandingPage = (): JSX.Element => {
   useEffect(
     function () {
       if (!isLoading && isAuthenticated) {
+        console.log("authentication in progress");
       }
     },
     [isAuthenticated, isLoading]

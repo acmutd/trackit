@@ -1,6 +1,6 @@
 import * as React from "react";
 import Navbar from "../components/Layout/NavBar";
-import { Button, Container, Card, CardDeck, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Image, Container, Card, CardDeck, ListGroup, ListGroupItem } from "react-bootstrap";
 
 type tier = {
   name: string;
@@ -36,7 +36,7 @@ class Pricing extends React.Component<Record<string, unknown>, PricingState> {
     ],
   };
 
-  render() {
+  render(): JSX.Element {
     const tierCards = this.state.tiers.map((item, index) => (
       <Card key={index} style={{ width: "18rem" }} className="floating-icon">
         <Card.Img variant="top" />

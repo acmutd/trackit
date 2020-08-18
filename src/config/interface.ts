@@ -1,12 +1,10 @@
 import * as firebase from "firebase";
 
-export interface userFirebase
-  extends firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData> {
+export interface userFirebase extends firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData> {
   readonly isAdmin?: boolean;
 }
 
-export interface workshopFirebase
-  extends firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData> {
+export interface workshopFirebase extends firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData> {
   //uses the stricter QueryDocumentSnapshot that quarantees that the fields cannot be null, can optionally be downcasted to DocumentSnapshot, read here for more information https://stackoverflow.com/questions/49859954/firestore-difference-between-documentsnapshot-and-querydocumentsnapshot
   Date?: Date;
   Level_Descriptions?: string[];
@@ -17,20 +15,17 @@ export interface workshopFirebase
 }
 
 interface progress {
-  [key: string] : number;
+  [key: string]: number;
 }
 
 export interface studentsAtWorkshopFirebase
-  extends firebase.firestore.QueryDocumentSnapshot<
-    firebase.firestore.DocumentData
-  > {
+  extends firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData> {
   //uses the stricter QueryDocumentSnapshot that quarantees that the fields cannot be null, can optionally be downcasted to DocumentSnapshot
   readonly Enabled?: boolean;
   readonly Level_Enabled?: number;
   readonly Workshop_ID?: string;
-  readonly testProgress?: progress
+  readonly testProgress?: progress;
 }
-
 
 //super strict definition of data required for the front-end, no optional parameters
 export interface studentsAtWorkshop {
@@ -43,7 +38,7 @@ export interface studentsAtWorkshop {
 
 // Type for Date object which combines Javascript Date object with Date object from databse
 export interface DateType extends Date {
-  seconds?: number
+  seconds?: number;
 }
 
 //super strict definition of data required for the front-end, no optional parameters
@@ -67,18 +62,18 @@ export interface CardData {
   title: string;
   subtitle: string;
   description: string;
-  links: Function[];
+  links: any[];
   linkText: string[];
   disabled: boolean;
 }
 
 export interface FirebaseConfig {
-  apiKey: string | undefined,
-  authDomain: string | undefined,
-  databaseURL: string | undefined,
-  projectId: string | undefined,
-  storageBucket: string | undefined,
-  messagingSenderId: string | undefined,
-  appId: string | undefined,
-  measurementId: string | undefined,
+  apiKey: string | undefined;
+  authDomain: string | undefined;
+  databaseURL: string | undefined;
+  projectId: string | undefined;
+  storageBucket: string | undefined;
+  messagingSenderId: string | undefined;
+  appId: string | undefined;
+  measurementId: string | undefined;
 }

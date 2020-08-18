@@ -19,7 +19,7 @@ const jwtCheck = jwt({
   }),
   audience: `https://harshasrikara.com/api`,
   issuer: `https://${functions.config().auth0.domain}/`,
-  algorithm: "RS256",
+  algorithms: "RS256",
 });
 
 app.get("/getCustomToken", jwtCheck, authFunctions.createCustomToken);
