@@ -88,7 +88,7 @@ class User extends React.Component<any, UserState> {
       audience: `https://harshasrikara.com/api`,
       scope: "read:current_user",
     });
-    const response = await fetch(`https://us-central1-trackit-271619.cloudfunctions.net/api/getCustomToken`, {
+    const response = await fetch(`https://us-central1-trackit-285205.cloudfunctions.net/api/getCustomToken`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
