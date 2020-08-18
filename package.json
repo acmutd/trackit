@@ -38,16 +38,11 @@
   "scripts": {
     "lint": "npx eslint .",
     "start": "serve -s build",
-    "dev": "npm run parcel",
-    "build": "npm run parcel-build",
+    "dev": "react-scripts start",
+    "build": "react-scripts build",
     "test": "jest --config=jest.config.js",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "npm run parcel-build",
-    "webpack": "webpack-dev-server --config webpack.config.js",
-    "parcel": "parcel index.html -p 3000 --no-source-maps",
-    "parcel-build": "parcel build --out-dir build index.html --no-source-maps",
-    "parcel-setup": "parcel watch index.html",
-    "react-test": "react-scripts start"
+    "heroku-postbuild": "npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
