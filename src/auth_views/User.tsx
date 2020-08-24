@@ -115,6 +115,9 @@ class User extends React.Component<any, UserState> {
         this.setState({
           loginError: true,
         });
+        console.log(error.code);
+        console.log(error.credential);
+        console.log(error.message);
         console.log({
           error: error,
           message: "Invalid Credentials",

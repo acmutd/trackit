@@ -49,7 +49,7 @@ let firebaseConfig: FirebaseConfig;
 
 if (process.env.NODE_ENV !== "production") {
   //locally change from beta_dev_firebaseConfig to access resources with a different api key
-  firebaseConfig = master_dev_firebaseConfig;
+  firebaseConfig = beta_dev_firebaseConfig;
 } else {
   firebaseConfig = beta_prod_firebaseConfig;
 }
