@@ -5,14 +5,12 @@ import { workshopFirebase, workshop } from "../config/interface";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../views/LandingPage";
 import { connect } from "react-redux";
-import {
-  workshopAuthenticationAction,
-  workshopDataAction,
-} from "../actions/user";
+import { workshopAuthenticationAction, workshopDataAction } from "../actions/user";
 import { loginAction, logoutAction } from "../actions/authentication";
 import app from "../config/firebase";
 
 interface UserProps {
+  withAuth0?: any;
   auth0?: any;
 
   workshop_data?: any;
@@ -34,7 +32,7 @@ interface UserState {
   loginError: boolean;
 }
 
-class User extends React.Component<UserProps, UserState> {
+class User extends React.Component<any, UserState> {
   state: UserState = {
     workshopID: "",
     workshop_data: null,
@@ -54,15 +52,13 @@ class User extends React.Component<UserProps, UserState> {
   }
 
   componentDidMount() {
-    this.loginListener = app
-      .auth()
-      .onAuthStateChanged((user: firebase.User | null) => {
-        if (user) {
-          this.props.login();
-        } else {
-          this.props.logout();
-        }
-      });
+    this.loginListener = app.auth().onAuthStateChanged((user: firebase.User | null) => {
+      if (user) {
+        this.props.login();
+      } else {
+        this.props.logout();
+      }
+    });
   }
   componentDidUpdate() {
     const { isAuthenticated, isLoading } = this.props.auth0;
@@ -92,14 +88,11 @@ class User extends React.Component<UserProps, UserState> {
       audience: `https://harshasrikara.com/api`,
       scope: "read:current_user",
     });
-    const response = await fetch(
-      `https://us-central1-trackit-271619.cloudfunctions.net/api/getCustomToken`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await fetch(`https://us-central1-trackit-285205.cloudfunctions.net/api/getCustomToken`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
     const data = await response.json();
     app
@@ -122,6 +115,9 @@ class User extends React.Component<UserProps, UserState> {
         this.setState({
           loginError: true,
         });
+        console.log(error.code);
+        console.log(error.credential);
+        console.log(error.message);
         console.log({
           error: error,
           message: "Invalid Credentials",
@@ -134,7 +130,7 @@ class User extends React.Component<UserProps, UserState> {
    * This will validate that said workshop exists, is enabled and if so will open up the user dashboard
    * @param {string} workshop
    */
-            
+
   authenticateWorkshop = async (workshop: string) => {
     //reset the login error if any occurred during authentication
     //same variable gets reused to see if any errors happen in authenticating the workshop name
@@ -147,7 +143,7 @@ class User extends React.Component<UserProps, UserState> {
     //read the workshop data if present else trigger a alert
     await app
       .firestore()
-      .collection("Workshop")
+      .collection("NewWorkshop")
       .doc(workshop)
       .get()
       .then((doc: workshopFirebase) => {
@@ -156,10 +152,9 @@ class User extends React.Component<UserProps, UserState> {
             loginError: true,
           });
         } else {
-          let workshopObject: workshop = {
+          const workshopObject: workshop = {
             Date: doc.data()?.Date,
-            Level_Descriptions: doc.data()?.Level_Descriptions,
-            Level_Titles: doc.data()?.Level_Titles,
+            Levels: doc.data()?.Levels,
             Number_Of_Levels: doc.data()?.Number_Of_Levels,
             Workshop_ID: doc.data()?.Workshop_ID,
             Workshop_Name: doc.data()?.Workshop_Name,
@@ -184,22 +179,18 @@ class User extends React.Component<UserProps, UserState> {
   render() {
     const { isAuthenticated, isLoading, user } = this.props.auth0;
 
-    let userID: string = "";
+    let userID = "";
     if (!isLoading && isAuthenticated && user) {
       userID = user.email.substring(0, user.email.lastIndexOf("@"));
     }
-    
+
     return (
       <div>
         {!isLoading && isAuthenticated && this.props.loggedIn ? (
           !this.state.workshop_data ? (
-            <WorkshopLogin
-              authenticate={this.authenticateWorkshop}
-              loginError={this.state.loginError}
-            />
+            <WorkshopLogin authenticate={this.authenticateWorkshop} loginError={this.state.loginError} />
           ) : (
             <UserDash user={userID} />
-
           )
         ) : (
           <LandingPage />
