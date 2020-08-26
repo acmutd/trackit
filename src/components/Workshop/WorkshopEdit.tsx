@@ -8,7 +8,6 @@ import {
   DialogTitle,
   TextField,
   Fab,
-  ListItemText,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import RemoveIcon from "@material-ui/icons/Remove";
@@ -311,7 +310,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
         const val = tempArr.find((o) => o.Files?.includes(newFile.name));
         if (val !== undefined) {
           const index = tempArr.indexOf(val);
-          val.Files = val?.Files?.filter((o) => o != newFile.name);
+          val.Files = val?.Files?.filter((o) => o !== newFile.name);
           tempArr[index] = val;
         }
       }
@@ -335,7 +334,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
       .then(() => {
         return true;
       })
-      .catch((err: any) => {
+      .catch((err) => {
         console.log(err);
         return false;
       });

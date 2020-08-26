@@ -1,6 +1,7 @@
 import * as firebase from "firebase";
 import { FirebaseConfig } from "./interface";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const master_dev_firebaseConfig: FirebaseConfig = {
   apiKey: process.env.REACT_APP_MASTER_DEV_API_KEY,
   authDomain: process.env.REACT_APP_MASTER_DEV_AUTH_DOMAIN,
@@ -12,6 +13,7 @@ const master_dev_firebaseConfig: FirebaseConfig = {
   measurementId: process.env.REACT_APP_MASTER_DEV_MEASUREMENT_ID,
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const master_prod_firebaseConfig: FirebaseConfig = {
   apiKey: process.env.REACT_APP_MASTER_PROD_API_KEY,
   authDomain: process.env.REACT_APP_MASTER_PROD_AUTH_DOMAIN,
@@ -55,5 +57,5 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const app = firebase.initializeApp(firebaseConfig);
-export const storage: any = firebase.storage().ref();
+export const storage = firebase.storage().ref();
 export default app;
