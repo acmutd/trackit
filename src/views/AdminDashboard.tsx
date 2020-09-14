@@ -15,6 +15,7 @@ import {
 } from "../config/interface";
 import * as FileSaver from "file-saver";
 import app from "../config/firebase";
+import { groupCollapsed } from "console";
 
 interface AdminDashboardProps {
   signOut(): void;
@@ -124,11 +125,20 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Calls readStudentData once it has finished reading the workshop data
    */
 
-  readWorkshopData = (): void => {
+  readWorkshopData = async () => {
+    let groups = await app
+    .auth()
+    .currentUser?.getIdTokenResult()
+    .then((token: any) => {
+    return token.claims.Groups;
+  }).catch((err: any) => {
+    return ['']
+  });
     //set listener for updates
     this.workshopListener = app
       .firestore()
       .collection("NewWorkshop")
+      .where("Owner", "in", groups)
       .onSnapshot((snapshot: firebase.firestore.QuerySnapshot) => {
         const arr: workshop[] = [];
         //save each workshop into an array
@@ -155,10 +165,19 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Sets listener to monitor for updates
    */
 
-  readStudentData = (): void => {
+  readStudentData = async () => {
+    let groups = await app
+    .auth()
+    .currentUser?.getIdTokenResult()
+    .then((token: any) => {
+    return token.claims.Groups;
+  }).catch((err: any) => {
+    return ['']
+  });
     this.progressListener = app
       .firestore()
       .collection("StudentsAtWorkshopNew")
+      .where("Owner", "in", groups)
       .onSnapshot((snapshot: firebase.firestore.QuerySnapshot<firebase.firestore.DocumentData>) => {
         const arr: studentsAtWorkshop[] = [];
         snapshot.forEach((snap: studentsAtWorkshopFirebase) => {

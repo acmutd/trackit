@@ -9,3 +9,9 @@ node_modules/
 
 #service account
 service-account.json
+
+# environment variables
+.runtimeconfig.json
+
+# debug log
+ui-debug.log
