@@ -50,6 +50,7 @@ export interface workshop {
   Workshop_ID: string;
   Workshop_Name: string;
   Levels: workshopPart[];
+  Owner: string;
 }
 
 export interface workshopPart {

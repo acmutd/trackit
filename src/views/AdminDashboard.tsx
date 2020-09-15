@@ -354,11 +354,25 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
   createNewWorkshop = (workshopObject: workshop): void => {
     //creates a blank object for the number of students in a workshop
     //this happens first to avoid issues due to the async nature of the JS listener
+    let groups = await app
+    .auth()
+    .currentUser?.getIdTokenResult()
+    .then((token: any) => {
+    return token.claims.Groups;
+  }).catch((err: any) => {
+    this.setState({
+      alert: true,
+      alertText: "Error occurred in adding new workshop to group.",
+    });
+    return "";
+  });
+
     const tempStudentWorkshop = {
       Workshop_ID: workshopObject.Workshop_ID,
       Enabled: false,
       Level_Enabled: 1,
       testProgress: {},
+      Owner: groups[0],
     };
     app
       .firestore()
@@ -380,6 +394,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
       });
 
     //creates the new workshop here
+    workshopObject.Owner = groups[0];
     app
       .firestore()
       .collection("NewWorkshop")

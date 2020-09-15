@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../views/LandingPage";
 import app from "../config/firebase";
+import { useHistory } from "react-router-dom";
 
 interface AdminProps {
   auth0?: any;
@@ -13,7 +14,6 @@ interface AdminProps {
   login: () => void; //redux
   logout: () => void; //redux
 }
-
 /**
  * This component is designed to strictly be backend only
  * All API calls and connections to the database should take place in this component
@@ -21,6 +21,7 @@ interface AdminProps {
  *
  */
 class Admin extends React.Component<any, any> {
+  history = useHistory()
   loginListener?: firebase.Unsubscribe;
   /**
    * If the page crashes then the user gets automatically logged out
@@ -62,7 +63,7 @@ class Admin extends React.Component<any, any> {
   authenticate = async () => {
     const { getAccessTokenSilently, user, logout } = this.props.auth0;
 
-    if (user.email.includes("@acmutd.co")) {
+
       const accessToken = await getAccessTokenSilently({
         audience: `https://harshasrikara.com/api`,
         scope: "read:current_user",
@@ -89,6 +90,19 @@ class Admin extends React.Component<any, any> {
             });
             app.auth().currentUser?.updateEmail(user.email);
           }
+        
+          let groups = await app
+          .auth()
+          .currentUser?.getIdTokenResult()
+          .then((token: any) => {
+            return token.claims.Groups;
+          }).catch((err: any) => {
+            return ['']
+          });
+          if(groups.length === 1 && groups[0] === '')
+            {
+              history.push("/")
+            }
         })
         .catch((error: firebase.auth.AuthError) => {
           console.log({
@@ -97,10 +111,6 @@ class Admin extends React.Component<any, any> {
           });
           logout();
         });
-    } else {
-      logout();
-      console.log("Unauthorized! Only ACM Officers permitted access!");
-    }
   };
 
   /**
