@@ -158,6 +158,7 @@ class User extends React.Component<any, UserState> {
             Number_Of_Levels: doc.data()?.Number_Of_Levels,
             Workshop_ID: doc.data()?.Workshop_ID,
             Workshop_Name: doc.data()?.Workshop_Name,
+            Owner: doc.data()?.Owner,
           };
 
           this.props.updateWorkshopData(workshopObject);

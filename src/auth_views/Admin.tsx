@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../views/LandingPage";
 import app from "../config/firebase";
-import { useHistory } from "react-router-dom";
+//import { useHistory } from "react-router-dom";
 
 interface AdminProps {
   auth0?: any;
@@ -21,7 +21,7 @@ interface AdminProps {
  *
  */
 class Admin extends React.Component<any, any> {
-  history = useHistory()
+  //history = useHistory();
   loginListener?: firebase.Unsubscribe;
   /**
    * If the page crashes then the user gets automatically logged out
@@ -63,54 +63,53 @@ class Admin extends React.Component<any, any> {
   authenticate = async () => {
     const { getAccessTokenSilently, user, logout } = this.props.auth0;
 
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://harshasrikara.com/api`,
+      scope: "read:current_user",
+    });
+    const response = await fetch(`http://localhost:5001/trackit-285205/us-central1/api/getCustomToken`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-      const accessToken = await getAccessTokenSilently({
-        audience: `https://harshasrikara.com/api`,
-        scope: "read:current_user",
-      });
-      const response = await fetch(`http://localhost:5001/trackit-285205/us-central1/api/getCustomToken`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+    const data = await response.json();
+    app
+      .auth()
+      .signInWithCustomToken(data.firebaseToken)
+      .then(async (userFirebase) => {
+        this.props.login();
+        if (app.auth().currentUser?.email !== null) {
+          //this user has signed in before (do nothing)
+        } else {
+          //update fields if its the first time they are signing in
+          app.auth().currentUser?.updateProfile({
+            displayName: user.nickname,
+            photoURL: user.picture,
+          });
+          app.auth().currentUser?.updateEmail(user.email);
+        }
 
-      const data = await response.json();
-      app
-        .auth()
-        .signInWithCustomToken(data.firebaseToken)
-        .then((userFirebase) => {
-          this.props.login();
-          if (app.auth().currentUser?.email !== null) {
-            //this user has signed in before (do nothing)
-          } else {
-            //update fields if its the first time they are signing in
-            app.auth().currentUser?.updateProfile({
-              displayName: user.nickname,
-              photoURL: user.picture,
-            });
-            app.auth().currentUser?.updateEmail(user.email);
-          }
-        
-          let groups = await app
+        const groups = await app
           .auth()
           .currentUser?.getIdTokenResult()
           .then((token: any) => {
             return token.claims.Groups;
-          }).catch((err: any) => {
-            return ['']
+          })
+          .catch((err: any) => {
+            return [""];
           });
-          if(groups.length === 1 && groups[0] === '')
-            {
-              history.push("/")
-            }
-        })
-        .catch((error: firebase.auth.AuthError) => {
-          console.log({
-            message: "Firebase Auth Error when signing in",
-            error: error,
-          });
-          logout();
+        if (groups.length === 1 && groups[0] === "") {
+          //this.history.push("/");
+        }
+      })
+      .catch((error: firebase.auth.AuthError) => {
+        console.log({
+          message: "Firebase Auth Error when signing in",
+          error: error,
         });
+        logout();
+      });
   };
 
   /**

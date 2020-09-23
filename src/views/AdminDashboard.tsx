@@ -126,14 +126,15 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    */
 
   readWorkshopData = async () => {
-    let groups = await app
-    .auth()
-    .currentUser?.getIdTokenResult()
-    .then((token: any) => {
-    return token.claims.Groups;
-  }).catch((err: any) => {
-    return ['']
-  });
+    const groups = await app
+      .auth()
+      .currentUser?.getIdTokenResult()
+      .then((token: any) => {
+        return token.claims.Groups;
+      })
+      .catch((err: any) => {
+        return [""];
+      });
     //set listener for updates
     this.workshopListener = app
       .firestore()
@@ -149,6 +150,7 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
             Workshop_ID: snap.data()?.Workshop_ID,
             Workshop_Name: snap.data()?.Workshop_Name,
             Levels: snap.data()?.Levels,
+            Owner: snap.data()?.Owner,
           };
           arr.push(workshopObject);
         });
@@ -165,15 +167,16 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Sets listener to monitor for updates
    */
 
-  readStudentData = async () => {
-    let groups = await app
-    .auth()
-    .currentUser?.getIdTokenResult()
-    .then((token: any) => {
-    return token.claims.Groups;
-  }).catch((err: any) => {
-    return ['']
-  });
+  readStudentData = async (): Promise<void> => {
+    const groups = await app
+      .auth()
+      .currentUser?.getIdTokenResult()
+      .then((token: any) => {
+        return token.claims.Groups;
+      })
+      .catch((err: any) => {
+        return [""];
+      });
     this.progressListener = app
       .firestore()
       .collection("StudentsAtWorkshopNew")
@@ -351,21 +354,22 @@ class AdminDashboard extends React.Component<AdminDashboardProps, AdminDashboard
    * Should fail if a workshop already exists with the same name
    * @param {*} workshopObject
    */
-  createNewWorkshop = (workshopObject: workshop): void => {
+  createNewWorkshop = async (workshopObject: workshop): Promise<void> => {
     //creates a blank object for the number of students in a workshop
     //this happens first to avoid issues due to the async nature of the JS listener
-    let groups = await app
-    .auth()
-    .currentUser?.getIdTokenResult()
-    .then((token: any) => {
-    return token.claims.Groups;
-  }).catch((err: any) => {
-    this.setState({
-      alert: true,
-      alertText: "Error occurred in adding new workshop to group.",
-    });
-    return "";
-  });
+    const groups = await app
+      .auth()
+      .currentUser?.getIdTokenResult()
+      .then((token: any) => {
+        return token.claims.Groups;
+      })
+      .catch((err: any) => {
+        this.setState({
+          alert: true,
+          alertText: "Error occurred in adding new workshop to group.",
+        });
+        return "";
+      });
 
     const tempStudentWorkshop = {
       Workshop_ID: workshopObject.Workshop_ID,
