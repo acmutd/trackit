@@ -28,7 +28,7 @@ app.get("/getCustomToken", jwtCheck, authFunctions.createCustomToken);
 app.get("/helloWorld", (req: any, res: any) => {
     res.send("hello world");
 })
-app.put("/workshop/delete", workshopFunctions.deleteWorkshop);
+app.delete("/workshop", workshopFunctions.deleteWorkshop);
 
 exports.api = functions.https.onRequest(app);
 exports.hello = functions.https.onRequest((req: any, res: any) => {

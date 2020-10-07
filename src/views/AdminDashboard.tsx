@@ -398,44 +398,29 @@ app
    * deletes a workshop from both the workshop and the studentsAtworkshop collection
    * @param {string} workshopID
    */
-  deleteWorkshopFirebase = (workshopID: string) => {
-    app
-      .firestore()
-      .collection("StudentsAtWorkshop")
-      .doc(workshopID)
-      .delete()
-      .then(() => {
-        console.log("successfully deleted students at workshop");
-      })
-      .catch((error: firebase.firestore.FirestoreError) => {
+  deleteWorkshopFirebase = async (workshopID: string) => {
+    await app.auth().currentUser?.getIdTokenResult().then(async (accessToken: any) => {
+      const response = await fetch(
+        `https://us-central1-trackit-271619.cloudfunctions.net/api/workshop`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ workshop: workshopID}),
+        }
+      ).catch((err: any) => {
         this.setState({
           alert: true,
-          alertText: error + " Error occurred in deleting students at workshop",
-        });
-        console.log({
-          error: error,
-          message: "Error occurred in deleting students at workshop"
-        });
+          alertText: "An error occurred deleting the workshop."
+        })
       });
-
-    app
-      .firestore()
-      .collection("Workshop")
-      .doc(workshopID)
-      .delete()
-      .then(() => {
-        console.log("successfully deleted workshop");
+    }).catch((err: any) => {
+      this.setState({
+        alert: true,
+        alertText: "An error occurred deleting the workshop."
       })
-      .catch((error: firebase.firestore.FirestoreError) => {
-        this.setState({
-          alert: true,
-          alertText: error + " Error occurred in deleting workshop",
-        });
-        console.log({
-          error: error,
-          message: "Error occurred in deleting workshop"
-        });
-      });
+    
   };
 
   /**
