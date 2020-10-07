@@ -1,4 +1,5 @@
 import * as functions from "firebase-functions";
+import * as backupFunctions from "./backup/backup";
 const authFunctions = require('./auth/auth');
 
 const express = require("express");
@@ -30,3 +31,7 @@ exports.api = functions.https.onRequest(app);
 exports.hello = functions.https.onRequest((req: any, res: any) => {
   res.send("called hello endpoint successfully");
 })
+
+export const on_create = backupFunctions.backup_on_create;
+export const on_update = backupFunctions.backup_on_update;
+export const on_delete = backupFunctions.log_on_delete;
