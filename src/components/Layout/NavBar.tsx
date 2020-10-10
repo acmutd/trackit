@@ -6,6 +6,7 @@ import { logoutAction } from "../../actions/authentication";
 import { connect } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
 import app from "../../config/firebase";
+import { Link } from "react-router-dom";
 
 // import { Avatar, deepOrange } from "@material-ui/core"; (later use)
 
@@ -85,7 +86,9 @@ class NavBar extends React.Component<NavBarProps, Record<string, unknown>> {
                   Sign Out
                 </Button>
               ) : (
-                ""
+                <Link to="/login">
+                  <Button variant="dark">Sign In</Button>
+                </Link>
               )}
             </Nav>
           </Navbar.Collapse>
