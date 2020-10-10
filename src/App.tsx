@@ -13,6 +13,8 @@ function App() {
     <div>
       <BrowserRouter>
         <Switch>
+          <Route path="/dashboard" component={Dashboard} exact />
+          <Route path="/login" component={Login} exact />
           <Route
             path="/join"
             render={(props) => <User />}
@@ -23,10 +25,8 @@ function App() {
             render={(props) => <Admin />}
             exact
           />
-          <Route path="/" component={LandingPage} exact />
-          <Route path="/dashboard" component={Dashboard} exact />
-          <Route path="/login" component={Login} exact />
           <Route path="/pricing" component={Pricing} exact />
+          <Route path="/" component={LandingPage} exact />
           <Route path="*" component={Error404} exact />
         </Switch>
       </BrowserRouter>

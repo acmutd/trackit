@@ -6,7 +6,7 @@ import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../views/LandingPage";
 import app from "../config/firebase";
 //import { useHistory } from "react-router-dom";
-
+console.log('hi from admin')
 interface AdminProps {
   auth0?: any;
 
@@ -26,32 +26,6 @@ class Admin extends React.Component<any, any> {
   /**
    * If the page crashes then the user gets automatically logged out
    */
-  componentWillUnmount() {
-    if (this.loginListener) this.loginListener();
-  }
-
-  componentDidMount() {
-    this.loginListener = app.auth().onAuthStateChanged((user: firebase.User | null) => {
-      if (user) {
-        //only ACM Organization Officers have access to admin
-        if (user.email?.includes("@acmutd.co")) {
-          this.props.login();
-        } else {
-          this.signOutUser(); //sign out if the user logged into firebase is not ACM Organization Officer
-        }
-      } else {
-        this.props.logout();
-      }
-    });
-  }
-
-  componentDidUpdate() {
-    const { isAuthenticated, isLoading } = this.props.auth0;
-
-    if (!isLoading && isAuthenticated && !this.props.loggedIn) {
-      this.authenticate();
-    }
-  }
 
   /**
    * This function runs if the user has authenticated themselves on auth0 but not on firebase
@@ -139,6 +113,7 @@ class Admin extends React.Component<any, any> {
    * renders the page
    */
   render() {
+    console.log('hi in admin')
     return (
       <div>
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}

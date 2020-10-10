@@ -46,26 +46,26 @@ class User extends React.Component<any, UserState> {
   /**
    * Sign out the user if the page crashes or components gets unmounted
    */
-  componentWillUnmount() {
-    //remove progress listener
-    if (this.loginListener) this.loginListener();
-  }
+  // componentWillUnmount() {
+  //   //remove progress listener
+  //   if (this.loginListener) this.loginListener();
+  // }
 
-  componentDidMount() {
-    this.loginListener = app.auth().onAuthStateChanged((user: firebase.User | null) => {
-      if (user) {
-        this.props.login();
-      } else {
-        this.props.logout();
-      }
-    });
-  }
-  componentDidUpdate() {
-    const { isAuthenticated, isLoading } = this.props.auth0;
-    if (!isLoading && isAuthenticated && !this.props.loggedIn) {
-      this.authenticate();
-    }
-  }
+  // componentDidMount() {
+  //   this.loginListener = app.auth().onAuthStateChanged((user: firebase.User | null) => {
+  //     if (user) {
+  //       this.props.login();
+  //     } else {
+  //       this.props.logout();
+  //     }
+  //   });
+  // }
+  // componentDidUpdate() {
+  //   const { isAuthenticated, isLoading } = this.props.auth0;
+  //   if (!isLoading && isAuthenticated && !this.props.loggedIn) {
+  //     this.authenticate();
+  //   }
+  // }
 
   /**
    * This function runs if the user has authenticated themselves on auth0 but not on firebase
@@ -178,6 +178,7 @@ class User extends React.Component<any, UserState> {
   };
 
   render() {
+    console.log("in user");
     const { isAuthenticated, isLoading, user } = this.props.auth0;
 
     let userID = "";
@@ -187,14 +188,10 @@ class User extends React.Component<any, UserState> {
 
     return (
       <div>
-        {!isLoading && isAuthenticated && this.props.loggedIn ? (
-          !this.state.workshop_data ? (
-            <WorkshopLogin authenticate={this.authenticateWorkshop} loginError={this.state.loginError} />
-          ) : (
-            <UserDash user={userID} />
-          )
+        {!this.state.workshop_data ? (
+          <WorkshopLogin authenticate={this.authenticateWorkshop} loginError={this.state.loginError} />
         ) : (
-          <LandingPage />
+          <UserDash user={userID} />
         )}
       </div>
     );
