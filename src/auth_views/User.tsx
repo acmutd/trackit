@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { workshopAuthenticationAction, workshopDataAction } from "../actions/user";
 import { loginAction, logoutAction } from "../actions/authentication";
 import app from "../config/firebase";
+import { Redirect } from "react-router-dom";
 
 interface UserProps {
   withAuth0?: any;
@@ -188,10 +189,14 @@ class User extends React.Component<any, UserState> {
 
     return (
       <div>
-        {!this.state.workshop_data ? (
-          <WorkshopLogin authenticate={this.authenticateWorkshop} loginError={this.state.loginError} />
+        {this.props.loggedIn ? (
+          !this.state.workshop_data ? (
+            <WorkshopLogin authenticate={this.authenticateWorkshop} loginError={this.state.loginError} />
+          ) : (
+            <UserDash user={userID} />
+          )
         ) : (
-          <UserDash user={userID} />
+          <Redirect to={"join"} />
         )}
       </div>
     );

@@ -6,6 +6,7 @@ export interface authInterface {
 }
 
 export const loginAction = (): authInterface => {
+  console.log('in login iaction')
   return {
     type: LOGIN,
   };

@@ -7,6 +7,7 @@ import { Route, Switch, BrowserRouter } from "react-router-dom";
 import Login from "./auth_views/Login";
 import Dashboard from "./auth_views/Dashboard";
 import LandingPage from "./views/LandingPage";
+import AuthRoute from "./auth_views/AuthRoute";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
         <Switch>
           <Route path="/dashboard" component={Dashboard} exact />
           <Route path="/login" component={Login} exact />
-          <Route
+          {/* <Route
             path="/join"
             render={(props) => <User />}
             exact
@@ -24,7 +25,9 @@ function App() {
             path="/admin"
             render={(props) => <Admin />}
             exact
-          />
+          /> */}
+          <AuthRoute path="/admin" Component={Admin} />
+          <AuthRoute path="/join" Component={User} />
           <Route path="/pricing" component={Pricing} exact />
           <Route path="/" component={LandingPage} exact />
           <Route path="*" component={Error404} exact />

@@ -9,7 +9,7 @@ import app from "../config/firebase";
 console.log('hi from admin')
 interface AdminProps {
   auth0?: any;
-
+  state: any;
   loggedIn?: boolean; //redux
   login: () => void; //redux
   logout: () => void; //redux
@@ -35,6 +35,7 @@ class Admin extends React.Component<any, any> {
    * @param {string} password
    */
   authenticate = async () => {
+    console.log('in authenticate admin')
     const { getAccessTokenSilently, user, logout } = this.props.auth0;
 
     const accessToken = await getAccessTokenSilently({
@@ -113,7 +114,9 @@ class Admin extends React.Component<any, any> {
    * renders the page
    */
   render() {
+    console.log(this.props.state)
     console.log('hi in admin')
+    console.log(this.props.loggedIn);
     return (
       <div>
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
@@ -127,6 +130,7 @@ class Admin extends React.Component<any, any> {
 const mapState = (state: any) => {
   return {
     loggedIn: state.authenticateReducer.loggedIn,
+    tempState: state,
   };
 };
 

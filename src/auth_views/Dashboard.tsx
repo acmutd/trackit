@@ -2,7 +2,7 @@ import Loading from "../components/Layout/Loading";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useEffect } from "react";
 import { loginAction, logoutAction, authInterface, LOGIN } from "../actions/authentication";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
 import app from "../config/firebase";
 import * as React from "react";
@@ -15,18 +15,19 @@ import Login from "./Login";
 
 console.log("hi from dashboard33333");
 
-const Dashboard = (): JSX.Element => {
+const Dashboard = (props: any): JSX.Element => {
   const [user, setUser] = React.useState({ loggedIn: false });
   console.log("hi from dashboard2222");
 
   const dispatch = useDispatch();
+  const loginStatus = useSelector((state: any) => state.authenticateReducer?.loggedIn);
+
   function onAuthStateChange(callback: any) {
     return app.auth().onAuthStateChanged((user) => {
       if (user) {
-        dispatch({ type: LOGIN });
-        callback({ loggedIn: true });
+        dispatch(loginAction());
       } else {
-        callback({ loggedIn: false });
+        //dispatch(logoutAction());
       }
     });
   }
@@ -42,7 +43,7 @@ const Dashboard = (): JSX.Element => {
   const loginWrapper = () => {
     firebaseLogin();
     if (!user.loggedIn) return <Loading />;
-    else return <Redirect to="/join" />;
+    else return <Redirect to={props.location.state.destination} />;
   };
 
   const firebaseLogin = async () => {
@@ -60,8 +61,18 @@ const Dashboard = (): JSX.Element => {
     app.auth().signInWithCustomToken(data.firebaseToken);
   };
 
-  console.log(isLoading ? <Loading /> : !isAuthenticated ? <Redirect to="/" /> : "loginwrapper");
-  return <div>{isLoading ? <Loading /> : !isAuthenticated ? <Redirect to="/" /> : loginWrapper()}</div>;
+  console.log(props.location.state);
+  return (
+    <div>
+      {isLoading ? (
+        <Loading />
+      ) : isAuthenticated && loginStatus ? (
+        <Redirect to={props.location.state.destination} />
+      ) : (
+        loginWrapper()
+      )}
+    </div>
+  );
 };
 
 export default Dashboard;
