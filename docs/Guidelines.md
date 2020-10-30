@@ -1,6 +1,6 @@
 # UI & Backend Guidelines
 
-Typescript, typescript and more typescript all the way!
+Typescript, typescript and more typescript all the way! This documentation is slightly out of date.
 
 #### Backend
 

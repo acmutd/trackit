@@ -47,7 +47,7 @@ On the workshop page, they will first see a welcome page. Upon going past that, 
 
 #### Questions
 
-Sometimes you may have more questions regarding the usage of this product. If the answer was not found in this handbook please feel free to reach out to the above contributors or the [Director of Development](mailto:comet.acm@gmail.com) for ACM
+Sometimes you may have more questions regarding the usage of this product. If the answer was not found in this handbook please feel free to reach out to the above contributors or the [Director of Development](mailto:development@acmutd.co) for ACM
 
 We request that you be as detailed as possible in your questions, doubts or concerns to ensure that we can be of maximum assistance. Thank you!
 
