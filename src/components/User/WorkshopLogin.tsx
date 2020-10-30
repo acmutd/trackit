@@ -1,23 +1,15 @@
 import * as React from "react";
 import NavBar from "../Layout/NavBar";
-import {
-  Button,
-  InputGroup,
-  Row,
-  Col,
-  FormControl,
-  Container,
-  Alert,
-} from "react-bootstrap";
+import { Button, InputGroup, Row, Col, FormControl, Container, Alert } from "react-bootstrap";
 
 interface WorkshopLoginProps {
-  authenticate(workshop: string): void,
-  loginError: boolean
+  authenticate(workshop: string): void;
+  loginError: boolean;
 }
 
 interface WorkshopLoginState {
-  workshopID: string,
-  loginError: boolean
+  workshopID: string;
+  loginError: boolean;
 }
 /**
  * Page for entering the workshop ID, based on design from <UserAuth /> and <AdminAuth />
@@ -32,7 +24,7 @@ class WorkshopLogin extends React.Component<WorkshopLoginProps, WorkshopLoginSta
    * Update and display alert if there does not exist a workshop with the given name
    * @param {WorkshopLoginProps} prevProps
    */
-  componentDidUpdate(prevProps: WorkshopLoginProps) {
+  componentDidUpdate(prevProps: WorkshopLoginProps): void {
     if (this.props.loginError !== prevProps.loginError) {
       this.setState({
         loginError: this.props.loginError,
@@ -43,7 +35,7 @@ class WorkshopLogin extends React.Component<WorkshopLoginProps, WorkshopLoginSta
   /**
    * Event listener
    */
-  fillWorkshop = (event: React.ChangeEvent<HTMLInputElement>) => {
+  fillWorkshop = (event: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({
       workshopID: event.target.value,
     });
@@ -52,7 +44,7 @@ class WorkshopLogin extends React.Component<WorkshopLoginProps, WorkshopLoginSta
   /**
    * call method from props to verify if workshop ID exists
    */
-  authenticate = () => {
+  authenticate = (): void => {
     if (this.state.workshopID === "") {
       this.setState({
         loginError: true,
@@ -62,18 +54,14 @@ class WorkshopLogin extends React.Component<WorkshopLoginProps, WorkshopLoginSta
     }
   };
 
-  render() {
+  render(): JSX.Element {
     return (
       <div>
         <NavBar />
         <Container fluid>
           <div className="m-1 mt-3 m-lg-5 mt-lg-5 p-5 floating-icon">
             {this.state.loginError ? (
-              <Alert
-                variant="danger"
-                onClose={() => this.setState({ loginError: false })}
-                dismissible
-              >
+              <Alert variant="danger" onClose={() => this.setState({ loginError: false })} dismissible>
                 Invalid Workshop ID
               </Alert>
             ) : (

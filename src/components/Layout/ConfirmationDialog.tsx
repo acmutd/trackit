@@ -1,15 +1,7 @@
 import * as React from "react";
-import { workshop } from "../../config/interface"
+import { workshop } from "../../config/interface";
 
-
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@material-ui/core";
 
 interface ConfirmationDialogProps {
   handleDialogResponse(isTrue: boolean): void;
@@ -23,18 +15,18 @@ interface ConfirmationDialogProps {
 /**
  * This component represents a modal which pops up when needing to confirm deletion, no other button uses this component yet
  */
-class ConfirmationDialog extends React.Component<ConfirmationDialogProps, {}> {
+class ConfirmationDialog extends React.Component<ConfirmationDialogProps, Record<string, unknown>> {
   /**
    * This function will get executed when the dialog is closed in any possible way except clicking the agree button
    */
-  handleDeny = () => {
+  handleDeny = (): void => {
     this.props.handleDialogResponse(false);
   };
 
   /**
    * Person clicks confirm
    */
-  handleAccept = () => {
+  handleAccept = (): void => {
     this.props.handleDialogResponse(true);
   };
 
@@ -42,7 +34,7 @@ class ConfirmationDialog extends React.Component<ConfirmationDialogProps, {}> {
    * The text for what appears in the confirmation dialog gets passed in as props
    * This dialog is all material-ui
    */
-  render() {
+  render(): JSX.Element {
     return (
       <div>
         <Dialog
@@ -51,13 +43,9 @@ class ConfirmationDialog extends React.Component<ConfirmationDialogProps, {}> {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">
-            {this.props.titleText}
-          </DialogTitle>
+          <DialogTitle id="alert-dialog-title">{this.props.titleText}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {this.props.messageText}
-            </DialogContentText>
+            <DialogContentText id="alert-dialog-description">{this.props.messageText}</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleDeny} color="primary">

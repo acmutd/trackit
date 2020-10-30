@@ -4,7 +4,7 @@ import UserWelcome from "../components/User/UserWelcome";
 import Loading from "../components/Layout/Loading";
 import UserProgressBar from "../components/User/UserProgressBar";
 import { Row, Col, Card, Button, Container, Alert } from "react-bootstrap";
-import { workshop, studentsAtWorkshopFirebase } from "../config/interface";
+import { workshop, studentsAtWorkshopFirebase, workshopPart } from "../config/interface";
 import { connect } from "react-redux";
 import Spinner from "../components/Layout/Loading";
 import app from "../config/firebase";
@@ -52,23 +52,16 @@ class UserDash extends React.Component<DashProps, DashState> {
 
   getProgressData = () => {
     // //convert .,@ and other weird symbols in emails to be of a proper format
-    let email: string = encodeURIComponent(this.props.user).replace(
-      /\./g,
-      "%2E"
-    );
+    const email: string = encodeURIComponent(this.props.user).replace(/\./g, "%2E");
 
     //set listener on firestore
     this.progressListener = app
       .firestore()
-      .collection("StudentsAtWorkshop")
+      .collection("StudentsAtWorkshopNew")
       .doc(this.props.workshopID)
       .onSnapshot(
         (
-          snapshot:
-            | studentsAtWorkshopFirebase
-            | firebase.firestore.DocumentSnapshot<
-                firebase.firestore.DocumentData
-              >
+          snapshot: studentsAtWorkshopFirebase | firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
         ) => {
           //query snapshot too strict of a definition, firebase does not verify if data is present
           if (snapshot !== undefined) {
@@ -106,14 +99,11 @@ class UserDash extends React.Component<DashProps, DashState> {
    * @param {number} progress
    */
   updateUserProgress = (progress: number) => {
-    let result: string = encodeURIComponent(this.props.user).replace(
-      /\./g,
-      "%2E"
-    );
+    const result: string = encodeURIComponent(this.props.user).replace(/\./g, "%2E");
 
     app
       .firestore()
-      .collection("StudentsAtWorkshop")
+      .collection("StudentsAtWorkshopNew")
       .doc(this.props.workshopID)
       .update({
         ["testProgress." + result]: progress,
@@ -202,60 +192,51 @@ class UserDash extends React.Component<DashProps, DashState> {
       );
     }
 
-    let workshop_levels = this.props.workshop_data?.Level_Titles.map(
-      (item: string, index: number) => {
-        if (this.state.currentPage === index) {
-          return (
-            <Col key={index}>
-              <Card className="floating-icon" bg="primary">
-                <Card.Header>{item}</Card.Header>
-              </Card>
-            </Col>
-          );
-        } else if (this.state.userProgress > index) {
-          return (
-            <Col key={index}>
-              <Card bg="success">
-                <Card.Header>{item}</Card.Header>
-              </Card>
-            </Col>
-          );
-        } else {
-          return (
-            <Col key={index}>
-              <Card>
-                <Card.Header>{item}</Card.Header>
-              </Card>
-            </Col>
-          );
-        }
-      },
-      this.state
-    );
+    const workshop_levels = this.props.workshop_data?.Levels.map((item: workshopPart, index: number) => {
+      if (this.state.currentPage === index) {
+        return (
+          <Col key={index}>
+            <Card className="floating-icon" bg="primary">
+              <Card.Header>{item.Level_Title}</Card.Header>
+            </Card>
+          </Col>
+        );
+      } else if (this.state.userProgress > index) {
+        return (
+          <Col key={index}>
+            <Card bg="success">
+              <Card.Header>{item.Level_Title}</Card.Header>
+            </Card>
+          </Col>
+        );
+      } else {
+        return (
+          <Col key={index}>
+            <Card>
+              <Card.Header>{item.Level_Title}</Card.Header>
+            </Card>
+          </Col>
+        );
+      }
+    }, this.state);
 
     // display workshop level descriptions with HTML formatting
-    let workshop_level_text = (
+    const workshop_level_text = (
       <div
         dangerouslySetInnerHTML={{
-          __html: this.props.workshop_data.Level_Descriptions[
-            this.state.currentPage
-          ],
+          __html: this.props.workshop_data.Levels[this.state.currentPage]?.Level_Description || "",
         }}
       />
     );
 
-    let workshop_level_title = this.props.workshop_data.Level_Titles[
-      this.state.currentPage
-    ];
+    const workshop_level_title: string = this.props.workshop_data.Levels[this.state.currentPage]?.Level_Title || "";
 
-    var displayNext =
-      (this.state.Level_Enabled > this.state.userProgress &&
-        this.state.userProgress > this.state.currentPage) ||
-      (this.state.Level_Enabled === this.state.userProgress &&
-        this.state.currentPage < this.state.userProgress - 1);
-    var displayPrevious = this.state.currentPage > 0;
-    var displayMarkCompleted =
-      this.state.userProgress === this.state.currentPage && !displayNext;
+    const displayNext =
+      (this.state.Level_Enabled > this.state.userProgress && this.state.userProgress > this.state.currentPage) ||
+      (this.state.Level_Enabled === this.state.userProgress && this.state.currentPage < this.state.userProgress - 1);
+
+    const displayPrevious = this.state.currentPage > 0;
+    const displayMarkCompleted = this.state.userProgress === this.state.currentPage && !displayNext;
 
     if (this.state.userProgress === -1) {
       return (
@@ -273,11 +254,7 @@ class UserDash extends React.Component<DashProps, DashState> {
         <Container fluid className="text-center p-3">
           {this.state.alert ? (
             <div className="m-1 mt-3">
-              <Alert
-                variant="danger"
-                onClose={() => this.resetAlertStatus()}
-                dismissible
-              >
+              <Alert variant="danger" onClose={() => this.resetAlertStatus()} dismissible>
                 {this.state.alertText}
               </Alert>
             </div>
@@ -296,8 +273,7 @@ class UserDash extends React.Component<DashProps, DashState> {
               />
               <Card className="mt-4 floating-icon">
                 <Card.Header className="text-left p-3 mt-2">
-                  {this.state.currentPage ===
-                  this.props.workshop_data.Number_Of_Levels
+                  {this.state.currentPage === this.props.workshop_data.Number_Of_Levels
                     ? "Workshop Complete!"
                     : workshop_level_title}
                 </Card.Header>
@@ -306,11 +282,7 @@ class UserDash extends React.Component<DashProps, DashState> {
                 <Row>
                   <Col className="">
                     {displayPrevious ? (
-                      <Button
-                        className="float-left m-3"
-                        variant="primary"
-                        onClick={this.previousLevel}
-                      >
+                      <Button className="float-left m-3" variant="primary" onClick={this.previousLevel}>
                         Previous
                       </Button>
                     ) : (
@@ -319,11 +291,7 @@ class UserDash extends React.Component<DashProps, DashState> {
                   </Col>
                   <Col>
                     {displayMarkCompleted ? (
-                      <Button
-                        className="m-3 float-center"
-                        variant="primary"
-                        onClick={this.markCompleted}
-                      >
+                      <Button className="m-3 float-center" variant="primary" onClick={this.markCompleted}>
                         Mark as Completed
                       </Button>
                     ) : (
@@ -332,11 +300,7 @@ class UserDash extends React.Component<DashProps, DashState> {
                   </Col>
                   <Col className="mx-1 mr-0">
                     {displayNext ? (
-                      <Button
-                        className="m-3 float-right"
-                        variant="primary"
-                        onClick={this.nextLevel}
-                      >
+                      <Button className="m-3 float-right" variant="primary" onClick={this.nextLevel}>
                         Next
                       </Button>
                     ) : (
@@ -363,7 +327,4 @@ const mapStateToProps = (state: any) => {
     workshop_data: state.userReducer.workshop_data,
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserDash);
+export default connect(mapStateToProps, mapDispatchToProps)(UserDash);

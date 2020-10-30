@@ -18,14 +18,14 @@ interface WorkshopLevelBarProps {
   deleteWorkshop(): void;
   addEditWorkshop(): void;
   exportWorkshop(): void;
-  Workshop_Level: number
+  Workshop_Level: number;
   enabled: boolean;
   maxLevel: number;
 }
 
 interface WorkshopLevelBarState {
-  workshopLevel: number,
-  enabled: boolean
+  workshopLevel: number;
+  enabled: boolean;
 }
 
 class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLevelBarState> {
@@ -38,7 +38,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
    * Updates if there's a change to the props passed in
    * @param {WorkshopLevelBarProps} prevProps
    */
-  componentDidUpdate(prevProps: WorkshopLevelBarProps) {
+  componentDidUpdate(prevProps: WorkshopLevelBarProps): void {
     if (this.props !== prevProps) {
       this.setState({
         workshopLevel: this.props.Workshop_Level,
@@ -50,7 +50,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
   /**
    * Calls function passed in from props
    */
-  incrementLevel = () => {
+  incrementLevel = (): void => {
     if (this.state.workshopLevel < this.props.maxLevel) {
       this.setState((state) => ({ workshopLevel: state.workshopLevel + 1 }));
       this.props.incrementLevel();
@@ -60,7 +60,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
   /**
    * Calls function passed in from props
    */
-  decrementLevel = () => {
+  decrementLevel = (): void => {
     if (this.state.workshopLevel > 1) {
       this.setState((state) => ({ workshopLevel: state.workshopLevel - 1 }));
       this.props.decrementLevel();
@@ -70,7 +70,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
   /**
    * Calls function passed in from props
    */
-  enableWorkshop = () => {
+  enableWorkshop = (): void => {
     this.setState({ enabled: true });
     this.props.enableWorkshop();
   };
@@ -78,33 +78,26 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
   /**
    * Calls function passed in from props
    */
-  disableWorkshop = () => {
+  disableWorkshop = (): void => {
     this.setState({ enabled: false });
     this.props.disableWorkshop();
   };
 
-  render() {
+  render(): JSX.Element {
     return (
       <div>
         <div className="m-2 mt-3 m-lg-3 mt-lg-5 p-4 floating-icon">
           <Nav justify className="flex-column flex-lg-row d-flex">
             <Nav.Item>
               <h1>
-                <div
-                  dangerouslySetInnerHTML={{ __html: "Manage&nbspWorkshop" }}
-                />
+                <div dangerouslySetInnerHTML={{ __html: "Manage&nbspWorkshop" }} />
               </h1>
             </Nav.Item>
             <Row>
               <Col xs={12} sm={6} md={4} lg={2}>
                 <Nav.Item>
                   <Nav.Link>
-                    <Button
-                      onClick={this.enableWorkshop}
-                      variant="success"
-                      size="lg"
-                      disabled={this.state.enabled}
-                    >
+                    <Button onClick={this.enableWorkshop} variant="success" size="lg" disabled={this.state.enabled}>
                       <div
                         dangerouslySetInnerHTML={{
                           __html: "Enable&nbspWorkshop",
@@ -117,12 +110,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
               <Col xs={12} sm={6} md={4} lg={2}>
                 <Nav.Item>
                   <Nav.Link>
-                    <Button
-                      onClick={this.disableWorkshop}
-                      variant="warning"
-                      size="lg"
-                      disabled={!this.state.enabled}
-                    >
+                    <Button onClick={this.disableWorkshop} variant="warning" size="lg" disabled={!this.state.enabled}>
                       <div
                         dangerouslySetInnerHTML={{
                           __html: "Disable&nbspWorkshop",
@@ -135,11 +123,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
               <Col xs={12} sm={6} md={4} lg={2}>
                 <Nav.Item>
                   <Nav.Link>
-                    <Button
-                      onClick={()=>this.props.addEditWorkshop()}
-                      variant="primary"
-                      size="lg"
-                    >
+                    <Button onClick={() => this.props.addEditWorkshop()} variant="primary" size="lg">
                       <div
                         dangerouslySetInnerHTML={{
                           __html: "Edit&nbspWorkshop",
@@ -152,11 +136,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
               <Col xs={12} sm={6} md={4} lg={2}>
                 <Nav.Item>
                   <Nav.Link>
-                    <Button
-                      onClick={()=>this.props.exportWorkshop()}
-                      variant="secondary"
-                      size="lg"
-                    >
+                    <Button onClick={() => this.props.exportWorkshop()} variant="secondary" size="lg">
                       <div
                         dangerouslySetInnerHTML={{
                           __html: "Export&nbspWorkshop",
@@ -169,11 +149,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
               <Col xs={12} sm={6} md={4} lg={2}>
                 <Nav.Item>
                   <Nav.Link>
-                    <Button
-                      onClick={()=>this.props.clearAllStudents()}
-                      variant="dark"
-                      size="lg"
-                    >
+                    <Button onClick={() => this.props.clearAllStudents()} variant="dark" size="lg">
                       <div
                         dangerouslySetInnerHTML={{
                           __html: "Clear&nbspAll&nbspStudents",
@@ -186,11 +162,7 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
               <Col xs={12} sm={6} md={4} lg={2}>
                 <Nav.Item>
                   <Nav.Link>
-                    <Button
-                      onClick={()=>this.props.deleteWorkshop()}
-                      variant="danger"
-                      size="lg"
-                    >
+                    <Button onClick={() => this.props.deleteWorkshop()} variant="danger" size="lg">
                       <div
                         dangerouslySetInnerHTML={{
                           __html: "Delete&nbspWorkshop",
@@ -225,20 +197,10 @@ class WorkshopLevelBar extends React.Component<WorkshopLevelBarProps, WorkshopLe
             </Nav.Item>
             <Nav.Item>
               <Nav.Link>
-                <Fab
-                  color="primary"
-                  aria-label="remove"
-                  className="ml-2 mr-2"
-                  disabled={!this.state.enabled}
-                >
+                <Fab color="primary" aria-label="remove" className="ml-2 mr-2" disabled={!this.state.enabled}>
                   <RemoveIcon onClick={this.decrementLevel} />
                 </Fab>
-                <Fab
-                  color="primary"
-                  aria-label="add"
-                  className="ml-2 mr-2"
-                  disabled={!this.state.enabled}
-                >
+                <Fab color="primary" aria-label="add" className="ml-2 mr-2" disabled={!this.state.enabled}>
                   <AddIcon onClick={this.incrementLevel} />
                 </Fab>
               </Nav.Link>

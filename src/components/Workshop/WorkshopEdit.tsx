@@ -14,9 +14,8 @@ import RemoveIcon from "@material-ui/icons/Remove";
 import DatePicker from "react-datepicker";
 import WorksdopEditor from "../Layout/WorkshopEditor";
 import { Row, Col, Alert } from "react-bootstrap";
-import { workshop, DateType } from "../../config/interface"
-
-
+import { workshop, DateType, workshopPart } from "../../config/interface";
+import storage from "../../config/firebase";
 /**
  * Opens up a dialog modal for the workshop data to be edited or a new workshop informatin to be added
  * Pretty important because this is where all the crud operations take place for a given workshop
@@ -31,24 +30,35 @@ interface WorkshopEditState {
   currLevel: number;
   hasBeenEdited: boolean;
   alertText: string;
+  Files: File[]; // new files to upload on submit
 }
 
 interface WorkshopEditProps {
   workshop?: workshop;
-  submit: Function;
+  submit(item: any, item2: any): void;
   isOpen: boolean;
   titleText: string;
   messageText: string;
   newWorkshop: boolean;
 }
 
+interface workshopEditorReturn {
+  content: string; //html text
+  file: any; //uploaded files
+}
+
+const emptyWorkshopObject: workshopPart = {
+  Level_Description: "",
+  Level_Title: "",
+  Files: [],
+};
+
 class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState> {
   state: WorkshopEditState = {
     Workshop: {
       Workshop_ID: "",
       Workshop_Name: "",
-      Level_Titles: [],
-      Level_Descriptions: [],
+      Levels: [Object.assign({}, emptyWorkshopObject)],
       Number_Of_Levels: 1,
       Date: new Date(),
     },
@@ -56,6 +66,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
     currLevel: -1,
     hasBeenEdited: false,
     alertText: "Workshop has been modified, submit to save changes",
+    Files: [], // new files to upload on submit
   };
 
   /**
@@ -63,11 +74,11 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * We want to clone it to ensure that changes here are not always directly saved
    * Called by the dialog
    */
-  initializeState = () => {
+  initializeState = (): void => {
     //if it is null then a new workshop is being created else an existing  one is being updated
-    if (this.props.workshop != null) {
-      let temp = new Date(this.props.workshop.Date.seconds as number * 1000);
-      let tempX = {
+    if (this.props.workshop !== null && this.props.workshop !== undefined) {
+      const temp = new Date((this.props.workshop.Date.seconds as number) * 1000);
+      const tempX = {
         ...this.props.workshop, //creates deep copy
         Date: temp,
       };
@@ -81,13 +92,12 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * This gets called when someone clicks cancel or outside the dialog box
    * Returns an empty workshop object and false for whether the submit button was pressed
    */
-  cancel = () => {
+  cancel = (): void => {
     this.setState({
       Workshop: {
         Workshop_ID: "",
         Workshop_Name: "",
-        Level_Titles: [],
-        Level_Descriptions: [],
+        Levels: [],
         Number_Of_Levels: 1,
         Date: new Date(),
       },
@@ -99,7 +109,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
   /**
    * This gets called when the submit button is pressed to save changes made to a workshop or save a new workshop
    */
-  submit = () => {
+  submit = (): void => {
     if (this.state.Workshop.Date === null) {
       this.setState({
         hasBeenEdited: true,
@@ -111,6 +121,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
         alertText: "Workshop title cannot be null",
       });
     } else {
+      this.uploadContent();
       console.log(this.state.Workshop);
       this.props.submit(this.state.Workshop, true);
       //sets to null to prepare for the next time the component may get used
@@ -118,8 +129,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
         Workshop: {
           Workshop_ID: "",
           Workshop_Name: "",
-          Level_Titles: [],
-          Level_Descriptions: [],
+          Levels: [],
           Number_Of_Levels: 1,
           Date: new Date(),
         },
@@ -131,26 +141,28 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
   /**
    * Links button to function passed in as props
    */
-  callPropsSubmit = () => {
+  callPropsSubmit = (): void => {
     this.props.submit(this.state.Workshop, true);
   };
 
   /**
    * Updates state with additional level
    */
-  incrementLevel = () => {
-    let workshop = this.state.Workshop;
+  incrementLevel = (): void => {
+    const workshop = this.state.Workshop;
     workshop.Number_Of_Levels = workshop.Number_Of_Levels + 1;
+    workshop.Levels.push(Object.assign({}, emptyWorkshopObject));
     this.setState({ Workshop: workshop, hasBeenEdited: true });
   };
 
   /**
    * Updates state with reduced level
    */
-  decrementLevel = () => {
+  decrementLevel = (): void => {
     if (this.state.Workshop.Number_Of_Levels > 1) {
-      let workshop = this.state.Workshop;
+      const workshop = this.state.Workshop;
       workshop.Number_Of_Levels = workshop.Number_Of_Levels - 1;
+      workshop.Levels.pop();
       this.setState({ Workshop: workshop, hasBeenEdited: true });
     }
   };
@@ -159,8 +171,8 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * Event handler for workshop name, note: workshop name is a primary key and changing it is not allowed if a workshop has already been created
    * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} event
    */
-  setWorkshopName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    let temp = event.target.value;
+  setWorkshopName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const temp = event.target.value;
     this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
@@ -175,19 +187,19 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * Event handler for the level name, was tricky using the same event handler for all level names but it works like a charm
    * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} event
    */
-  setWorkshopLevelName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    let temp = event.target.id;
-    let tempArray = this.state.Workshop.Level_Titles;
-    for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
+  setWorkshopLevelName = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const temp = event.target.id;
+    const tempArray = this.state.Workshop.Levels;
+    for (let i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
       if (temp === i + "") {
-        tempArray[i] = event.target.value;
+        tempArray[i].Level_Title = event.target.value;
       }
     }
 
     this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
-        Level_Titles: tempArray,
+        Levels: tempArray,
       },
       hasBeenEdited: true,
     }));
@@ -197,24 +209,63 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
    * Event handler for the level description
    * @param {string} event
    */
-  setWorkshopLevelDescription = (newText: string) => {
-    let tempArray = this.state.Workshop.Level_Descriptions;
-    tempArray[this.state.currLevel] = newText;
+  setWorkshopLevelDescription = (newText: string): void => {
+    console.log("workshop desc " + this.state.currLevel);
+    const tempArray = this.state.Workshop.Levels;
+    tempArray[this.state.currLevel].Level_Description = newText;
 
     this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
-        Level_Descriptions: tempArray,
+        Levels: tempArray,
       },
       hasBeenEdited: true,
     }));
   };
 
   /**
+   *
+   * Files = [[level1],[level2],  ]
+   */
+
+  setWorkshopFiles = (files: File[]): void => {
+    console.log("files");
+    console.log(files);
+    if (files.length === 0) return;
+    const tempFileArr = this.state.Files;
+    const tempArray = this.state.Workshop.Levels;
+    let currentLevel: workshopPart = {
+      Level_Description: "",
+      Level_Title: "",
+      Files: [],
+    };
+    if (tempArray !== undefined) currentLevel = tempArray[this.state.currLevel];
+    const fileArr = currentLevel.Files ?? [];
+    files.forEach((element: any) => {
+      if (element !== null && !fileArr.includes(element.name)) {
+        tempFileArr.push(element);
+        fileArr.push(element.name);
+        console.log("added element");
+      }
+    });
+    tempArray[this.state.currLevel].Files = fileArr;
+    this.setState(
+      (state) => ({
+        Workshop: {
+          ...state.Workshop,
+          Levels: tempArray,
+        },
+        Files: tempFileArr,
+        hasBeenEdited: true,
+      }),
+      () => console.log(this.state.Workshop)
+    );
+  };
+  /**
    * Opens the editing panel for a specific workshop
    * @param {number} level
    */
-  openWorkshopEdit = (level: number) => {
+  openWorkshopEdit = (level: number): void => {
     this.setState({
       editWindow: true,
       currLevel: level,
@@ -225,8 +276,8 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
   /**
    * Event listener
    */
-  setWorkshopDate = (date: DateType) => {
-    let d = new Date(date);
+  setWorkshopDate = (date: DateType): void => {
+    const d = new Date(date);
     this.setState((state) => ({
       Workshop: {
         ...state.Workshop,
@@ -239,15 +290,60 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
   /**
    * @param {string} newText
    */
-  closeWorkshopEdit = (newText: string) => {
-    if (newText) this.setWorkshopLevelDescription(newText);
+  closeWorkshopEdit = (data: workshopEditorReturn): void => {
+    if (data.content) this.setWorkshopLevelDescription(data.content);
+    if (data.file) {
+      this.setWorkshopFiles(data.file);
+    }
     this.setState({
       editWindow: false,
       hasBeenEdited: true,
     });
   };
 
-  render() {
+  uploadContent = (): void => {
+    const tempArr = this.state.Workshop.Levels ?? [];
+    const Files = this.state.Files;
+    Files.forEach((newFile) => {
+      if (!this.uploadFile(newFile)) {
+        // file upload failed for some reason
+        const val = tempArr.find((o) => o.Files?.includes(newFile.name));
+        if (val !== undefined) {
+          const index = tempArr.indexOf(val);
+          val.Files = val?.Files?.filter((o) => o !== newFile.name);
+          tempArr[index] = val;
+        }
+      }
+    });
+
+    this.setState((state) => ({
+      Workshop: {
+        ...state.Workshop,
+        Levels: tempArr,
+      },
+      hasBeenEdited: true,
+    }));
+  };
+
+  uploadFile = async (file: File): Promise<boolean> => {
+    await storage
+      .storage()
+      .ref()
+      .child(this.state.Workshop.Workshop_ID + "/" + file.name)
+      .put(file)
+      .then(() => {
+        return true;
+      })
+      .catch((err) => {
+        console.log(err);
+        return false;
+      });
+    return false;
+  };
+
+  render(): JSX.Element {
+    console.log(this.props.isOpen);
+
     if (this.state.editWindow) {
       return (
         <Dialog
@@ -261,9 +357,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
           <DialogContent>
             <WorksdopEditor
               closeWindow={this.closeWorkshopEdit}
-              content={
-                this.state.Workshop.Level_Descriptions[this.state.currLevel]
-              }
+              content={this.state.Workshop.Levels[this.state.currLevel].Level_Description}
             />
           </DialogContent>
         </Dialog>
@@ -272,14 +366,14 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
     //the following code generates the appropriate number of textFields to be filled in based on Number_Of_Levels
     //level text fields have the id set to 0,1,2,3... etc which is used by the event handler to decide what to modify
     //level description fields have the id set to 0-level,1-level,2-level... etc which is used by the event handler
-    let lvlTitl = [];
-    let lvlDesc = [];
-    for (var i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
+    const lvlTitl = [];
+    const lvlDesc = [];
+    for (let i = 0; i < this.state.Workshop.Number_Of_Levels; i++) {
       lvlTitl.push(i + "");
       lvlDesc.push(i + "-level");
     }
-    let lvlTitleFields = lvlTitl.map((item, i) => (
-      <DialogContent key={i}>
+    const lvlTitleFields = lvlTitl.map((item, index) => (
+      <DialogContent key={index}>
         <form>
           <Row>
             <Col>
@@ -291,14 +385,14 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
                 placeholder="Level Name"
                 className="mr-5"
                 onChange={(event) => this.setWorkshopLevelName(event)}
-                value={this.state.Workshop.Level_Titles[i] || ""}
+                value={this.state.Workshop.Levels[index]?.Level_Title || ""}
               />
             </Col>
             <Col>
               <Button
                 className="mr-5"
                 onClick={() => {
-                  this.openWorkshopEdit(i);
+                  this.openWorkshopEdit(index);
                 }}
               >
                 Edit Level Info
@@ -321,23 +415,16 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
         >
           <DialogContent>
             {this.state.hasBeenEdited ? (
-              <Alert
-                variant="danger"
-                onClose={() => this.setState({ hasBeenEdited: false })}
-              >
+              <Alert variant="danger" onClose={() => this.setState({ hasBeenEdited: false })}>
                 {this.state.alertText}
               </Alert>
             ) : (
               ""
             )}
           </DialogContent>
-          <DialogTitle id="alert-dialog-title">
-            {this.props.titleText}
-          </DialogTitle>
+          <DialogTitle id="alert-dialog-title">{this.props.titleText}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              {this.props.messageText}
-            </DialogContentText>
+            <DialogContentText id="alert-dialog-description">{this.props.messageText}</DialogContentText>
           </DialogContent>
           <DialogContent>
             <form>

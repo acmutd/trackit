@@ -11,6 +11,7 @@
 
 #### Required Information
 
+- Use the pull request & issue templates
 - Short summary for updates
 - Bullet point list that encapsulates in full detail the changes that have been made. No detail is too small
 - If there are any known bugs in your branch which will get merged to dev mention them

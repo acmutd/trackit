@@ -1,17 +1,29 @@
 {
   "compilerOptions": {
-      "outDir": "./build/",        // path to output directory
-      "sourceMap": true,          // allow sourcemap support
-      "module": "commonjs",            // specify module code generation
-      "jsx": "react",             // use typescript to transpile jsx to js
-      "target": "es6",            // specify ECMAScript target version
-      "allowJs": true,             // allow a partial TypeScript and JavaScript codebase
-      "moduleResolution": "node",
-      "strict": true
+    "outDir": "./build/",
+    "sourceMap": false,
+    "module": "esnext",
+    "jsx": "react",
+    "target": "es6",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
   },
   "include": [
-      "./src/",
-      "./src/assets"
+    "./src/",
+    "./src/assets"
   ],
   "types": [
     "node",
@@ -19,5 +31,5 @@
     "react",
     "react-dom",
     "boostrap"
-  ],
+  ]
 }
