@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Spinner } from "react-bootstrap";
 
-const Loading = () => {
+const Loading = (): JSX.Element => {
   return (
     <div style={{ position: "absolute", top: "50%", right: "50%" }}>
       <Spinner animation="border" role="status">

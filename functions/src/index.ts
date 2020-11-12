@@ -7,7 +7,6 @@ const cors = require("cors");
 const jwt = require("express-jwt");
 const jwks = require("jwks-rsa");
 
-
 const app = express();
 app.use(cors({ origin: true }));
 
@@ -20,18 +19,22 @@ const jwtCheck = jwt({
   }),
   audience: `https://harshasrikara.com/api`,
   issuer: `https://${functions.config().auth0.domain}/`,
-  algorithm: "RS256",
+  algorithms: ["RS256"],
 });
 
 app.get("/getCustomToken", jwtCheck, authFunctions.createCustomToken);
 app.get("/helloWorld", (req: any, res: any) => {
-    res.send("hello world");
-})
+  res.send("hello world");
+});
 exports.api = functions.https.onRequest(app);
 exports.hello = functions.https.onRequest((req: any, res: any) => {
   res.send("called hello endpoint successfully");
+<<<<<<< HEAD
 })
 
 export const on_create = backupFunctions.backup_on_create;
 export const on_update = backupFunctions.backup_on_update;
 export const on_delete = backupFunctions.log_on_delete;
+=======
+});
+>>>>>>> dev

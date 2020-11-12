@@ -15,7 +15,6 @@ Developer version: checkout [dev](https://github.com/acmutd/TrackIT/tree/dev)
 - `npm install`
 - create `.env` file and add firebase Development API Keys (request from team)
 - `npm run dev`
-- [optional to run test cases] `npm run test`
 
 #### Additional Resources
 
@@ -33,7 +32,7 @@ Developer version: checkout [dev](https://github.com/acmutd/TrackIT/tree/dev)
 
 #### Questions
 
-Sometimes you may have questions regarding the development of this product. If the answer was not found in this readme please feel free to reach out to the above contributors or the [Director of Development](mailto:comet.acm@gmail.com) for ACM
+Sometimes you may have questions regarding the development of this product. If the answer was not found in this readme please feel free to reach out to the above contributors or the [Director of Development](mailto:development@acmutd.co) for _ACM_
 
 We request that you be as detailed as possible in your questions, doubts or concerns to ensure that we can be of maximum assistance. Thank you!
 

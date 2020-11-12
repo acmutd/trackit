@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button, Card, ButtonGroup } from "react-bootstrap";
-import { CardData } from "../../config/interface"
+import { CardData } from "../../config/interface";
 
 /**
  * This component represents a singular tile in the interface. It has support to hold several buttons and have custom functionality for them.
@@ -9,17 +9,17 @@ import { CardData } from "../../config/interface"
  */
 
 interface CardProps {
-  data: CardData
+  data: CardData;
 }
 
-class CardTile extends React.Component<CardProps, {}> {
-  render() {
-    let links = this.props.data.links;
-    let linkTexts = this.props.data.linkText;
+class CardTile extends React.Component<CardProps, Record<string, unknown>> {
+  render(): JSX.Element {
+    const links = this.props.data.links;
+    const linkTexts = this.props.data.linkText;
 
     // create a button with the text passed in from props
     // the onclick will be a function defined in props and passed in
-    let cardLinks = linkTexts.map((item: string, index: number) => (
+    const cardLinks = linkTexts.map((item: string, index: number) => (
       <Button
         onClick={() => links[index]()}
         variant={"success"} //used to be {variants[index]}
@@ -37,9 +37,7 @@ class CardTile extends React.Component<CardProps, {}> {
           <Card>
             <Card.Body>
               <Card.Title>{this.props.data.title}</Card.Title>
-              <Card.Subtitle className="mb-2 text-muted">
-                {this.props.data.subtitle}
-              </Card.Subtitle>
+              <Card.Subtitle className="mb-2 text-muted">{this.props.data.subtitle}</Card.Subtitle>
               <Card.Text>{this.props.data.description}</Card.Text>
               <ButtonGroup>{cardLinks}</ButtonGroup>
             </Card.Body>
