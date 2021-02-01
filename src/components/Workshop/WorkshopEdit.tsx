@@ -61,6 +61,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
       Levels: [Object.assign({}, emptyWorkshopObject)],
       Number_Of_Levels: 1,
       Date: new Date(),
+      Owner: "",
     },
     editWindow: false,
     currLevel: -1,
@@ -100,6 +101,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
         Levels: [],
         Number_Of_Levels: 1,
         Date: new Date(),
+        Owner: "",
       },
       hasBeenEdited: false,
     });
@@ -132,6 +134,7 @@ class WorkshopEdit extends React.Component<WorkshopEditProps, WorkshopEditState>
           Levels: [],
           Number_Of_Levels: 1,
           Date: new Date(),
+          Owner: "",
         },
         hasBeenEdited: false,
       });

@@ -5,15 +5,15 @@ import { connect } from "react-redux";
 import { withAuth0 } from "@auth0/auth0-react";
 import LandingPage from "../views/LandingPage";
 import app from "../config/firebase";
-
+//import { useHistory } from "react-router-dom";
+console.log('hi from admin')
 interface AdminProps {
   auth0?: any;
-
+  state: any;
   loggedIn?: boolean; //redux
   login: () => void; //redux
   logout: () => void; //redux
 }
-
 /**
  * This component is designed to strictly be backend only
  * All API calls and connections to the database should take place in this component
@@ -21,36 +21,11 @@ interface AdminProps {
  *
  */
 class Admin extends React.Component<any, any> {
+  //history = useHistory();
   loginListener?: firebase.Unsubscribe;
   /**
    * If the page crashes then the user gets automatically logged out
    */
-  componentWillUnmount() {
-    if (this.loginListener) this.loginListener();
-  }
-
-  componentDidMount() {
-    this.loginListener = app.auth().onAuthStateChanged((user: firebase.User | null) => {
-      if (user) {
-        //only ACM Organization Officers have access to admin
-        if (user.email?.includes("@acmutd.co")) {
-          this.props.login();
-        } else {
-          this.signOutUser(); //sign out if the user logged into firebase is not ACM Organization Officer
-        }
-      } else {
-        this.props.logout();
-      }
-    });
-  }
-
-  componentDidUpdate() {
-    const { isAuthenticated, isLoading } = this.props.auth0;
-
-    if (!isLoading && isAuthenticated && !this.props.loggedIn) {
-      this.authenticate();
-    }
-  }
 
   /**
    * This function runs if the user has authenticated themselves on auth0 but not on firebase
@@ -60,47 +35,56 @@ class Admin extends React.Component<any, any> {
    * @param {string} password
    */
   authenticate = async () => {
+    console.log('in authenticate admin')
     const { getAccessTokenSilently, user, logout } = this.props.auth0;
 
-    if (user.email.includes("@acmutd.co")) {
-      const accessToken = await getAccessTokenSilently({
-        audience: `https://harshasrikara.com/api`,
-        scope: "read:current_user",
-      });
-      const response = await fetch(`https://us-central1-trackit-285205.cloudfunctions.net/api/getCustomToken`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+    const accessToken = await getAccessTokenSilently({
+      audience: `https://harshasrikara.com/api`,
+      scope: "read:current_user",
+    });
+    const response = await fetch(`http://localhost:5001/trackit-285205/us-central1/api/getCustomToken`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-      const data = await response.json();
-      app
-        .auth()
-        .signInWithCustomToken(data.firebaseToken)
-        .then((userFirebase) => {
-          this.props.login();
-          if (app.auth().currentUser?.email !== null) {
-            //this user has signed in before (do nothing)
-          } else {
-            //update fields if its the first time they are signing in
-            app.auth().currentUser?.updateProfile({
-              displayName: user.nickname,
-              photoURL: user.picture,
-            });
-            app.auth().currentUser?.updateEmail(user.email);
-          }
-        })
-        .catch((error: firebase.auth.AuthError) => {
-          console.log({
-            message: "Firebase Auth Error when signing in",
-            error: error,
+    const data = await response.json();
+    app
+      .auth()
+      .signInWithCustomToken(data.firebaseToken)
+      .then(async (userFirebase) => {
+        this.props.login();
+        if (app.auth().currentUser?.email !== null) {
+          //this user has signed in before (do nothing)
+        } else {
+          //update fields if its the first time they are signing in
+          app.auth().currentUser?.updateProfile({
+            displayName: user.nickname,
+            photoURL: user.picture,
           });
-          logout();
+          app.auth().currentUser?.updateEmail(user.email);
+        }
+
+        const groups = await app
+          .auth()
+          .currentUser?.getIdTokenResult()
+          .then((token: any) => {
+            return token.claims.Groups;
+          })
+          .catch((err: any) => {
+            return [""];
+          });
+        if (groups.length === 1 && groups[0] === "") {
+          //this.history.push("/");
+        }
+      })
+      .catch((error: firebase.auth.AuthError) => {
+        console.log({
+          message: "Firebase Auth Error when signing in",
+          error: error,
         });
-    } else {
-      logout();
-      console.log("Unauthorized! Only ACM Officers permitted access!");
-    }
+        logout();
+      });
   };
 
   /**
@@ -130,6 +114,9 @@ class Admin extends React.Component<any, any> {
    * renders the page
    */
   render() {
+    console.log(this.props.state)
+    console.log('hi in admin')
+    console.log(this.props.loggedIn);
     return (
       <div>
         {/* If the user is not logged in then it displays the <AdminAuth /> Component, if they are logged in it will display the <AdminDashboard /> Component */}
@@ -143,6 +130,7 @@ class Admin extends React.Component<any, any> {
 const mapState = (state: any) => {
   return {
     loggedIn: state.authenticateReducer.loggedIn,
+    tempState: state,
   };
 };
 

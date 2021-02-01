@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { workshopAuthenticationAction, workshopDataAction } from "../actions/user";
 import { loginAction, logoutAction } from "../actions/authentication";
 import app from "../config/firebase";
+import { Redirect } from "react-router-dom";
 
 interface UserProps {
   withAuth0?: any;
@@ -46,26 +47,26 @@ class User extends React.Component<any, UserState> {
   /**
    * Sign out the user if the page crashes or components gets unmounted
    */
-  componentWillUnmount() {
-    //remove progress listener
-    if (this.loginListener) this.loginListener();
-  }
+  // componentWillUnmount() {
+  //   //remove progress listener
+  //   if (this.loginListener) this.loginListener();
+  // }
 
-  componentDidMount() {
-    this.loginListener = app.auth().onAuthStateChanged((user: firebase.User | null) => {
-      if (user) {
-        this.props.login();
-      } else {
-        this.props.logout();
-      }
-    });
-  }
-  componentDidUpdate() {
-    const { isAuthenticated, isLoading } = this.props.auth0;
-    if (!isLoading && isAuthenticated && !this.props.loggedIn) {
-      this.authenticate();
-    }
-  }
+  // componentDidMount() {
+  //   this.loginListener = app.auth().onAuthStateChanged((user: firebase.User | null) => {
+  //     if (user) {
+  //       this.props.login();
+  //     } else {
+  //       this.props.logout();
+  //     }
+  //   });
+  // }
+  // componentDidUpdate() {
+  //   const { isAuthenticated, isLoading } = this.props.auth0;
+  //   if (!isLoading && isAuthenticated && !this.props.loggedIn) {
+  //     this.authenticate();
+  //   }
+  // }
 
   /**
    * This function runs if the user has authenticated themselves on auth0 but not on firebase
@@ -88,7 +89,7 @@ class User extends React.Component<any, UserState> {
       audience: `https://harshasrikara.com/api`,
       scope: "read:current_user",
     });
-    const response = await fetch(`https://us-central1-trackit-285205.cloudfunctions.net/api/getCustomToken`, {
+    const response = await fetch(`http://localhost:5001/trackit-285205/us-central1/api/getCustomToken`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -158,6 +159,7 @@ class User extends React.Component<any, UserState> {
             Number_Of_Levels: doc.data()?.Number_Of_Levels,
             Workshop_ID: doc.data()?.Workshop_ID,
             Workshop_Name: doc.data()?.Workshop_Name,
+            Owner: doc.data()?.Owner,
           };
 
           this.props.updateWorkshopData(workshopObject);
@@ -177,6 +179,7 @@ class User extends React.Component<any, UserState> {
   };
 
   render() {
+    console.log("in user");
     const { isAuthenticated, isLoading, user } = this.props.auth0;
 
     let userID = "";
@@ -186,14 +189,14 @@ class User extends React.Component<any, UserState> {
 
     return (
       <div>
-        {!isLoading && isAuthenticated && this.props.loggedIn ? (
+        {this.props.loggedIn ? (
           !this.state.workshop_data ? (
             <WorkshopLogin authenticate={this.authenticateWorkshop} loginError={this.state.loginError} />
           ) : (
             <UserDash user={userID} />
           )
         ) : (
-          <LandingPage />
+          <Redirect to={"join"} />
         )}
       </div>
     );
